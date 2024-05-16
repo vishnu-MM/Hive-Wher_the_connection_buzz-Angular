@@ -1,0 +1,31 @@
+/* For tablets and smartphones */
+@media only screen  and (max-width: 1023px) {
+  #side-nav {
+    display: none;
+  }
+
+  #posts {
+
+  }
+
+  #create-post {
+    border: 2px solid #404040;
+  }
+}
+
+/* For laptops and larger screens */
+@media only screen and (min-width: 1024px) {
+  #side-nav {
+    position: fixed;
+    height: 100%;
+  }
+  #posts{
+    margin-left: 7%;
+    width: 60%;
+  }
+  #create-post{
+    width: 33%;
+    position: fixed;
+    right: 0;
+  }
+}

@@ -1,0 +1,17 @@
+<div id="post" class="p-4 p-md-5">
+  <div class="d-flex align-items-center">
+    <img src="assets/Screenshot%202024-04-29%20152644.png"
+         alt="user profile picture"
+         class="rounded-5 border  border-black d-inline-block">
+    <div class="ms-2">
+      <span class="h4 text-light">{{post.username}}</span> <br>
+      <span class="text-light">{{post.time}}</span>
+    </div>
+  </div>
+  <div class="my-3">
+    <span class="h6 text-light">{{post.description}}</span>
+  </div>
+  <img src="assets/Naruto-Fan-Art-Wallpaper.jpg"
+       alt="post image" class="post-image rounded"
+       [class]="aspectRatioClass">
+</div>

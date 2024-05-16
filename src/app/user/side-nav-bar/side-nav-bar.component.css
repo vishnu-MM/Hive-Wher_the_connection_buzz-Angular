@@ -1,5 +1,5 @@
 .sidebar {
-  position: fixed;
+  /*position: fixed;*/
   height: 100%;
   width: 100px;
   background-color: #353535;
@@ -25,6 +25,4 @@
   color: black;
   margin-bottom: 3px;
 }
-.icon-panel:hover, .icon-panel:hover .mat-icon {
-  color: white;
-}
+.icon-panel:hover, .icon-panel:hover .mat-icon { color: white; }

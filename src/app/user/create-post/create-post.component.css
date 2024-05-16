@@ -1,0 +1,31 @@
+#create-post {
+  background-color: #353535;
+}
+textarea{
+  background-color: #353535;
+  color: white;
+}
+textarea::placeholder {
+  color: darkgray;
+}
+textarea:focus{
+  background-color: #353535;
+  color: white;
+}
+input{
+  background-color: #353535;
+  color: darkgray;
+}
+input:focus{
+  background-color: #353535;
+  color: white;
+}
+input::file-selector-button {
+  background-color:palegreen;
+}
+input::file-selector-button:hover {
+  background-color:hotpink;
+}
+span {
+  color: darkgray;
+}

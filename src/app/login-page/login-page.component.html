@@ -1,0 +1,67 @@
+<div id="page-bg" class="p-lg-5 p-2 d-lg-flex justify-content-center">
+    <div id="form-bg" class="col-lg-6 rounded-5 p-5">
+      <div id="div-1" class="d-flex flex-column align-items-center justify-content-center">
+            <span class="display-6 "><b>Login Now</b></span>
+            <img src="assets/logo.png" alt="Logo" class="logo">
+      </div>
+      <div id="div-2" class="">
+        <div class="d-flex justify-content-center">
+          <span class="hover-effect h6" routerLink="/signup">
+            Don't have an account? <u>SignUp</u>
+          </span>
+        </div>
+<!-- LOGIN FORM STARTS HERE -->
+        <form #LoginForm="ngForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="exampleInputEmail1"
+                   class="form-label"
+                   [class]="{'text-danger' : (Email.invalid && Email.touched)}">
+                   Username or Email
+            </label>
+            <input  type="email"
+                    name="email"
+                    id="exampleInputEmail1"
+                    class="form-control"
+                    [class]="{'is-invalid' : (Email.invalid && Email.touched) }"
+                    placeholder="Username or Email"
+                    required
+                    #Email="ngModel"
+                    [(ngModel)]="username">
+            <span *ngIf="(Email.invalid && Email.touched)"
+                  [class]="{'text-danger' : (Email.invalid && Email.touched)}">
+                  Email can't be empty
+            </span>
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1"
+                  class="form-label"
+                  [class]="{'text-danger' : (Password.invalid && Password.touched)}">
+                  Password
+            </label>
+            <input  type="password"
+                    name="password"
+                    class="form-control"
+                    id="exampleInputPassword1"
+                    placeholder="Password"
+                    required
+                    #Password="ngModel"
+                    [(ngModel)]="password">
+              <span *ngIf="(Password.invalid && Password.touched)"
+                    [class]="{'text-danger' : (Password.invalid && Password.touched)}">
+                    Password can't be empty
+              </span>
+            </div>
+          <span class="hover-effect h6"><u>forgot password?</u></span>
+          <button type="submit"
+                  class="btn btn-info form-control mt-3"
+                  [disabled]="LoginForm.invalid">
+                  <span class="h5 text-black">Login</span>
+          </button>
+        </form>
+        <div class="alert alert-danger mt-3" role="alert" *ngIf="isLoginFailed">
+          login failed!! Invalid Username or Password
+        </div>
+<!-- LOGIN FORM ENDS HERE -->
+</div>
+    </div>
+</div>

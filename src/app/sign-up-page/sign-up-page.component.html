@@ -1,0 +1,148 @@
+<div id="page-bg" class="p-lg-5 p-2 d-lg-flex justify-content-center">
+    <div id="form-bg" class="col-lg-6 rounded-5 px-3 py-5 p-md-5">
+        <!-- LOGO SECTION STARTS HERE-->
+        <div id="div-1" class="d-flex flex-column align-items-center justify-content-center">
+            <span class="display-6 ">
+                <b>Register Now</b>
+            </span>
+            <img src="assets/logo.png" alt="Logo" class="logo">
+        </div>
+        <!-- LOGO SECTION ENDS HERE-->
+        <div id="div-2" class="">
+            <div class="d-flex justify-content-center">
+                <span class="hover-effect h6" routerLink="/login">
+                      Already a member? <u>Login</u>
+                </span>
+            </div>
+            <!-- FORM STARTS HERE-->
+            <form (ngSubmit)="onSubmit()" #SignUpForm="ngForm" class="px-lg-5">
+                <!-- EMAIL-->
+                <div class="mb-1">
+                  <label [class]="{'text-danger' : isEmailInUse || (Email.touched && (Email.invalid || (!isEmailValid)))}"
+                         for="email"
+                         class="form-label h6">
+                         Email
+                  </label>
+                  <input  [class]="{'is-invalid' : isEmailInUse || (Email.touched && (Email.invalid || (!isEmailValid)))}"
+                          class="form-control mb-1"
+                          type="email"
+                          placeholder="Email"
+                          id="email"
+                          name="email"
+                          #Email="ngModel"
+                          [(ngModel)]="userSignUpReq.email"
+                          required>
+                  <div *ngIf="Email.touched && Email.invalid">
+                    <span class="text-danger h6">Email can't be empty</span>
+                  </div>
+                  <div *ngIf="Email.touched && (!isEmailValid) && (!Email.invalid)">
+                    <span class="text-danger h6">Invalid Email, Please provide a valid one</span>
+                  </div>
+                  <div *ngIf="isEmailInUse">
+                    <span class="text-danger h6">Email already in use</span>
+                  </div>
+                </div>
+
+                <!-- USERNAME-->
+                <div class="my-1">
+                  <label [class]="{'text-danger':isUsernameInUse || (Username.touched && (Username.invalid || (!isUsernameValid)))}"
+                         for="username"
+                         class="form-label h6">
+                         Username
+                  </label>
+                  <input  [class]="{'is-invalid' : isUsernameInUse || (Username.touched && (Username.invalid || (!isUsernameValid)))}"
+                          class="form-control mb-1"
+                          type="text"
+                          placeholder="Username"
+                          id="username"
+                          name="username"
+                          #Username="ngModel"
+                          [(ngModel)]="userSignUpReq.username"
+                          required>
+                  <div *ngIf="Username.touched && Username.invalid">
+                    <span class="text-danger h6">Username can't be empty</span>
+                  </div>
+                  <div *ngIf="Username.touched && isUsernameOnlyUnderscores && (!Username.invalid)">
+                    <span class="text-danger h6">Username can't be only Underscores</span>
+                  </div>
+                  <div *ngIf="Username.touched && (!isUsernameOnlyContainsLettersNumbersAnd_) && (!Username.invalid)">
+                    <span class="text-danger h6">Username can only contain Alphabets, Number, & Underscores</span>
+                  </div>
+                  <div *ngIf="isUsernameInUse">
+                    <span class="text-danger h6">Username already in use</span>
+                  </div>
+                </div>
+
+                <!-- PASSWORD-->
+                <div class="mb-1">
+                  <label  [class]="{'text-danger' : (Pwd.touched && (Pwd.invalid || (!isPasswordValid)))}"
+                          for="password"
+                          class="form-label h6">
+                          Password
+                  </label>
+                  <input  [class]="{'is-invalid' : (Pwd.touched && (Pwd.invalid || (!isPasswordValid)))}"
+                          class="form-control mb-1"
+                          placeholder="Password"
+                          type="password"
+                          id="password"
+                          name="password"
+                          #Pwd="ngModel"
+                          [(ngModel)]="userSignUpReq.password"
+                          required>
+                  <div *ngIf="Pwd.touched && Pwd.invalid">
+                    <span class="text-danger h6">Password can't be empty</span>
+                  </div>
+                  <div *ngIf="Pwd.touched && (!isPasswordLengthValid) && (!Pwd.invalid)">
+                    <span class="text-danger h6">Password is too short, It should contains at least 8 characters</span>
+                  </div>
+                  <div *ngIf="Pwd.touched && (!isPasswordContainsAtLeastOneNumber) && (!Pwd.invalid)">
+                    <span class="text-danger h6">Password should contains at least 1 Number</span>
+                  </div>
+                  <div *ngIf="Pwd.touched && (!isPasswordContainsAtLeastOneSmallLetter) && (!Pwd.invalid)">
+                    <span class="text-danger h6">Password should contains at least 1 Small letter</span>
+                  </div>
+                  <div *ngIf="Pwd.touched && (!isPasswordContainsAtLeastOneSmallLetter) && (!Pwd.invalid)">
+                    <span class="text-danger h6">Password should contains at least 1 Small letter</span>
+                  </div>
+                  <div *ngIf="Pwd.touched && (!isPasswordContainsAtLeastOneCapitalLetter) && (!Pwd.invalid)">
+                    <span class="text-danger h6">Password should contains at least 1 Capital letter</span>
+                  </div>
+                  <div *ngIf="Pwd.touched && (!isPasswordContainsAtLeastOneSpecialCharacter) && (!Pwd.invalid)">
+                    <span class="text-danger h6">Password should contains at least 1 Special character</span>
+                  </div>
+                </div>
+
+                <!-- CONFIRM PASSWORD -->
+                <div class="mb-1">
+                  <label  [class]="{'text-danger' : (C_pwd.touched && (C_pwd.invalid || (!isPasswordsMatch)))}"
+                          for="confirm_password"
+                         class="form-label h6">
+                         Confirm Password
+                  </label>
+                  <input  [class]="{'is-invalid' : (C_pwd.touched && (C_pwd.invalid || (!isPasswordsMatch)))}"
+                          class="form-control mb-1"
+                          type="password"
+                          placeholder="Confirm Password"
+                          id="confirm_password"
+                          name="confirm_password"
+                          #C_pwd="ngModel"
+                          [(ngModel)]="confirmPassword"
+                          required>
+                  <div *ngIf="C_pwd.touched && (C_pwd.invalid || (!isPasswordsMatch))">
+                    <span class="text-danger h6">Confirm Password doesn't match with Password</span>
+                  </div>
+                </div>
+
+                <!-- SUBMIT BUTTON-->
+                <button class="btn btn-primary form-control mt-2"
+                        type="submit"
+                        [disabled]="(!isFormDataValid)">
+                        <span class="h5 text-dark">
+                          Create Account
+                        </span>
+                </button>
+          </form>
+            <!-- FORMS ENDS HERE -->
+        </div>
+    </div>
+</div>
