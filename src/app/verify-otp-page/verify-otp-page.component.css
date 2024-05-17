@@ -7,9 +7,17 @@
   height: inherit;
   background-color: rgba(0, 0, 0, 0.5);
 }
-#div {
+#div1 {
   width: 100%;
   height: 35%;
+}
+#div2 {
+  width: 100%;
+  height: 20%;
+}
+#div3 {
+  width: 100%;
+  height: auto;
 }
 label, span {
   color: white;
@@ -18,7 +26,7 @@ label, span {
   color: aqua;
 }
 .hover-effect {
-  cursor: pointer; /* Change cursor to hand pointer when hovering over <span> */
+  cursor: pointer;
 }
 .logo{
   height: 80%;

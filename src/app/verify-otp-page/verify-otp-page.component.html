@@ -1,32 +1,48 @@
 <div id="page-bg" class="p-lg-5 p-2 d-lg-flex justify-content-center">
   <div id="form-bg" class="col-lg-6 rounded-5 p-5">
-    <div id="div" class="d-flex flex-column align-items-center justify-content-center">
+    <div id="div1" class="d-flex flex-column align-items-center justify-content-center">
         <span class="display-6 "><b>OTP Verificaton</b></span>
           <img src="assets/logo.png" alt="Logo" class="logo">
     </div>
-    <div id="div" class="d-flex flex-column align-items-center justify-content-center">
-      <span class="h6">Your 6-Digit OTP is sent via the email ****12@gmail.com</span>
+    <div id="div2" class="d-flex flex-column align-items-center justify-content-center">
+      <span class="h6">Your 6-Digit OTP is sent via the email {{getMaskedEmail}}</span>
       <span>OTP Expires in</span>
       <div>
-        <span class="h2">05:00</span>
+        <span class="h2">{{ otpMinutes }}:{{ otpSeconds | number: '2.0-0' }}</span>
       </div>
     </div>
-    <div id="div" class="px-lg-5">
-        <div class="m-2 mt-0">
-          <label for="exampleInputPassword1" class="form-label">Enter your OTP</label>
-          <input  type="number"
+    <div id="div3" class="px-lg-5">
+      <div class="alert alert-danger" role="alert" *ngIf="timeOut">OTP Expired, try again!!</div>
+      <div class="alert alert-danger" role="alert" *ngIf="invalidOtp">Invalid OTP, Please try again</div>
+      <div class="alert alert-danger" role="alert" *ngIf="someThingWentWrong">Something went wrong</div>
+        <div class="m-2">
+          <label for="exampleInputPassword1"
+                 class="form-label h6"
+                 [class]="{'text-danger' :  OTP.touched && (!containsOnlyNumbers || OTP.invalid)}">
+                 Enter your OTP
+          </label>
+          <input  type="text"
                   class="form-control"
+                  [class]="{'is-invalid' :  OTP.touched && (!containsOnlyNumbers || OTP.invalid)}"
                   id="exampleInputPassword1"
-                  placeholder="* * * * * *">
+                  placeholder="* * * * * *"
+                  maxlength="6"
+                  name="otp"
+                  required
+                  #OTP="ngModel"
+                  (input)="validateOtp()"
+                  [(ngModel)]="otp">
         </div>
-        <div class="d-flex justify-content-center">
+        <div class="d-lg-flex justify-content-center">
           <button type="submit"
-                  class="btn btn-warning form-control m-2">
+                  class="btn btn-warning form-control m-2"
+                  (click)="resendOtp()">
                   <span class="h5 text-dark">Resent OTP</span>
           </button>
           <button type="submit"
                   class="btn btn-success form-control m-2"
-                  routerLink="/home">
+                  [disabled]="otpTimer === 0 || !containsOnlyNumbers || OTP.invalid"
+                  (click)="verifyOtp()">
                   <span class="h5 text-dark">Verify OTP</span>
           </button>
         </div>

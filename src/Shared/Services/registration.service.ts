@@ -19,6 +19,14 @@ export class RegistrationService {
   public registerUser( body: UserSignUpReq ): Observable<any> {
       return this.http.post<any>(`${this.BASE_URL}/register`,body);
   }
+
+  public sendOTP(email : string) : Observable<any> {
+    return this.http.post<any>(`${this.BASE_URL}/send-otp?email=${email}`,{});
+  }
+
+  public verifyOTP(email : string, otp : string) : Observable<any> {
+    return this.http.get<any>(`${this.BASE_URL}/verify-otp?otp=${otp}&email=${email}`);
+  }
 }
 
 export interface UserSignUpReq {

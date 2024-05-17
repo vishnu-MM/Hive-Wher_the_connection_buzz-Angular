@@ -24,24 +24,24 @@ export class LoginPageComponent implements OnDestroy{
 
   onSubmit() {
     this.loginSubscription = this.service
-      .login( this.username, this.password )
-      .subscribe({
-          next : (response)  => {
-              if (response.token) {
-                  localStorage.setItem("AUTH_TOKEN", response.token);
-                  console.log("LOGIN SUCCESS");
-                  this.isLoginFailed = false;
-                  this.userStore.dispatch(USER_LOGIN());
-              }
-              else {
-                  this.isLoginFailed = true;
-              }
-          },
-          error :(error: any) => {
-              this.isLoginFailed = true;
-              console.log("LOGIN FAILED");
-              console.error(error.message);
-          }
-      });
+        .login( this.username, this.password )
+        .subscribe({
+            next : (response)  => {
+                if (response.token) {
+                    localStorage.setItem("AUTH_TOKEN", response.token);
+                    this.isLoginFailed = false;
+                    this.userStore.dispatch(USER_LOGIN());
+                    this.router.navigate(['/home'])
+                }
+                else {
+                    this.isLoginFailed = true;
+                }
+            },
+            error :(error: any) => {
+                this.isLoginFailed = true;
+                console.log("LOGIN FAILED");
+                console.error(error.message);
+            }
+        });
   }
 }

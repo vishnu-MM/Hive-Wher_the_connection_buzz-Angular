@@ -1,6 +1,7 @@
 import {Component, OnDestroy} from '@angular/core';
 import {RegistrationService, UserSignUpReq} from "../../Shared/Services/registration.service";
 import {Subscription, zip} from "rxjs";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up-page',
@@ -15,14 +16,16 @@ export class SignUpPageComponent implements OnDestroy{
   isEmailInUseSub! : Subscription;
   isUsernameInUseSub! : Subscription;
   registrationSub! : Subscription;
+  sendOtpSub! : Subscription;
 
 
-  constructor(private signUpService : RegistrationService) {}
+  constructor(private signUpService : RegistrationService, private router : Router) {}
 
   ngOnDestroy(): void {
     if ( this.isEmailInUseSub !== undefined) this.isEmailInUseSub.unsubscribe()
     if ( this.isUsernameInUseSub !== undefined) this.isUsernameInUseSub.unsubscribe()
     if ( this.registrationSub !== undefined) this.registrationSub.unsubscribe();
+    if ( this.sendOtpSub !== undefined) this.sendOtpSub.unsubscribe();
   }
 
   onSubmit(): void {
@@ -39,13 +42,19 @@ export class SignUpPageComponent implements OnDestroy{
             .registerUser(this.userSignUpReq)
             .subscribe({
               next: (response) => {
-                localStorage.setItem("AUTH_TOKEN_TEMP", response.token);
-                console.log("REGISTRATION SUCCESS");
+                  localStorage.setItem("AUTH_TOKEN", response.token);
+                  localStorage.setItem("USER_EMAIL", this.userSignUpReq.email);
+                  console.log("REGISTRATION SUCCESS");
+                  this.sentOtp(this.userSignUpReq.email)
+                  this.router.navigate(['/verify-otp'])
               },
               error: (error) => {
                 console.error('Error while registering user:', error);
               }
             });
+          if (localStorage.getItem("AUTH_TOKEN_TEMP")) {
+            this.signUpService.sendOTP(this.userSignUpReq.email)
+          }
         }
         else if ( this.registrationSub !== undefined){
           this.registrationSub.unsubscribe();
@@ -54,6 +63,14 @@ export class SignUpPageComponent implements OnDestroy{
     });
   }
 
+  sentOtp(email : string) : void {
+    this.signUpService
+      .sendOTP(email)
+      .subscribe({
+          next: (response)=> console.log(response),
+          error: (error) => console.error(error)
+      })
+  }
 
 
   // VALIDATION LOGIC FOR EMAIL
