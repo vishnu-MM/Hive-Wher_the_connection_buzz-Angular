@@ -8,8 +8,9 @@ import {UserRoutingModule} from "./user-routing.module";
 import { PostsComponent } from './posts/posts.component';
 import { SinglePostComponent } from './single-post/single-post.component';
 import { CreatePostComponent } from './create-post/create-post.component';
-
-
+import { UpdateProfileComponent } from './update-profile/update-profile.component';
+import {FormsModule} from "@angular/forms";
+import {ImageCropperComponent} from "ngx-image-cropper";
 
 @NgModule({
   declarations: [
@@ -17,14 +18,17 @@ import { CreatePostComponent } from './create-post/create-post.component';
     SideNavBarComponent,
     PostsComponent,
     SinglePostComponent,
-    CreatePostComponent
+    CreatePostComponent,
+    UpdateProfileComponent
   ],
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    UserRoutingModule,
-    NgOptimizedImage
-  ]
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        UserRoutingModule,
+        NgOptimizedImage,
+        FormsModule,
+        ImageCropperComponent
+    ]
 })
 export class UserModule { }

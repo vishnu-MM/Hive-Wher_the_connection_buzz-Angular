@@ -1,0 +1,260 @@
+<div id="image-crop" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <image-cropper
+          #imageCropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="aspectRatio"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          (imageLoaded)="imageLoaded($event)"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+        ></image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="cropAndSave()">Crop & Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="imageInput" name="imageInput" hidden="hidden" (change)="onFileSelected($event)">
+
+<div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
+<article id="no-phone">
+        <div id="container">
+          <!-- IMAGES SECTION  -->
+          <div class="d-flex justify-content-center image-section">
+            <!--  COVER IMAGE SECTION  -->
+            <div [style.background-image]="'url(' + coverPicture + ')'"
+                 id="cover-image" class=" CoverPic d-flex justify-content-center">
+                 <div>
+                    <button (click)="triggerCoverImageUpload()" class="AddImgTxt btn  p-3 my-4 h6">
+                        <span>Add New Cover Image</span>
+                    </button>
+                 </div>
+            </div>
+            <!--  PROFILE IMAGE SECTION  -->
+            <div [style.background-image]="'url(' + profilePicture + ')'"
+                 class="ProfilePic d-flex justify-content-center align-items-center">
+                <div>
+                    <button (click)="triggerProfileImageUpload()" class="btn AddImgTxt h6">
+                        <mat-icon aria-hidden="false" aria-label="add" fontIcon="add" class="m-2 mt-3"></mat-icon>
+                    </button>
+                </div>
+            </div>
+          </div>
+          <!-- IMAGES SECTION ENDS  -->
+            <!-- FORM SECTION -->
+          <div class="form-div px-lg-5">
+            <div class="input-group mb-3 px-5 ">
+              <span class="input-group-text" id="basic-addon1.1">Name</span>
+              <input type="text"
+                     aria-describedby="basic-addon1.1"
+                     class="form-control"
+                     placeholder="Name"
+                     aria-label="name"
+                     name="name"
+                     #Name="ngModel"
+                     [(ngModel)]="user.name">
+            </div>
+            <div class="input-group mb-3 px-5">
+              <span class="input-group-text" id="basic-addon2.1">Username</span>
+              <input type="text"
+                     class="form-control"
+                     placeholder="Username"
+                     aria-label="Username"
+                     aria-describedby="basic-addon2"
+                     name="username"
+                     #Username="ngModel"
+                     [(ngModel)]="user.username">
+            </div>
+            <div class=" mb-3 px-5 ">
+              <label for="post-text-1" class="text-white h6">Bio</label>
+              <textarea id="post-text-1"
+                        class="form-control"
+                        rows="3"
+                        placeholder="About me"
+                        name="aboutMe"
+                        #AboutMe="ngModel"
+                        [(ngModel)]="user.aboutMe"></textarea>
+            </div>
+
+            <hr class="border border-white">
+            <p class="ms-4 text-white h5">Connect with Phone Number</p>
+
+            <div class="px-5 mb-2 row">
+              <div class="col-8  p-0 ps-3">
+                <div class="input-group">
+                  <span class="input-group-text" id="basic-addon3.1">Phone</span>
+                  <input type="text"
+                         class="form-control"
+                         placeholder="Phone"
+                         aria-label="phone"
+                         aria-describedby="basic-addon3.1"
+                         name="phone"
+                         #Phone="ngModel"
+                         [(ngModel)]="phone">
+                </div>
+              </div>
+              <div class="ps-1 col-4">
+                <button type="submit" class="form-control btn btn-success">
+                  Send OTP
+                </button>
+              </div>
+            </div>
+            <div class="px-5 mb-2 row">
+              <div class="col-8  p-0 ps-3">
+                <div class="input-group">
+                  <span class="input-group-text" id="basic-addon4.1">Phone</span>
+                  <input type="text"
+                         class="form-control"
+                         placeholder="Phone"
+                         aria-label="phone"
+                         aria-describedby="basic-addon3"
+                         name="otp"
+                         #OTP="ngModel"
+                         [(ngModel)]="otp">
+                </div>
+              </div>
+              <div class="ps-1 col-4">
+                <button type="submit" class="form-control btn btn-success">
+                  Send OTP
+                </button>
+              </div>
+            </div>
+
+            <hr class="border border-white">
+
+            <div class="py-2 px-5 d-flex justify-content-center">
+              <button type="submit"
+                      class="form-control btn btn-success me-1"
+                      (click)="updateProfile()">
+                Update
+              </button>
+              <button routerLink="/home" type="submit" class="form-control btn btn-warning ms-1">
+                Cancel
+              </button>
+            </div>
+          </div>
+            <!-- FORM SECTION ENDS-->
+        </div>
+</article>
+<!-- PHONE DESIGN -->
+<article id="phone">
+  <div class="d-flex justify-content-center image-section">
+    <!--  COVER IMAGE SECTION  -->
+    <div class="NoCoverPic CoverPic d-flex justify-content-center">
+      <div>
+        <button (click)="triggerCoverImageUpload()" class="AddImgTxt btn  p-3 my-4 h6">
+          <span>Add New Cover Image</span>
+        </button>
+      </div>
+    </div>
+    <!--  PROFILE IMAGE SECTION  -->
+    <div class="NoProfilePic ProfilePic d-flex justify-content-center align-items-center">
+      <div>
+        <button (click)="triggerProfileImageUpload()" class="btn AddImgTxt h6">
+          <mat-icon aria-hidden="false" aria-label="add" fontIcon="add" class="m-2 mt-3"></mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="image-bg"></div>
+  <div class="form-div px-lg-5">
+    <div class="input-group mb-3 px-4 ">
+      <span class="input-group-text" id="basic-addon1">Name</span>
+      <input type="text"
+             class="form-control"
+             placeholder="Name"
+             aria-label="name"
+             aria-describedby="basic-addon1"
+             name="namePh"
+             #NamePh="ngModel"
+             [(ngModel)]="user.name">
+    </div>
+    <div class="input-group mb-3 px-4">
+      <span class="input-group-text" id="basic-addon2">Username</span>
+      <input type="text"
+             class="form-control"
+             placeholder="Username"
+             aria-label="Username"
+             aria-describedby="basic-addon2"
+             name="usernamePh"
+             #UsernamePh="ngModel"
+             [(ngModel)]="user.username">
+    </div>
+    <div class=" mb-3 px-4 ">
+      <label for="post-text" class="text-white h6">Bio</label>
+      <textarea id="post-text"
+                class="form-control"
+                rows="3"
+                placeholder="About me"
+                name="aboutMePh"
+                #AboutMePh="ngModel"
+                [(ngModel)]="user.aboutMe"></textarea>
+    </div>
+
+    <hr class="border border-white">
+    <p class="ms-4 text-white h5">Connect with Phone Number</p>
+
+    <div class="px-4 mb-3">
+      <div class="mb-2">
+        <div class="input-group">
+          <span class="input-group-text" id="basic-addon3">Phone</span>
+          <input type="text"
+                 class="form-control"
+                 placeholder="Phone"
+                 aria-label="phone"
+                 aria-describedby="basic-addon3"
+                 name="phonePh"
+                 #PhonePh="ngModel"
+                 [(ngModel)]="phone">
+        </div>
+      </div>
+        <button type="submit" class="form-control btn btn-success">
+          Send OTP
+        </button>
+    </div>
+
+    <div class="px-4 mb-2">
+        <div class="mb-2">
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon4">Phone</span>
+                <input type="text"
+                       class="form-control"
+                       placeholder="Phone"
+                       aria-label="phone"
+                       aria-describedby="basic-addon3"
+                       name="otp"
+                       #OTP="ngModel"
+                       [(ngModel)]="otp">
+            </div>
+        </div>
+        <button type="submit" class="form-control btn btn-success">
+          Send OTP
+        </button>
+    </div>
+
+    <hr class="border border-white">
+
+    <div class="py-2 px-4 d-flex justify-content-center">
+      <button type="submit"
+              class="form-control btn btn-success me-1"
+              (click)="updateProfile()">
+        Update
+      </button>
+      <button routerLink="/home" type="submit" class="form-control btn btn-warning ms-1">
+        Cancel
+      </button>
+    </div>
+  </div>
+</article>

@@ -12,18 +12,24 @@ export class LoginPageComponent implements OnDestroy{
   username!: string;
   password!: string;
   isLoginFailed: boolean = false;
-  loginSubscription! : Subscription;
+  loginSub! : Subscription;
 
   constructor(private service : AppService,
               private router : Router,
               private userStore : Store<{UserStore : User}>) {}
 
   ngOnDestroy(): void {
-    if ( this.loginSubscription !== undefined ) this.loginSubscription.unsubscribe()
+    if ( this.loginSub !== undefined ) this.loginSub.unsubscribe()
+    this.userStore
+      .select('UserStore')
+      .subscribe(data => {
+        let user = {...data}
+        console.log(user)
+      });
   }
 
   onSubmit() {
-    this.loginSubscription = this.service
+    this.loginSub = this.service
         .login( this.username, this.password )
         .subscribe({
             next : (response)  => {

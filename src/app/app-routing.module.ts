@@ -23,7 +23,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {LoginPageComponent} from "./login-page/login-page.component";
 import { SignUpPageComponent } from './sign-up-page/sign-up-page.component';
-import { VerifyOtpPageComponent } from './verify-otp-page/verify-otp-page.component';
+import { VerifyOtpPageComponent } from './otp-verify-page/verify-otp-page.component';
 
 const routes: Routes = [
   { path: 'home', loadChildren: () => import('./user/user.module').then(m => m.UserModule) },
