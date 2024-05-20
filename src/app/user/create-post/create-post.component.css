@@ -29,3 +29,19 @@ input::file-selector-button:hover {
 span {
   color: darkgray;
 }
+mat-icon{
+  transform: scale(2);
+  color: darkgray;
+}
+mat-icon:hover{
+  transform: scale(2.5);
+  color: white;
+}
+.aspect-ratio-9-16{
+  width: 50%;
+  aspect-ratio: 9/16;
+}
+.aspect-ratio {
+  width: 100%;
+  object-fit: contain;
+}

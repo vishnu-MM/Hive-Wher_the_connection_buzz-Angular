@@ -4,12 +4,40 @@
   </div>
   <div class="mt-3">
     <label for="post-text" class="text-white">Share your thoughts here</label>
-    <textarea id="post-text" class="form-control" rows="3" placeholder="Enter your message"></textarea>
+    <textarea id="post-text"
+              class="form-control"
+              rows="3"
+              [(ngModel)]="description"
+              placeholder="Enter your message"></textarea>
   </div>
   <div class="mt-3">
-    <input type="file" class="form-control">
+    <button class="btn me-1" (click)="triggerImageUpload()">
+        <mat-icon
+            aria-hidden="false"
+            aria-label="add_photo_alternate"
+            fontIcon="add_photo_alternate">
+        </mat-icon>
+    </button>
+    <button class="btn ms-1">
+        <mat-icon
+            aria-hidden="false"
+            aria-label="smart_display"
+            fontIcon="smart_display">
+        </mat-icon>
+    </button>
+    <input type="file"
+           #inputField
+           id="imageInput"
+           hidden="hidden"
+           name="imageInput"
+           accept="image/png, image/jpeg"
+           (click)="inputField.value = ''"
+           (change)="onFileSelected($event)">
+  </div>
+  <div style="width: 100%;" *ngIf="file && file.type.startsWith('image/')">
+    <img [src]="previewImg" [class]="{'aspect-ratio-9-16' : aspectRatio===9/16, 'aspect-ratio': aspectRatio!==9/16}" >
   </div>
   <div class="mt-3">
-    <button class="form-control btn btn-success">Post</button>
+    <button class="form-control btn btn-success" (click)="post()">Post</button>
   </div>
 </div>

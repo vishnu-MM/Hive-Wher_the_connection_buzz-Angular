@@ -26,7 +26,13 @@
   </div>
 </div>
 
-<input type="file" id="imageInput" name="imageInput" hidden="hidden" (change)="onFileSelected($event)">
+<input type="file"
+       #inputField
+       id="imageInput"
+       name="imageInput"
+       hidden="hidden"
+       (change)="onFileSelected($event)"
+       (click)="inputField.value = ''">
 
 <div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
 <article id="no-phone">
@@ -67,8 +73,14 @@
                      [(ngModel)]="user.name">
             </div>
             <div class="input-group mb-3 px-5">
-              <span class="input-group-text" id="basic-addon2.1">Username</span>
+              <span class="input-group-text"
+                    [class]="{'bg-danger':isUsernameInUse || (Username.touched && (Username.invalid ||
+                    (!isUsernameValid)))}"
+                    id="basic-addon2.1">
+                    Username
+              </span>
               <input type="text"
+                     [class]="{'is-invalid' : isUsernameInUse || (Username.touched && (Username.invalid || (!isUsernameValid)))}"
                      class="form-control"
                      placeholder="Username"
                      aria-label="Username"
@@ -76,6 +88,20 @@
                      name="username"
                      #Username="ngModel"
                      [(ngModel)]="user.username">
+            </div>
+            <div class="input-group mb-3 px-5">
+                <div *ngIf="Username.touched && Username.invalid">
+                  <span class="text-danger h6">Username can't be empty</span>
+                </div>
+                <div *ngIf="Username.touched && isUsernameOnlyUnderscores && (!Username.invalid)">
+                  <span class="text-danger h6">Username can't be only Underscores</span>
+                </div>
+                <div *ngIf="Username.touched && (!isUsernameOnlyContainsLettersNumbersAnd_) && (!Username.invalid)">
+                  <span class="text-danger h6">Username can only contain Alphabets, Number, & Underscores</span>
+                </div>
+                <div *ngIf="isUsernameInUse">
+                  <span class="text-danger h6">Username already in use</span>
+                </div>
             </div>
             <div class=" mb-3 px-5 ">
               <label for="post-text-1" class="text-white h6">Bio</label>
@@ -88,49 +114,49 @@
                         [(ngModel)]="user.aboutMe"></textarea>
             </div>
 
-            <hr class="border border-white">
-            <p class="ms-4 text-white h5">Connect with Phone Number</p>
+<!--            <hr class="border border-white">-->
+<!--            <p class="ms-4 text-white h5">Connect with Phone Number</p>-->
 
-            <div class="px-5 mb-2 row">
-              <div class="col-8  p-0 ps-3">
-                <div class="input-group">
-                  <span class="input-group-text" id="basic-addon3.1">Phone</span>
-                  <input type="text"
-                         class="form-control"
-                         placeholder="Phone"
-                         aria-label="phone"
-                         aria-describedby="basic-addon3.1"
-                         name="phone"
-                         #Phone="ngModel"
-                         [(ngModel)]="phone">
-                </div>
-              </div>
-              <div class="ps-1 col-4">
-                <button type="submit" class="form-control btn btn-success">
-                  Send OTP
-                </button>
-              </div>
-            </div>
-            <div class="px-5 mb-2 row">
-              <div class="col-8  p-0 ps-3">
-                <div class="input-group">
-                  <span class="input-group-text" id="basic-addon4.1">Phone</span>
-                  <input type="text"
-                         class="form-control"
-                         placeholder="Phone"
-                         aria-label="phone"
-                         aria-describedby="basic-addon3"
-                         name="otp"
-                         #OTP="ngModel"
-                         [(ngModel)]="otp">
-                </div>
-              </div>
-              <div class="ps-1 col-4">
-                <button type="submit" class="form-control btn btn-success">
-                  Send OTP
-                </button>
-              </div>
-            </div>
+<!--            <div class="px-5 mb-2 row">-->
+<!--              <div class="col-8  p-0 ps-3">-->
+<!--                <div class="input-group">-->
+<!--                  <span class="input-group-text" id="basic-addon3.1">Phone</span>-->
+<!--                  <input type="text"-->
+<!--                         class="form-control"-->
+<!--                         placeholder="Phone"-->
+<!--                         aria-label="phone"-->
+<!--                         aria-describedby="basic-addon3.1"-->
+<!--                         name="phone"-->
+<!--                         #Phone="ngModel"-->
+<!--                         [(ngModel)]="phone">-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="ps-1 col-4">-->
+<!--                <button type="submit" class="form-control btn btn-success">-->
+<!--                  Send OTP-->
+<!--                </button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="px-5 mb-2 row">-->
+<!--              <div class="col-8  p-0 ps-3">-->
+<!--                <div class="input-group">-->
+<!--                  <span class="input-group-text" id="basic-addon4.1">Phone</span>-->
+<!--                  <input type="text"-->
+<!--                         class="form-control"-->
+<!--                         placeholder="Phone"-->
+<!--                         aria-label="phone"-->
+<!--                         aria-describedby="basic-addon3"-->
+<!--                         name="otp"-->
+<!--                         #OTP="ngModel"-->
+<!--                         [(ngModel)]="otp">-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="ps-1 col-4">-->
+<!--                <button type="submit" class="form-control btn btn-success">-->
+<!--                  Send OTP-->
+<!--                </button>-->
+<!--              </div>-->
+<!--            </div>-->
 
             <hr class="border border-white">
 

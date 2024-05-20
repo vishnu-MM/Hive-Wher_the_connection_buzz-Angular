@@ -3,10 +3,79 @@
 </div>
 
 <div class="d-flex flex-column-reverse flex-lg-row">
-  <div id="posts" class="">
-    <posts></posts>
-  </div>
-  <div id="create-post" class="">
-    <create-post></create-post>
+    <div id="posts" class=""> <posts></posts> </div>
+    <div id="create-post" class="">
+        <create-post
+          [file]="file"
+          [previewImg]="previewImg"
+          [aspectRatio]="aspectRatio"
+          (showModal)="showModal($event)">
+        </create-post>
+    </div>
+</div>
+
+<div id="image-crop" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <image-cropper
+              format="png"
+              #imageCropper
+              [aspectRatio]="aspectRatio"
+              [maintainAspectRatio]="true"
+              (cropperReady)="cropperReady()"
+              (imageLoaded)="imageLoaded($event)"
+              (imageCropped)="imageCropped($event)"
+              (loadImageFailed)="loadImageFailed()"
+              [imageChangedEvent]="imageChangedEvent">
+          </image-cropper>
+      </div>
+      <div class="d-flex flex-row border border-top px-4">
+          <button class="btn btn-dark form-control m-1 aspect-ratio"
+                  (click)="aspectRatio = 1">
+                  <mat-icon
+                      aria-hidden="false"
+                      aria-label="aspect_ratio"
+                      fontIcon="aspect_ratio">
+                  </mat-icon> <br>
+                  <span>1:1</span>
+          </button>
+          <button class="btn btn-dark form-control m-1 aspect-ratio"
+                  (click)="aspectRatio = 16/9">
+                  <mat-icon
+                      aria-hidden="false"
+                      aria-label="aspect_ratio"
+                      fontIcon="aspect_ratio">
+                  </mat-icon> <br>
+                  <span>16:9</span>
+          </button>
+          <button class="btn btn-dark form-control m-1 aspect-ratio"
+                  (click)="aspectRatio = 9/16">
+                  <mat-icon
+                      aria-hidden="false"
+                      aria-label="aspect_ratio"
+                      fontIcon="aspect_ratio">
+                  </mat-icon> <br>
+                  <span>9:16</span>
+          </button>
+          <button class="btn btn-dark form-control m-1 aspect-ratio"
+                  (click)="aspectRatio = 4/5">
+                  <mat-icon
+                      aria-hidden="false"
+                      aria-label="aspect_ratio"
+                      fontIcon="aspect_ratio">
+                  </mat-icon> <br>
+                  <span>4:5</span>
+          </button>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="cropAndSave()">Crop & Save</button>
+      </div>
+    </div>
   </div>
 </div>

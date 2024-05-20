@@ -1,26 +1,29 @@
 import {ImageCroppedEvent, ImageCropperComponent, LoadedImage} from "ngx-image-cropper";
-import {AfterContentInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {User} from "../../../Shared/Models/user.model";
 import {Store} from "@ngrx/store";
-import {Subscription} from "rxjs";
+import {Subscription, zip} from "rxjs";
 import {Modal} from 'bootstrap';
-import {USER_LOGIN} from "../../../Shared/Store/user.action";
+import {LOAD_USER, USER_LOGIN} from "../../../Shared/Store/user.action";
 import {ImageType, UserService} from "../../../Shared/Services/user.service";
-import {Image} from "../../../Shared/Models/image.model";
+import {RegistrationService} from "../../../Shared/Services/registration.service";
+import {Router} from "@angular/router";
 
 @Component({ selector: 'update-profile', templateUrl: './update-profile.component.html',  styleUrls: ['./update-profile.component.css'] })
 export class UpdateProfileComponent implements OnInit, OnDestroy{
   //USER DETAILS UPDATE
   user! :User;
+  currentUser! :User;
   phone! : string;
   otp!: any;
+  isUsernameInUse! : boolean;
 
   //SUBSCRIPTION CLOSING
   private userStoreSub! : Subscription;
   private uploadImgSub!: Subscription;
   private getProfileSub!: Subscription;
   private getCoverSub!: Subscription;
+  private registrationSub!: Subscription;
 
   //IMAGE
   imageChangedEvent: Event | null = null;
@@ -34,19 +37,24 @@ export class UpdateProfileComponent implements OnInit, OnDestroy{
 
   //CONSTRUCTOR & LIFE-CYCLE METHODS
   constructor(private userStore: Store<{ UserStore: User }>,
-              private userService : UserService) {}
+              private signUpService : RegistrationService,
+              private userService : UserService,
+              private router : Router) {}
 
   ngOnInit() : void {
       this.userStore.dispatch(USER_LOGIN());
       this.userStoreSub = this.userStore
-      .select('UserStore')
-      .subscribe(data => {
-        this.user = {...data}
-        if (this.user.id) {
-          this.getProfileImage();
-          this.getCoverImage();
-        }
-      });
+          .select('UserStore')
+          .subscribe(data => {
+              this.currentUser = {...data}
+              if (this.currentUser) {
+                  this.user = {...this.currentUser}
+              }
+              if (this.user.id) {
+                  this.getProfileImage();
+                  this.getCoverImage();
+              }
+          });
   }
 
   ngOnDestroy() : void {
@@ -62,8 +70,61 @@ export class UpdateProfileComponent implements OnInit, OnDestroy{
       this.user.name = this.user.name.trim();
       this.user.aboutMe = this.user.aboutMe.trim();
       this.user.username = this.user.username.trim();
-      this.user.phone = this.user.phone.trim();
+      // this.user.phone = this.user.phone.trim();
 
+      if (this.user.username === this.currentUser.username) {
+          this.userService
+              .updateProfile(this.user)
+              .subscribe({
+                next: (response) => {
+                    this.userStore.dispatch(LOAD_USER(response))
+                    this.router.navigate(['/home']);
+                },
+                error: (error) => {}
+              })
+      }
+      else {
+          this.registrationSub = zip(
+              this.signUpService.checkIsUsernameAvailable(this.user.username),
+          ).subscribe(([isUsernameInUse]) => {
+              this.isUsernameInUse = isUsernameInUse;
+              if (!isUsernameInUse) {
+                this.userService
+                  .updateProfile(this.user)
+                  .subscribe({
+                      next: (response) => {
+                          this.userStore.dispatch(LOAD_USER(response))
+                          this.router.navigate(['/home']);
+                      },
+                      error: (error) => console.log("ERROR HAPPENED WHILE UPDATING WITH NEW USERNAME")
+                  })
+              } else { this.registrationSub.unsubscribe(); }
+          })
+      }
+  }
+
+  // VALIDATION LOGIC FOR USERNAME
+
+  get isUsernameValid(): boolean {
+    return (
+      this.isUsernameLengthValid &&
+      (!this.isUsernameOnlyUnderscores) &&
+      this.isUsernameOnlyContainsLettersNumbersAnd_
+    )
+  }
+
+  get isUsernameOnlyContainsLettersNumbersAnd_(): boolean {
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    return usernameRegex.test(this.user.username);
+  }
+
+  get isUsernameOnlyUnderscores(): boolean {
+    const usernameOnlyUnderscoresRegex = /^_+$/;
+    return usernameOnlyUnderscoresRegex.test(this.user.username);
+  }
+
+  get isUsernameLengthValid(): boolean {
+    return this.user.username.length >= 4;
   }
 
 
@@ -106,7 +167,7 @@ export class UpdateProfileComponent implements OnInit, OnDestroy{
         if ( this.aspectRatio  === 4 ) imageType = ImageType.COVER_IMAGE;
 
         const file = this.blobToFile(this.imageCroppedEvent.blob!, `USER-${this.user.id}-${ImageType[imageType]}.png`);
-
+        console.log(file)
         this.uploadImgSub = this.userService
           .uploadProfileImage(file, imageType)
           .subscribe({
@@ -154,7 +215,6 @@ export class UpdateProfileComponent implements OnInit, OnDestroy{
         .subscribe({
           next: (response) => {
             this.profilePicture = 'data:image/png;base64,' + response.image
-            console.log(this.profilePicture + " pt")
           },
           error: (error) => {}
         })
