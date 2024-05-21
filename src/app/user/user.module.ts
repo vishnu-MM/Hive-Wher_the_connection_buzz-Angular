@@ -11,6 +11,8 @@ import { CreatePostComponent } from './create-post/create-post.component';
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
 import {FormsModule} from "@angular/forms";
 import {ImageCropperComponent} from "ngx-image-cropper";
+import { MyProfileComponent } from './my-profile/my-profile.component';
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import {ImageCropperComponent} from "ngx-image-cropper";
     PostsComponent,
     SinglePostComponent,
     CreatePostComponent,
-    UpdateProfileComponent
+    UpdateProfileComponent,
+    MyProfileComponent
   ],
     imports: [
         CommonModule,
@@ -28,7 +31,8 @@ import {ImageCropperComponent} from "ngx-image-cropper";
         UserRoutingModule,
         NgOptimizedImage,
         FormsModule,
-        ImageCropperComponent
+        ImageCropperComponent,
+        MatDialogModule
     ]
 })
 export class UserModule { }

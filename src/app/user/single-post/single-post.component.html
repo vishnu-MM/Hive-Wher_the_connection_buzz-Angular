@@ -1,17 +1,20 @@
 <div id="post" class="p-4 p-md-5">
   <div class="d-flex align-items-center">
-    <img src="assets/Screenshot%202024-04-29%20152644.png"
+    <img [src]="profilePicture"
          alt="user profile picture"
          class="rounded-5 border  border-black d-inline-block">
     <div class="ms-2">
-      <span class="h4 text-light">{{post.username}}</span> <br>
-      <span class="text-light">{{post.time}}</span>
+      <span class="h4 text-light">{{ name }}</span> <br>
+      <span class="text-light">@{{ username }} | </span>
+      <span class="text-light">{{ getRelativeTime }}</span>
     </div>
   </div>
   <div class="my-3">
     <span class="h6 text-light">{{post.description}}</span>
   </div>
-  <img src="assets/Naruto-Fan-Art-Wallpaper.jpg"
+  <img *ngIf="post.postType === PostType.IMAGE"
+       #postImageElement
+       [src]="postImage"
        alt="post image" class="post-image rounded"
        [class]="aspectRatioClass">
 </div>

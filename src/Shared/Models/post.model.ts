@@ -6,7 +6,7 @@ export interface Post {
   firstName: string;
   fileType: string;
   filePath: string;
-  createdAt: Timestamp<string>;
+  createdOn: Timestamp<string>;
   userId: number;
   isBlocked: boolean;
   postType: PostType;

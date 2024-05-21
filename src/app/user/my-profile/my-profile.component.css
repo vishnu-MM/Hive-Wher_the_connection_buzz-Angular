@@ -1,0 +1,115 @@
+/* HOME */
+#container1, #container2 {
+  background-color: #353535;
+}
+
+/* IMAGE */
+.image-section{ height: 20%; }
+.cover-pic {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+.profile-pic{
+  position: absolute;
+  /*top: 10%;*/
+  /*left: 10%;*/
+  /*height: 20%;*/
+  width: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+/* USER DETAILS DIV */
+.details-div {
+  position: relative;
+  top: 13%;
+  width: 100%;
+}
+p, span { color: white; }
+#friends-count {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  margin-bottom: 12px;
+}
+#friends-count > div {
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 5;
+  pointer-events: auto;
+}
+.post{ aspect-ratio: 1; }
+.settings-item {
+  background-color: #353535;
+}
+.settings-item p{
+  font-size: small;
+  background-color: #353535;
+}
+
+/* Phones (up to 600px) */
+@media only screen and (max-width: 600px) {
+  #side-nav, #no-phone { display: none; }
+}
+/* Tablets */
+@media only screen and (min-width: 601px) and (max-width: 1030px) {
+  #side-nav, #no-phone { display: none; }
+}
+/* LAPTOP HALF PORTION */
+@media only screen and (min-width: 1030px) and (max-width: 1495px) {
+  #side-nav {
+    position: fixed;
+    height: 100%;
+  }
+  article {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    overflow: hidden;
+  }
+  #container1, #container2 {
+    min-height: 100%;
+    width: 45%;
+    margin : 3px;
+    background-color: #353535;
+  }
+  .profile-pic{
+    top: 13%;
+    left: 12%;
+    height: 15%;
+  }
+}
+/*BIGGER SCREEN */
+@media only screen and (min-width: 1495px) {
+  #side-nav {
+    position: fixed;
+    height: 100%;
+  }
+  article {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  article {
+    display: flex;
+    justify-content: end;
+  }
+  #container1, #container2 {
+    min-height: 90%;
+    width: 46%;
+    margin : 5px;
+    background-color: #353535;
+  }
+  .profile-pic{
+    top: 12%;
+    left: 10%;
+    height: 18%;
+  }
+  #post-group{}
+ }

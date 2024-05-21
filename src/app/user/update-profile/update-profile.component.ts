@@ -49,6 +49,7 @@ export class UpdateProfileComponent implements OnInit, OnDestroy{
               this.currentUser = {...data}
               if (this.currentUser) {
                   this.user = {...this.currentUser}
+                  console.log(this.user)
               }
               if (this.user.id) {
                   this.getProfileImage();
@@ -67,9 +68,15 @@ export class UpdateProfileComponent implements OnInit, OnDestroy{
 
   //PROFILE DATA'S RELATED
   updateProfile() {
+    if (this.user.name) {
       this.user.name = this.user.name.trim();
+    }
+    if (this.user.aboutMe) {
       this.user.aboutMe = this.user.aboutMe.trim();
+    }
+    if (this.user.username) {
       this.user.username = this.user.username.trim();
+    }
       // this.user.phone = this.user.phone.trim();
 
       if (this.user.username === this.currentUser.username) {
@@ -208,7 +215,6 @@ export class UpdateProfileComponent implements OnInit, OnDestroy{
   }
 
   getProfileImage() {
-    console.log("getting")
     this.profilePicture = "assets/LoginSignUpBg.jpg"
     this.getProfileSub = this.userService
         .getProfileImage(this.user.id!, ImageType.PROFILE_IMAGE)

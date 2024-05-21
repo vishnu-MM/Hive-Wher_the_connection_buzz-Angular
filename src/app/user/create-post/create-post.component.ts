@@ -59,10 +59,15 @@ export class CreatePostComponent implements OnInit, OnDestroy{
                   postType: PostType.IMAGE,
                   userId: this.currentUser.id!
               }
-            console.log(postCreation)
             this.postServiceSub = this.postService
               .createPost(this.file, postCreation)
-              .subscribe();
+              .subscribe({
+                next: value => {
+                  this.description = '';
+                  this.previewImg = '';
+                },
+                error: error => {}
+              });
           }
           else if (this.file.type.startsWith('video/')) {
               let postCreation : PostCreation = {

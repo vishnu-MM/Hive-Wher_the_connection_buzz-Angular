@@ -22,7 +22,7 @@ export class UserService {
   }
 
   // /profile/{id} : Get
-  public getProfileById(id : string) : Observable<User> {
+  public getProfileById(id : number) : Observable<User> {
     const headers = this.authHeader();
     return this.http.get<User>(`${this.BASE_URL}/profile/${id}`, { headers });
   }

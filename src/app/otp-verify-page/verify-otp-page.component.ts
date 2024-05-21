@@ -72,7 +72,7 @@ export class VerifyOtpPageComponent implements OnInit, OnDestroy {
                 if (response === "SUCCESS") {
                   localStorage.removeItem("USER_EMAIL");
                   this.userStore.dispatch(USER_LOGIN());
-                  this.router.navigate(['/home'])
+                  this.router.navigate(['/u/profile/update'])
                 } else if (response === "TIME_OUT") {
                   this.timeOut = true;
                 } else if (response === "INVALID_OTP") {

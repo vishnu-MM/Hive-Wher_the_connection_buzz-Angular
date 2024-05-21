@@ -1,22 +1,27 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {PostService} from "../../../Shared/Services/post.service";
+import {Subscription} from "rxjs";
+import {Post} from "../../../Shared/Models/post.model";
 
-export type Post = {
-  username: string;
-  time: string;
-  description: string;
-};
 
 @Component({
   selector: 'posts',
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.css']
 })
-export class PostsComponent {
+export class PostsComponent implements OnInit {
+  userStoreSub! : Subscription;
+  randomPosts! : Post[];
 
-  // Use the Post type for the posts array
-  posts: Post[] = [
-    { username: "Vishnu", time: "45 minutes ago", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-    { username: "Vishnu", time: "45 minutes ago", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." }
-  ];
+  constructor(private postService : PostService) {}
+
+  ngOnInit() : void {
+      this.userStoreSub = this.postService
+        .getRandomPosts()
+        .subscribe({
+            next: data => { this.randomPosts = data; },
+            error : err => { console.log(err) }
+        })
+  }
 
 }

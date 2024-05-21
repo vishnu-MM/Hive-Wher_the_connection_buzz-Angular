@@ -1,0 +1,76 @@
+<ng-template #postModal>
+  <div class="d-flex justify-content-between align-items-center  m-3">
+      <h2 mat-dialog-title class="m-0">Settings</h2>
+     <button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
+       <mat-icon fontIcon="close"></mat-icon>
+     </button>
+  </div>
+  <mat-dialog-content>
+      <div>
+        <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="/u/profile/update" (click)="closeModal()">
+            <h2 class="m-0 text-light">Edit My Profile</h2>
+            <p class="p-0 m-0 fw-lighter">Update Your Details</p>
+        </div>
+        <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
+            <h2 class="m-0 text-light">Forgot Password</h2>
+            <p class="p-0 m-0 fw-lighter">Update your forgotten password from here</p>
+        </div>
+        <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
+            <h2 class="m-0 text-light">Delete My account</h2>
+            <p class="p-0 m-0 fw-lighter">Permanently remove your account</p>
+        </div>
+      </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+      <button class="btn btn-dark form-control"
+              (click)="logout()">
+        <span class="text-danger">Log Out</span>
+      </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
+<article id="no-phone">
+    <div id="container1" class="rounded-4">
+        <!-- IMAGES SECTION  -->
+        <div class="d-flex image-section rounded-4">
+            <div class="cover-pic d-flex justify-content-center rounded-4"
+                 [style.background-image]="'url(' + coverPicture + ')'"></div>
+            <div class="profile-pic d-flex justify-content-center align-items-center"
+                 [style.background-image]="'url(' + profilePicture + ')'"></div>
+        </div>
+        <!-- IMAGES SECTION ENDS  -->
+        <div class="d-flex justify-content-end mt-2 me-3 mb-0">
+            <button class="btn btn-light d-flex justify-content-center p-3 rounded-5"
+                    (click)="openModal()">
+                <mat-icon fontIcon="settings"></mat-icon>
+            </button>
+        </div>
+        <!-- USER DETAILS -->
+        <div class="details-div px-5">
+            <p class="h1 mb-0">{{ currentUser.name }}</p>
+            <p class="h6 fw-lighter"> @{{ currentUser.username }}</p>
+            <div id="friends-count" class="d-inline-block rounded-4" >
+              <div class="py-2 px-4 rounded-4">
+                <p class="h5 mb-0 text-light">999 Friends</p>
+              </div>
+            </div>
+            <p class="h5 fw-lighter">{{ currentUser.aboutMe}}</p>
+        </div>
+        <!-- USER DETAILS ENDS-->
+    </div>
+
+    <div id="container2" class="rounded-4">
+        <h1 class="ms-5 my-4 text-light fw-bold">Your Posts</h1>
+        <hr class="border">
+        <div id="post-group" class="container">
+            <div class="row">
+                <div class="post bg-black border col-4"></div>
+                <div class="post bg-black border col-4"></div>
+                <div class="post bg-black border col-4"></div>
+                <div class="post bg-black border col-4"></div>
+
+            </div>
+        </div>
+    </div>
+</article>

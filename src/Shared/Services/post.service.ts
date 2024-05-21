@@ -1,7 +1,8 @@
-import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Post, PostCreation} from "../Models/post.model";
+import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
+import {Image} from "../Models/image.model";
 
 @Injectable({ providedIn: 'root'})
 export class PostService {
@@ -18,12 +19,22 @@ export class PostService {
     const headers = this.authHeader();
 
     const formData: FormData = new FormData();
-    formData.append('file', file, file.name);  // Append file
-    formData.append('description', postRequest.description);  // Append description
-    formData.append('postType', postRequest.postType.toString());  // Append postType
-    formData.append('userId', postRequest.userId.toString());  // Append userId
+    formData.append('file', file, file.name);
+    formData.append('description', postRequest.description);
+    formData.append('postType', postRequest.postType.toString());
+    formData.append('userId', postRequest.userId.toString());
 
     return this.http.post<Post>(`${this.BASE_URL}/create`, formData, { headers });
+  }
+
+  public getRandomPosts() : Observable<Post[]> {
+    const headers = this.authHeader();
+    return this.http.get<Post[]>(`${this.BASE_URL}/random?pageNo=0&pageSize=20`, { headers });
+  }
+
+  public getImage(postId: number): Observable<Blob> {
+    const headers = this.authHeader();
+    return this.http.get(`${this.BASE_URL}/files/${postId}`, { headers, responseType: 'blob' });
   }
 
 // @GetMapping("single-post")
@@ -31,27 +42,10 @@ export class PostService {
 //   return new ResponseEntity<>(service.getPost(postId), HttpStatus.OK);
 // }
 //
-// @GetMapping("/files/{postId}")
-// public ResponseEntity<byte[]> getImage(@PathVariable("postId") Long postId ) {
-//   try {
-//     byte[] imageBytes = service.getPostFile(postId);
-//     HttpHeaders headers = new HttpHeaders();
-//     headers.setContentType(MediaType.IMAGE_PNG);
-//     return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-//   } catch (IOException e) {
-//     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//   }
-// }
 //
 // @GetMapping("")
 // public ResponseEntity<List<PostDTO>> getPostsForUser(@RequestParam("postId") Long userId){
 //   return new ResponseEntity<>(service.getPostsForUser(userId), HttpStatus.OK);
-// }
-//
-// @GetMapping("random")
-// public ResponseEntity<List<PostDTO>> getRandomPosts(@RequestParam("pageNo") Integer pageNo,
-// @RequestParam("pageSize") Integer pageSize) {
-//   return ResponseEntity.ok( service.getRandomPosts(pageNo,pageSize) );
 // }
 //
 // @DeleteMapping("delete")
@@ -133,3 +127,4 @@ export class PostService {
 //   return ResponseEntity.ok(service.likeCount(postId));
 // }
 }
+

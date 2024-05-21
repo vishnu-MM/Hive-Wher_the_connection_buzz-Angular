@@ -7,7 +7,7 @@ import { UserModule } from "./user/user.module";
 import { LoginPageComponent } from './login-page/login-page.component';
 import { SignUpPageComponent } from './sign-up-page/sign-up-page.component';
 import { VerifyOtpPageComponent } from './otp-verify-page/verify-otp-page.component';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
