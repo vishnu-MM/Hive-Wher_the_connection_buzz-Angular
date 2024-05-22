@@ -43,12 +43,12 @@ export class LoginPageComponent implements OnDestroy{
                       .select('UserStore')
                       .subscribe(data => {
                         let currentUser : User = {...data}
-                        localStorage.setItem("CURRENT_USER", JSON.stringify(currentUser));
-
-                        if (currentUser.role === Role.USER) {
+                        localStorage.setItem("CURRENT_USER", JSON.stringify(data));
+                        console.log(data)
+                        if (data.role === Role.USER) {
                             this.router.navigate(['/u/home'])
                         }
-                        else if (currentUser.role === Role.ADMIN) {
+                        else if (data.role === Role.ADMIN) {
                             this.router.navigate(['/a/dashboard'])
                         }
                         else {

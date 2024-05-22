@@ -1,0 +1,75 @@
+<nav id="side-nav-bar">
+  <div id="logo-div" class="d-flex justify-content-center align-items-center">
+    <span class="display-4 text-light">H<span class="text-warning">i</span>ve</span>
+  </div>
+
+  <div id="nav-links" class="mt-1">
+    <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/dashboard">
+      <span class="h5 ms-4 text-light">Dashboard</span>
+    </div>
+    <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/users">
+      <span class="h5 ms-4 text-light">Users</span>
+    </div>
+    <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/posts">
+      <span class="h5 ms-4 text-light">Content Monitor</span>
+    </div>
+    <div class="nav-link d-flex justify-content-start border-black py-4 m-1">
+      <span class="h5 ms-4 text-light">Reports & Complaints</span>
+    </div>
+    <div class="nav-link d-flex justify-content-start border-black py-4 m-1">
+      <span class="h5 ms-4 text-light">Profile</span>
+    </div>
+  </div>
+
+  <div id="logout-div" class="d-flex justify-content-center align-items-center">
+    <span class="h4 m-0 text-danger">Log out</span>
+  </div>
+</nav>
+
+<article>
+  <!--  TOP NAV BAR STARTS HERE -->
+  <div id="top-nav-bar-aligner" class="d-flex justify-content-end">
+    <nav id="top-nav-bar" class="d-flex justify-content-between align-items-center px-5">
+      <span class="m-0 display-6">Content Management</span>
+      <div id="search" style="width: 30%; height: 60%"
+           class="form-control rounded-5 p-0 d-flex  align-items-center">
+        <input type="text" id="search-input" name="search" placeholder="Search here"
+               class="form-control rounded-5 d-flex justify-content-between align-items-center">
+        <button type="button"
+                id="search-btn"
+                (click)="search()"
+                class="btn me-1 rounded-5 d-flex justify-content-center align-items-center p-2">
+          <mat-icon aria-hidden="false"
+                    aria-label="search"
+                    fontIcon="search"
+                    style="background: #023047; color: white">
+          </mat-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+  <!--  TOP NAV BAR ENDS HERE -->
+
+  <!--  MAIN CONTENT SPACE STARTS HERE -->
+  <section class="d-flex justify-content-end align-items-center">
+    <div id="content-div" class="me-4 card">
+      <div class="content-header rounded"></div>
+      <div class="content-body border border-end-0 border-start-0 container">
+        <div class="row">
+          <div class="post card col-3 d-flex justify-content-between">
+            <div class="px-1 pt-3">
+              user name and time
+            </div>
+            <img src="assets/1714454741943.jpg">
+            <div class="px-1 pb-3">
+              description
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content-footer rounded">
+      </div>
+    </div>
+  </section>
+  <!--  MAIN CONTENT SPACE ENDS HERE -->
+</article>

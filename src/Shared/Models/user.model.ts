@@ -9,4 +9,14 @@ export interface User {
   aboutMe : string;
   role : Role;
   joinDate : Date;
+  isBlocked : boolean;
+}
+export interface UserPage{
+  contents : User[];
+  pageNo : number;
+  pageSize : number;
+  totalElements : number;
+  totalPages : number;
+  isLast : boolean;
+  hasNext : boolean;
 }

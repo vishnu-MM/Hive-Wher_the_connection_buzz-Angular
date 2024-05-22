@@ -25,6 +25,7 @@ article {
 }
 .nav-link {
     width: 90%;
+  cursor: pointer;
 }
 #logout-div {
     height: 10%;

@@ -9,5 +9,6 @@ export const UserState: User = {
   phone: "",
   aboutMe: "",
   role: Role.USER,
-  joinDate: new Date()
+  joinDate: new Date(),
+  isBlocked : false
 };

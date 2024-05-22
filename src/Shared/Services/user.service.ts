@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {User} from "../Models/user.model";
+import {User, UserPage} from "../Models/user.model";
 import {Image} from "../Models/image.model";
 
 @Injectable({ providedIn: 'root'})
@@ -58,6 +58,11 @@ export class UserService {
   public getUserCount() : Observable<Number> {
     const headers = this.authHeader();
     return this.http.get<Number>(`${this.BASE_URL}/user-count`, { headers });
+  }
+
+  public getAllUsers(pageNo: number) : Observable<UserPage> {
+    const headers = this.authHeader();
+    return this.http.get<UserPage>(`${this.BASE_URL}/all-users?pageNo=${pageNo}&pageSize=9`,{ headers });
   }
 }
 
