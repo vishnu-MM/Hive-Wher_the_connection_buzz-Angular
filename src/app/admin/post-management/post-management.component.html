@@ -21,8 +21,8 @@
     </div>
   </div>
 
-  <div id="logout-div" class="d-flex justify-content-center align-items-center">
-    <span class="h4 m-0 text-danger">Log out</span>
+  <div id="logout-div" class="d-flex justify-content-center align-items-center" (click)="logout()">
+    <span class="h4 m-0 text-danger" style="cursor: pointer;">Log out</span>
   </div>
 </nav>
 
@@ -52,22 +52,36 @@
 
   <!--  MAIN CONTENT SPACE STARTS HERE -->
   <section class="d-flex justify-content-end align-items-center">
-    <div id="content-div" class="me-4 card">
-      <div class="content-header rounded"></div>
-      <div class="content-body border border-end-0 border-start-0 container">
+    <div id="content-div" class="m-4 card">
+      <div class="content-header rounded d-flex flex-row-reverse align-items-center p-3">
+          <button type="button"
+                  [disabled]="postPage.isLast"
+                  class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
+                  (click)="pageNo = pageNo +1; loadPosts()">
+            <mat-icon aria-hidden="false"
+                      aria-label="arrow_forward_ios"
+                      style="background: #023047; color: white"
+                      fontIcon="arrow_forward_ios">
+            </mat-icon>
+          </button>
+          <div>{{pageNo+1}} out of {{postPage.totalPages}}</div>
+          <button type="button"
+                  [disabled]="pageNo <= 0"
+                  class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
+                  (click)="pageNo = pageNo -1; loadPosts()">
+            <mat-icon aria-hidden="false"
+                      aria-label="arrow_back_ios"
+                      style="background: #023047; color: white"
+                      fontIcon="arrow_back_ios">
+            </mat-icon>
+          </button>
+      </div>
+      <div class="content-body border border-end-0 border-start-0 container py-1">
         <div class="row">
-          <div class="post card col-3 d-flex justify-content-between">
-            <div class="px-1 pt-3">
-              user name and time
-            </div>
-            <img src="assets/1714454741943.jpg">
-            <div class="px-1 pb-3">
-              description
-            </div>
+          <div class="col-3 my-2" *ngFor="let post of posts">
+              <post [post]="post"></post>
           </div>
         </div>
-      </div>
-      <div class="content-footer rounded">
       </div>
     </div>
   </section>

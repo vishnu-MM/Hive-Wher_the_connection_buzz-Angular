@@ -15,15 +15,18 @@ import { MyProfileComponent } from './my-profile/my-profile.component';
 import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
-  declarations: [
-    HomeComponent,
-    SideNavBarComponent,
-    PostsComponent,
-    SinglePostComponent,
-    CreatePostComponent,
-    UpdateProfileComponent,
-    MyProfileComponent
-  ],
+    declarations: [
+        HomeComponent,
+        SideNavBarComponent,
+        PostsComponent,
+        SinglePostComponent,
+        CreatePostComponent,
+        UpdateProfileComponent,
+        MyProfileComponent
+    ],
+    exports: [
+        PostsComponent
+    ],
     imports: [
         CommonModule,
         MatButtonModule,

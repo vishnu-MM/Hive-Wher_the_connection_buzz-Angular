@@ -1,4 +1,5 @@
 import {Timestamp} from "rxjs";
+import {User} from "./user.model";
 
 export interface Post {
   id: number;
@@ -17,3 +18,12 @@ export interface PostCreation {
   postType: PostType;
 }
 export enum PostType {  IMAGE="IMAGE",VIDEO="VIDEO",TEXT_ONLY="TEXT_ONLY" }
+export interface PostPage{
+  contents : Post[];
+  pageNo : number;
+  pageSize : number;
+  totalElements : number;
+  totalPages : number;
+  isLast : boolean;
+  hasNext : boolean;
+}

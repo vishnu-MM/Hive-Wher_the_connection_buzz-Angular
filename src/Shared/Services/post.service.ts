@@ -1,8 +1,9 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Post, PostCreation} from "../Models/post.model";
+import {Post, PostCreation, PostPage} from "../Models/post.model";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {Image} from "../Models/image.model";
+import {UserPage} from "../Models/user.model";
 
 @Injectable({ providedIn: 'root'})
 export class PostService {
@@ -35,6 +36,11 @@ export class PostService {
   public getImage(postId: number): Observable<Blob> {
     const headers = this.authHeader();
     return this.http.get(`${this.BASE_URL}/files/${postId}`, { headers, responseType: 'blob' });
+  }
+
+  public getAllPosts(pageNo: number) : Observable<PostPage> {
+    const headers = this.authHeader();
+    return this.http.get<PostPage>(`${this.BASE_URL}/all-posts?pageNo=${pageNo}&pageSize=8`,{ headers });
   }
 
 // @GetMapping("single-post")
