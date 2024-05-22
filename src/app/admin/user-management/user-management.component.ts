@@ -13,6 +13,7 @@ import {Router} from "@angular/router";
 export class UserManagementComponent implements OnInit, OnDestroy{
   pageNo : number = 0;
   totalPages : number = 0;
+  isLast : boolean = false;
   userPage! : UserPage;
   users : User[] = [];
   private getAllUserSUb!: Subscription;
@@ -42,6 +43,7 @@ export class UserManagementComponent implements OnInit, OnDestroy{
           this.userPage = value
           this.users = value.contents;
           this.totalPages = value.totalPages;
+          this.isLast = value.isLast;
         },
         error: err => { console.log("Some thing went wrong while fetching user details") }
       })

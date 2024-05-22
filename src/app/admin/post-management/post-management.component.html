@@ -55,7 +55,7 @@
     <div id="content-div" class="m-4 card">
       <div class="content-header rounded d-flex flex-row-reverse align-items-center p-3">
           <button type="button"
-                  [disabled]="postPage.isLast"
+                  [disabled]="isLast"
                   class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
                   (click)="pageNo = pageNo +1; loadPosts()">
             <mat-icon aria-hidden="false"
@@ -64,7 +64,7 @@
                       fontIcon="arrow_forward_ios">
             </mat-icon>
           </button>
-          <div>{{pageNo+1}} out of {{postPage.totalPages}}</div>
+          <div>{{pageNo+1}} out of {{totalPages}}</div>
           <button type="button"
                   [disabled]="pageNo <= 0"
                   class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"

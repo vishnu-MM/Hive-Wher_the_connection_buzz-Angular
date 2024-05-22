@@ -3,7 +3,6 @@ import {AdminService} from "../../../Shared/Services/admin.services";
 import {Router} from "@angular/router";
 import {PostService} from "../../../Shared/Services/post.service";
 import {Subscription} from "rxjs";
-import {UserPage} from "../../../Shared/Models/user.model";
 import {Post, PostPage} from "../../../Shared/Models/post.model";
 
 @Component({
@@ -14,6 +13,7 @@ import {Post, PostPage} from "../../../Shared/Models/post.model";
 export class PostManagementComponent implements OnInit, OnDestroy{
   pageNo : number = 0;
   totalPages : number = 0;
+  isLast : boolean = false;
   postPage! : PostPage;
   posts : Post[] = [];
   private loadPostsSub!: Subscription;
@@ -42,6 +42,7 @@ export class PostManagementComponent implements OnInit, OnDestroy{
             this.postPage = value
             this.posts = value.contents;
             this.totalPages = value.totalPages;
+            this.isLast = value.isLast;
             console.log(value)
           },
           error: err => { console.log("Some thing went wrong while fetching user details") }

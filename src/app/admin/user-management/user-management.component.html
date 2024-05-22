@@ -53,6 +53,7 @@
   <!--  MAIN CONTENT SPACE STARTS HERE -->
   <section class="d-flex justify-content-end align-items-center">
       <div id="content-div" class="me-4 card">
+        <div class="content-footer rounded"></div>
           <div class="content-body border border-end-0 border-start-0 px-5 py-2">
             <table class="table">
                 <thead>
@@ -110,10 +111,10 @@
                       </mat-icon>
               </button>
             </div>
-            <div>{{pageNo+1}} out of {{userPage.totalPages}}</div>
+            <div>{{pageNo+1}} out of {{totalPages}}</div>
             <div>
               <button type="button"
-                      [disabled]="userPage.isLast"
+                      [disabled]="isLast"
                       class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
                       (click)="pageNo = pageNo +1; loadUserList()">
                       <mat-icon aria-hidden="false"
