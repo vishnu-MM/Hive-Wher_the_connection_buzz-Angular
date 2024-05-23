@@ -17,6 +17,7 @@ export class SignUpPageComponent implements OnDestroy{
   isUsernameInUseSub! : Subscription;
   registrationSub! : Subscription;
   sendOtpSub! : Subscription;
+  isUserSubmit: boolean = false;
 
 
   constructor(private signUpService : RegistrationService, private router : Router) {}
@@ -28,10 +29,18 @@ export class SignUpPageComponent implements OnDestroy{
     if ( this.sendOtpSub !== undefined) this.sendOtpSub.unsubscribe();
   }
 
-  onSubmit(): void {
+
+  onSubmit() {
+      this.isEmailInUse = false;
+      this.isUsernameInUse = false;
+      this.isUserSubmit = true;
+      if (this.isFormDataValid) this.register();
+  }
+
+  register(): void {
     this.registrationSub = zip(
-        this.signUpService.checkIsUsernameAvailable(this.userSignUpReq.username),
-        this.signUpService.checkIsEmailAvailable(this.userSignUpReq.email)
+        this.signUpService.checkIsEmailAvailable(this.userSignUpReq.email),
+        this.signUpService.checkIsUsernameAvailable(this.userSignUpReq.username)
     )
     .subscribe(([isEmailInUse, isUsernameInUse]) => {
         this.isEmailInUse = isEmailInUse;

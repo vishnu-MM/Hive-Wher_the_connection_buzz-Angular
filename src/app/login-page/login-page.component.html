@@ -15,27 +15,27 @@
           <div class="mb-3">
             <label for="exampleInputEmail1"
                    class="form-label"
-                   [class]="{'text-danger' : (Email.invalid && Email.touched)}">
+                   [class]="{'text-danger' : ((Email.invalid && Email.touched)  || loginClickedWithNoUsername)}">
                    Username or Email
             </label>
             <input  type="email"
                     name="email"
                     id="exampleInputEmail1"
                     class="form-control"
-                    [class]="{'is-invalid' : (Email.invalid && Email.touched) }"
+                    [class]="{'is-invalid' : ((Email.invalid && Email.touched)  || loginClickedWithNoUsername)}"
                     placeholder="Username or Email"
                     required
                     #Email="ngModel"
                     [(ngModel)]="username">
-            <span *ngIf="(Email.invalid && Email.touched)"
-                  [class]="{'text-danger' : (Email.invalid && Email.touched)}">
+            <span *ngIf="((Email.invalid && Email.touched)  || loginClickedWithNoUsername)"
+                  [class]="{'text-danger' : ((Email.invalid && Email.touched)  || loginClickedWithNoUsername)}">
                   Email can't be empty
             </span>
           </div>
           <div class="mb-3">
             <label for="exampleInputPassword1"
                   class="form-label"
-                  [class]="{'text-danger' : (Password.invalid && Password.touched)}">
+                  [class]="{'text-danger' : ((Password.invalid && Password.touched) || loginClickedWithNoPassword)}">
                   Password
             </label>
             <input  type="password"
@@ -46,15 +46,14 @@
                     required
                     #Password="ngModel"
                     [(ngModel)]="password">
-              <span *ngIf="(Password.invalid && Password.touched)"
-                    [class]="{'text-danger' : (Password.invalid && Password.touched)}">
+              <span *ngIf=" ((Password.invalid && Password.touched) || loginClickedWithNoPassword)"
+                    [class]="{'text-danger' :  ((Password.invalid && Password.touched) || loginClickedWithNoPassword)}">
                     Password can't be empty
               </span>
             </div>
           <span class="hover-effect h6"><u>forgot password?</u></span>
           <button type="submit"
-                  class="btn btn-info form-control mt-3"
-                  [disabled]="LoginForm.invalid">
+                  class="btn btn-info form-control mt-3">
                   <span class="h5 text-black">Login</span>
           </button>
         </form>

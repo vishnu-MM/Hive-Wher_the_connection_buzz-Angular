@@ -53,6 +53,7 @@ export class HomeComponent implements OnInit{
       this.convertFileToBase64(this.file).then(base64 => {
         this.previewImg = base64;
       });
+      console.log(this.aspectRatio)
     }
   }
 

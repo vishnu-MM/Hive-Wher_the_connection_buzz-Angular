@@ -1,7 +1,7 @@
 import {CanActivateFn, Router} from '@angular/router';
 import {inject} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {User} from "../Shared/Models/user.model";
+import {User, UserResponse} from "../Shared/Models/user.model";
 import {USER_LOGIN} from "../Shared/Store/user.action";
 import {Role} from "../Shared/Models/role";
 import {catchError, map, of, take} from "rxjs";
@@ -48,7 +48,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
   }
   const userStr = localStorage.getItem('CURRENT_USER');
   if (userStr) {
-    const user: User = JSON.parse(userStr);
+    const user: UserResponse = JSON.parse(userStr);
     if (user.role === Role.ADMIN) {
         return true;
     }

@@ -1,0 +1,30 @@
+<div class="mt-1 py-1">
+    <span class="me-3  m-0">
+        <button class="btn  m-0" (click)="toggleLike()">
+              <mat-icon aria-hidden="false"
+                        aria-label="favorite"
+                        fontIcon="favorite"
+                        [class]="{'liked' : isLiked}">
+              </mat-icon>
+        </button>
+        <span class="m-0" [class]="{'liked' : isLiked, 'text-light' : !isLiked}">{{ likeCount }} Likes</span>
+    </span>
+    <span class="me-3">
+        <button class="btn  m-0" >
+          <mat-icon aria-hidden="false"
+                    aria-label="chat_bubble_outline"
+                    fontIcon="chat_bubble_outline">
+          </mat-icon>
+        </button>
+        <span class="text-light  m-0">{{ commentCount }} Comments</span>
+    </span>
+    <span class="me-3">
+        <button class="btn  m-0" >
+          <mat-icon aria-hidden="false"
+                    aria-label="share"
+                    fontIcon="share">
+          </mat-icon>
+        </button>
+        <span class="text-light  m-0">Share</span>
+    </span>
+</div>

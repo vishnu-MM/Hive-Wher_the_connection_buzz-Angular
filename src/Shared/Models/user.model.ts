@@ -20,3 +20,7 @@ export interface UserPage{
   isLast : boolean;
   hasNext : boolean;
 }
+export interface UserResponse {
+    id : number;
+    role : Role;
+}

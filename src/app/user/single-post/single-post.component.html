@@ -1,20 +1,30 @@
-<div id="post" class="p-4 p-md-5">
-  <div class="d-flex align-items-center">
-    <img [src]="profilePicture"
-         alt="user profile picture"
-         class="rounded-5 border  border-black d-inline-block">
-    <div class="ms-2">
-      <span class="h4 text-light">{{ name }}</span> <br>
-      <span class="text-light">@{{ username }} | </span>
-      <span class="text-light">{{ getRelativeTime }}</span>
+<div id="post" class="p-4 pb-1 pb-md-1 p-md-5">
+    <div class="d-flex align-items-center">
+        <img [src]="profilePicture"
+             alt="user profile picture"
+             class="rounded-5 border  border-black d-inline-block">
+        <div class="ms-2">
+            <span class="h4 text-light">{{ name }}</span> <br>
+            <span class="text-light">@{{ username }} | </span>
+            <span class="text-light">{{ getRelativeTime }}</span>
+        </div>
     </div>
-  </div>
-  <div class="my-3">
-    <span class="h6 text-light">{{post.description}}</span>
-  </div>
-  <img *ngIf="post.postType === PostType.IMAGE"
-       #postImageElement
-       [src]="postImage"
-       alt="post image" class="post-image rounded"
-       [class]="aspectRatioClass">
+
+    <div class="my-3 mx-md-5"> <span class="h6 text-light">{{post.description}}</span> </div>
+
+    <img *ngIf="post.postType === PostType.IMAGE" #postImageElement
+         [src]="postImage" [class]="aspectRatioClass"
+         alt="post image" class="post-image rounded mx-md-5">
+
+    <div *ngIf="post.postType === PostType.VIDEO">
+        <video #postVideoElement
+               (mouseenter)="playVideo()"
+               [src]="postVideo" controls
+               [class]="aspectRatioClass"
+               class="post-image rounded-3 mx-md-5">
+               Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
 </div>

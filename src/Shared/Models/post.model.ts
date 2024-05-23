@@ -27,3 +27,13 @@ export interface PostPage{
   isLast : boolean;
   hasNext : boolean;
 }
+export interface LikeRequest {
+  userId:number;
+  postId:number;
+}
+export interface Like {
+  id : number;
+  userId : number;
+  likedDate : Date;
+  postId : number;
+}

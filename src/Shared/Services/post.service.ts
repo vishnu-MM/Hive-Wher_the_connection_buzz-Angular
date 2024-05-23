@@ -1,5 +1,5 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Post, PostCreation, PostPage} from "../Models/post.model";
+import {Like, LikeRequest, Post, PostCreation, PostPage} from "../Models/post.model";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {Image} from "../Models/image.model";
@@ -99,14 +99,31 @@ export class PostService {
 //   return ResponseEntity.ok(service.commentCount(postId));
 // }
 //
-// //COMMENT END-POINTS ENDED
-// //LIKE END-POINTS STARTS HERE
-//
-// @PostMapping("add-like")
-// public ResponseEntity<LikeDTO> createLike(@RequestBody LikeRequestDTO likeDTO){
-//   return new ResponseEntity<>(service.createLike(likeDTO), HttpStatus.OK);
-// }
-//
+//? COMMENT END-POINTS ENDED
+//* LIKE END-POINTS STARTS HERE
+
+  public addLike(likeDTO: LikeRequest): Observable<Like> {
+    const headers = this.authHeader();
+    return this.http.post<Like>(`${this.BASE_URL}/add-like`, likeDTO, { headers });
+  }
+
+  public removeLike(likeDTO: LikeRequest): Observable<Like> {
+    const headers = this.authHeader();
+    return this.http.post<Like>(`${this.BASE_URL}/remove-like`, likeDTO, { headers });
+  }
+
+  public getLikeCount(postId: number): Observable<number> {
+    const headers = this.authHeader();
+    return this.http.get<number>(`${this.BASE_URL}/total-like`,{ headers, params: { postId: postId.toString() }});
+  }
+
+  public isUserLiked(likeDTO: LikeRequest): Observable<boolean> {
+    const headers = this.authHeader();
+    return this.http.get<boolean>(`${this.BASE_URL}/is-liked`,
+      { headers, params: { userId: likeDTO.userId.toString(), postId: likeDTO.postId.toString() }}
+    );
+  }
+
 // @GetMapping("single-like")
 // public ResponseEntity<LikeDTO> getLike(@RequestParam("likeId") Long likeId){
 //   return ResponseEntity.ok().body(service.getLike(likeId));
@@ -128,9 +145,6 @@ export class PostService {
 //   }
 // }
 //
-// @GetMapping("total-like")
-// public ResponseEntity<Long> getLikeCount(@RequestParam("postId")  Long postId){
-//   return ResponseEntity.ok(service.likeCount(postId));
-// }
+
 }
 

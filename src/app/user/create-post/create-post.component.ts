@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Store} from "@ngrx/store";
 import {User} from "../../../Shared/Models/user.model";
 import {USER_LOGIN} from "../../../Shared/Store/user.action";
 import {Subscription} from "rxjs";
 import {PostCreation, PostType} from "../../../Shared/Models/post.model";
 import {PostService} from "../../../Shared/Services/post.service";
-
+import { NgToastService } from 'ng-angular-popup';
 
 @Component({
   selector: 'create-post',
@@ -15,16 +15,17 @@ import {PostService} from "../../../Shared/Services/post.service";
 export class CreatePostComponent implements OnInit, OnDestroy{
   imageChangedEvent!: Event;
   @Output() showModal = new EventEmitter<Event>();
-  @Input() file!: File;
+  @Input() file: File | undefined;
   @Input() previewImg!: string;
   @Input() aspectRatio!: number;
   description!: string;
   userStoreSub!: Subscription;
   currentUser!: User;
   postServiceSub!: Subscription;
+  previewVideo: string | ArrayBuffer | null = null;
 
   constructor(private userStore: Store<{ UserStore: User }>,
-              private postService : PostService) {}
+              private postService : PostService, private toast: NgToastService) {}
 
   ngOnInit() : void {
     this.userStore.dispatch(USER_LOGIN());
@@ -39,6 +40,9 @@ export class CreatePostComponent implements OnInit, OnDestroy{
   }
 
   triggerImageUpload() : void {
+    this.file = undefined;
+    this.previewVideo = '';
+    this.previewImg = '';
     const fileInput = document.getElementById('imageInput') as HTMLInputElement;
     if (fileInput) { fileInput.click(); }
   }
@@ -63,10 +67,12 @@ export class CreatePostComponent implements OnInit, OnDestroy{
               .createPost(this.file, postCreation)
               .subscribe({
                 next: value => {
+                  this.file = undefined;
                   this.description = '';
                   this.previewImg = '';
+                  this.showSuccess("Posted Successfully!");
                 },
-                error: error => {}
+                error: error => { this.showError("Something Went wrong") }
               });
           }
           else if (this.file.type.startsWith('video/')) {
@@ -75,6 +81,17 @@ export class CreatePostComponent implements OnInit, OnDestroy{
                 postType: PostType.VIDEO,
                 userId: this.currentUser.id!
               }
+              this.postServiceSub = this.postService
+                .createPost(this.file, postCreation)
+                .subscribe({
+                  next: value => {
+                    this.file = undefined;
+                    this.description = '';
+                    this.previewVideo = '';
+                    this.showSuccess("Posted Successfully!");
+                  },
+                  error: error => { this.showError("Something Went wrong") }
+                });
           }
       }
       else {
@@ -84,5 +101,64 @@ export class CreatePostComponent implements OnInit, OnDestroy{
             userId: this.currentUser.id!
           }
       }
+  }
+
+  triggerVideoUpload() {
+    this.file = undefined;
+    this.previewVideo = '';
+    this.previewImg = '';
+    const fileInput = document.getElementById('videoInput') as HTMLInputElement;
+    if (fileInput) { fileInput.click(); }
+  }
+
+  onVideoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files ? input.files[0] : null;
+
+    if (file && file.type.startsWith('video/')) {
+      if (file.size > 200 * 1024 * 1024) {
+        this.showError('File size exceeds the limit of 200MB.');
+        return;
+      }
+      this.file = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result;
+        if (result !== undefined) {
+          this.previewVideo = result;
+          this.getVideoMetadata(file);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  getVideoMetadata(file: File) {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.onloadedmetadata = async () => {
+      let calculatedAspectRatio = parseFloat((video.videoWidth / video.videoHeight).toFixed(4));
+      if (Math.abs(calculatedAspectRatio - 0.5625) < 0.0001 ) {
+        this.aspectRatio = 0.5625;
+      }
+    };
+    video.src = URL.createObjectURL(file);
+  }
+
+  showSuccess(summary : string) {
+    this.toast.success({detail:"SUCCESS", summary: summary, duration:5000});
+  }
+
+  showError(summary : string) {
+    this.toast.error({detail:"ERROR", summary: summary, duration:5000});
+  }
+
+  showInfo(summary : string) {
+    // this.toast.info({detail:"INFO", summary: summary, sticky:true});
+    this.toast.info({detail:"INFO", summary: summary,  duration:5000});
+  }
+
+  showWarn(summary : string) {
+    this.toast.warning({detail:"WARN", summary: summary, duration:5000});
   }
 }

@@ -13,6 +13,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { userReducer } from 'src/Shared/Store/user.reducer';
 import { UserEffects } from 'src/Shared/Store/user.effects';
+import { NgToastModule } from 'ng-angular-popup'
 
 @NgModule({
   declarations: [
@@ -28,8 +29,9 @@ import { UserEffects } from 'src/Shared/Store/user.effects';
     AppRoutingModule,
     BrowserAnimationsModule,
     UserModule,
-    FormsModule, // Add FormsModule here
-    HttpClientModule
+    FormsModule,
+    HttpClientModule,
+    NgToastModule
   ],
   providers: [],
   bootstrap: [AppComponent]

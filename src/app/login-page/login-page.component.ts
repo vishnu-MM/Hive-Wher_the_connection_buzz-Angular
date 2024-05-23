@@ -7,64 +7,66 @@ import { AppService } from 'src/Shared/Services/app.service';
 import { USER_LOGIN } from 'src/Shared/Store/user.action';
 import {Role} from "../../Shared/Models/role";
 
-@Component({selector: 'login-page',templateUrl: './login-page.component.html',styleUrls: ['./login-page.component.css']})
+@Component({
+  selector: 'login-page',
+  templateUrl: './login-page.component.html',
+  styleUrls: ['./login-page.component.css']
+})
 export class LoginPageComponent implements OnDestroy{
+    // DATA
+    username: string= '';
+    password: string= '';
 
-  username!: string;
-  password!: string;
-  somethingWentWrong: boolean = false;
-  isLoginFailed: boolean = false;
-  loginSub! : Subscription;
-  private userStoreSub!: Subscription;
+    // ERROR HANDLING
+    somethingWentWrong: boolean = false;
+    isLoginFailed: boolean = false;
+    loginClickedWithNoUsername: boolean = false;
+    loginClickedWithNoPassword: boolean = false;
 
-  constructor(private service : AppService,
-              private router : Router,
-              private userStore : Store<{UserStore : User}>) {}
+    // SUBSCRIPTIONS
+    private userStoreSub!: Subscription;
+    private loginSub! : Subscription;
 
-  ngOnDestroy(): void {
-    if ( this.loginSub !== undefined ) this.loginSub.unsubscribe()
-    if ( this.userStoreSub !== undefined ) this.userStoreSub.unsubscribe()
-  }
+    // LIFE CYCLE AND CONSTRUCTOR
+    constructor(private service : AppService, private router : Router,
+                private userStore : Store<{UserStore : User}> ) {}
 
-  onSubmit() {
-    this.isLoginFailed = false;
-    this.somethingWentWrong = false;
+    ngOnDestroy(): void {
+      if ( this.loginSub !== undefined ) this.loginSub.unsubscribe()
+      if ( this.userStoreSub !== undefined ) this.userStoreSub.unsubscribe()
+    }
 
-    this.loginSub = this.service
-        .login( this.username, this.password )
-        .subscribe({
-            next : (response)  => {
-                if (response.token) {
-                    localStorage.setItem("AUTH_TOKEN", response.token);
-                    this.isLoginFailed = false;
-                    this.userStore.dispatch(USER_LOGIN());
+    // LOGIC
+    onSubmit() {
+      this.isLoginFailed = false;
+      this.somethingWentWrong = false;
+      this.loginClickedWithNoUsername = this.username === '';
+      this.loginClickedWithNoPassword = this.password === '';
 
-                    this.userStoreSub = this.userStore
-                      .select('UserStore')
-                      .subscribe(data => {
-                        let currentUser : User = {...data}
-                        localStorage.setItem("CURRENT_USER", JSON.stringify(data));
-                        console.log(data)
-                        if (data.role === Role.USER) {
-                            this.router.navigate(['/u/home'])
+      if ( (!this.loginClickedWithNoUsername) && (!this.loginClickedWithNoPassword))
+          this.loginSub = this.service
+              .login( this.username, this.password )
+              .subscribe({
+                  next : (response)  => {
+                      this.isLoginFailed = (response.token);
+
+                      if (this.isLoginFailed) {
+                          localStorage.setItem("AUTH_TOKEN", response.token);
+                          localStorage.setItem("CURRENT_USER", JSON.stringify({role : response.role, id : response.userId}));
+                          this.userStore.dispatch(USER_LOGIN());
+
+                          if (response.role === Role.USER)
+                              this.router.navigate(['/u/home'])
+                          else if (response.role === Role.ADMIN)
+                              this.router.navigate(['/a/dashboard'])
+                          else
+                              this.somethingWentWrong = true;
                         }
-                        else if (data.role === Role.ADMIN) {
-                            this.router.navigate(['/a/dashboard'])
-                        }
-                        else {
-                            this.somethingWentWrong = true;
-                        }
-                    });
-                }
-                else {
-                    this.isLoginFailed = true;
-                }
-            },
-            error :(error: any) => {
-                this.isLoginFailed = true;
-                console.log("LOGIN FAILED");
-                console.error(error.message);
-            }
-        });
-  }
+                  },
+                  error :(error: any) => {
+                      this.isLoginFailed = true;
+                      console.log("LOGIN FAILED\n" + error.message);
+                  }
+            });
+    }
 }
