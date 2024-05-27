@@ -1,9 +1,21 @@
-mat-icon {
-  color: white;
-  transform: scale(1.2);
-}
-mat-icon:hover {
-  color: white;
-  transform: scale(1.3);
-}
+/*mat-icon {*/
+/*  color: white;*/
+/*  transform: scale(1.2);*/
+/*}*/
 .liked { color: deeppink; }
+.post-inte-txt {
+  color: #6C757D;
+  font-weight: lighter;
+  font-size: larger;
+  margin-left: 5px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+mat-icon {
+  color: #6C757D;
+}
+.post-inte:hover{
+  color: white;
+  transform: scale(1);
+  transition-duration: 0.2s;
+}

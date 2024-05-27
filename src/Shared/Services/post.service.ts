@@ -1,5 +1,5 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Like, LikeRequest, Post, PostCreation, PostPage} from "../Models/post.model";
+import {CommentDTO, CommentRequestDTO, Like, LikeRequest, Post, PostCreation, PostPage} from "../Models/post.model";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {Image} from "../Models/image.model";
@@ -43,12 +43,26 @@ export class PostService {
     return this.http.get<PostPage>(`${this.BASE_URL}/all-posts?pageNo=${pageNo}&pageSize=8`,{ headers });
   }
 
+//   @GetMapping("user-posts")
+//   public ResponseEntity<List<PostDTO>> getUserPosts(@RequestParam("userId") Long userId){
+//   return new ResponseEntity<>(service.getUserPosts(userId), HttpStatus.OK);
+// }
+
+  public getUserPosts(userId : number) : Observable<Post[]> {
+    const headers = this.authHeader();
+    return this.http.get<Post[]>(`${this.BASE_URL}/user-posts`,{ headers, params: { userId: userId.toString() } });
+  }
+
 // @GetMapping("single-post")
 // public ResponseEntity<PostDTO> getPost(@RequestParam("postId") Long postId){
 //   return new ResponseEntity<>(service.getPost(postId), HttpStatus.OK);
 // }
-//
-//
+
+  public getPost(postId : number) : Observable<Post> {
+    const headers = this.authHeader();
+    return this.http.get<Post>(`${this.BASE_URL}/single-post`,{ headers, params: { postId: postId.toString() } });
+  }
+
 // @GetMapping("")
 // public ResponseEntity<List<PostDTO>> getPostsForUser(@RequestParam("postId") Long userId){
 //   return new ResponseEntity<>(service.getPostsForUser(userId), HttpStatus.OK);
@@ -65,14 +79,14 @@ export class PostService {
 //   }
 // }
 //
-// //POST END-POINTS ENDED
-// //COMMENT END-POINTS STARTS HERE
-//
-// @PostMapping("add-comment")
-// public ResponseEntity<CommentDTO> createComment(@RequestBody CommentRequestDTO commentRequest){
-//   return new ResponseEntity<>(service.createComment(commentRequest), HttpStatus.CREATED);
-// }
-//
+//? POST END-POINTS ENDED
+//* COMMENT END-POINTS STARTS HERE
+
+  public createComment(commentRequest : CommentRequestDTO) : Observable<CommentDTO> {
+    const headers = this.authHeader();
+    return this.http.post<CommentDTO>(`${this.BASE_URL}/add-comment`, commentRequest, { headers });
+  }
+
 // @DeleteMapping("remove-comment")
 // public ResponseEntity<Void> deleteComment(@RequestParam("commentId") Long commentId){
 //   try{
@@ -88,7 +102,10 @@ export class PostService {
 // public ResponseEntity<List<CommentDTO>> getCommentsForPost(@RequestParam("postId") Long postId){
 //   return new ResponseEntity<>(service.getCommentsForPost(postId), HttpStatus.OK);
 // }
-//
+  public getCommentsForPost(postId : number) : Observable<CommentDTO[]> {
+    const headers = this.authHeader();
+    return this.http.get<CommentDTO[]>(`${this.BASE_URL}/all-comments`,{ headers, params: { postId: postId.toString() } });
+  }
 // @GetMapping("single-comment")
 // public ResponseEntity<CommentDTO> getComment(@RequestParam("commentId") Long commentId){
 //   return new ResponseEntity<>(service.getComment(commentId), HttpStatus.OK);

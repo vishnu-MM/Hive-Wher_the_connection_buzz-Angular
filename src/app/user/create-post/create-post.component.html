@@ -45,13 +45,11 @@
   <div style="width: 100%;" *ngIf="file && file.type.startsWith('image/')">
     <img [src]="previewImg" [class]="{'aspect-ratio-9-16' : aspectRatio===9/16, 'aspect-ratio': aspectRatio!==9/16}" >
   </div>
-  {{ aspectRatio }}
   <div style="width: 100%;" *ngIf="file && file.type.startsWith('video/')">
     <video [src]="previewVideo" controls [class]="{'aspect-ratio-9-16': aspectRatio === 9/16, 'aspect-ratio': aspectRatio !== 9/16}">
       Your browser does not support the video tag.
     </video>
   </div>
-
   <div class="mt-3">
     <button class="form-control btn btn-success" (click)="post()">Post</button>
   </div>

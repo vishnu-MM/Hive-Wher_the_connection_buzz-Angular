@@ -37,3 +37,17 @@ export interface Like {
   likedDate : Date;
   postId : number;
 }
+
+export interface CommentDTO {
+    id : number;
+    comment : string;
+    commentedDate : Timestamp<string>;
+    userId : number;
+    isBlocked : boolean;
+    postId : number;
+}
+export interface CommentRequestDTO {
+    comment : string;
+    userId : number;
+    postId : number;
+}

@@ -1,115 +1,208 @@
-/* HOME */
-#container1, #container2 {
-  background-color: #353535;
-}
+/* For laptops and larger screens */
+@media only screen and (max-width: 767px) {
+  #side-nav {
+    display: none;
+  }
+  section {
+    width: 100%;
+  }
 
-/* IMAGE */
-.image-section{ height: 20%; }
-.cover-pic {
-  width: 100%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+  /*ASPECT RATIO*/
+  .aspect-ratio-16-9{
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+  .aspect-ratio-9-16{
+    width: 50%;
+    aspect-ratio: 9/16;
+  }
+  .aspect-ratio-4-5, .aspect-ratio-1-1{
+    width: 80%;
+    aspect-ratio: 1;
+  }
 }
-.profile-pic{
-  position: absolute;
-  /*top: 10%;*/
-  /*left: 10%;*/
-  /*height: 20%;*/
-  width: auto;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-}
+/* For tablets */
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  #side-nav {
+    display: none;
+  }
+  section {
+    width: 100%;
+  }
 
-/* USER DETAILS DIV */
-.details-div {
-  position: relative;
-  top: 13%;
-  width: 100%;
+  /*ASPECT RATIO*/
+  .aspect-ratio-16-9{
+    width: 80%;
+    aspect-ratio: 16/9;
+  }
+  .aspect-ratio-9-16{
+    width: 35%;
+    aspect-ratio: 9/16;
+  }
+  .aspect-ratio-4-5, .aspect-ratio-1-1{
+    width: 50%;
+    aspect-ratio: 1;
+  }
 }
-p, span { color: white; }
-#friends-count {
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  margin-bottom: 12px;
-}
-#friends-count > div {
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 5;
-  pointer-events: auto;
-}
-.post{ aspect-ratio: 1; }
-.settings-item {
-  background-color: #353535;
-}
-.settings-item p{
-  font-size: small;
-  background-color: #353535;
-}
-
-/* Phones (up to 600px) */
-@media only screen and (max-width: 600px) {
-  #side-nav, #no-phone { display: none; }
-}
-/* Tablets */
-@media only screen and (min-width: 601px) and (max-width: 1030px) {
-  #side-nav, #no-phone { display: none; }
-}
-/* LAPTOP HALF PORTION */
-@media only screen and (min-width: 1030px) and (max-width: 1495px) {
+@media only screen and (min-width: 1024px) {
   #side-nav {
     position: fixed;
     height: 100%;
   }
   article {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: end;
-    overflow: hidden;
-  }
-  #container1, #container2 {
-    min-height: 100%;
-    width: 45%;
-    margin : 3px;
-    background-color: #353535;
-  }
-  .profile-pic{
-    top: 13%;
-    left: 12%;
-    height: 15%;
-  }
-}
-/*BIGGER SCREEN */
-@media only screen and (min-width: 1495px) {
-  #side-nav {
-    position: fixed;
-    height: 100%;
-  }
-  article {
-    height: 100%;
-    width: 100%;
     display: flex;
     justify-content: center;
   }
-  article {
-    display: flex;
-    justify-content: end;
+  section {
+    width: 60%;
   }
-  #container1, #container2 {
-    min-height: 90%;
-    width: 46%;
-    margin : 5px;
-    background-color: #353535;
+
+  /*ASPECT RATIO*/
+  .aspect-ratio-16-9{
+    width: 50%;
+    aspect-ratio: 16/9;
   }
-  .profile-pic{
-    top: 12%;
-    left: 10%;
-    height: 18%;
+  .aspect-ratio-9-16{
+    width: 30%;
+    aspect-ratio: 9/16;
   }
-  #post-group{}
- }
+  .aspect-ratio-4-5{
+    width: 50%;
+    aspect-ratio: 4/3;
+  }
+  .aspect-ratio-1-1{
+    width: 50%;
+    aspect-ratio: 1;
+  }
+
+}
+
+
+/* Common for laptops, larger screens, tablets, and smartphones */
+article {
+  height: 100%;
+  width: 100%;
+}
+section {
+  min-height: 100%;
+  background-color: #353535;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#profile {
+  width: 100%;
+  position: relative;
+}
+#cover-pic {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/3;
+  z-index: 0;
+}
+#profile-pic {
+  width: 18%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 15%;
+  transform: translate(-50%, 50%);
+  border: #353535 solid 5px;
+}
+#profile-details {
+  padding-top: 4%;
+  padding-left: 10%;
+}
+#user-name {
+  color: white;
+  font-size: x-large;
+  font-weight: bold;
+}
+#username {
+  color: #c0c0c0;
+  font-size: large;
+  font-weight: lighter;
+}
+#bio {
+  color: white;
+  font-size: large;
+  font-weight: normal;
+}
+#joined-date {
+  color: #c0c0c0;
+  font-size: large;
+  font-weight: lighter;
+}
+#phone {
+  color: #c0c0c0;
+  font-size: large;
+  font-weight: lighter;
+}
+#friends-count {
+  color: #c0c0c0;
+  font-size: large;
+  font-weight: lighter;
+}
+#friends-count span {
+  color: white;
+  font-size: x-large;
+  font-weight: lighter;
+}
+#posts {
+  padding-left: 4%;
+  padding-right: 4%;
+  margin-bottom: 5%;
+}
+#my-post-label {
+  color: white;
+  font-size: x-large;
+  font-weight: lighter;
+  border-top: #404040 solid 2px;
+  border-bottom: #404040 solid 2px;
+}
+#my-post-label div{
+  border-left: #404040 solid 1px;
+  border-right: #404040 solid 1px;
+}
+.post {
+  max-height: 20%;
+  aspect-ratio: 1 !important;
+  padding: 0;
+}
+.post div {
+  height: 100%;
+  width: 100%;
+  aspect-ratio: 1 !important;
+}
+.post-video {
+  height: 100%;
+  width: 100%;
+  aspect-ratio: 1 !important;
+}
+.change-layout {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.change-layout mat-icon {
+  color: white;
+  transform: scale(1.3);
+}
+.change-layout mat-icon:hover {
+  transform: scale(1.6);
+  transition-duration: 0.1s;
+}
+.post-image {
+  background-color: black;
+  border: 1px solid black;
+}
+.img-basics {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+#post-list-view {
+  border-bottom: #404040 solid 2px;
+  margin-bottom: 2%;
+}

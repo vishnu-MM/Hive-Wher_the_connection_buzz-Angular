@@ -30,47 +30,94 @@
 </ng-template>
 
 <div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
-<article id="no-phone">
-    <div id="container1" class="rounded-4">
-        <!-- IMAGES SECTION  -->
-        <div class="d-flex image-section rounded-4">
-            <div class="cover-pic d-flex justify-content-center rounded-4"
-                 [style.background-image]="'url(' + coverPicture + ')'"></div>
-            <div class="profile-pic d-flex justify-content-center align-items-center"
-                 [style.background-image]="'url(' + profilePicture + ')'"></div>
+
+<article>
+    <section>
+        <div id="profile">
+            <div>
+                <div id="cover-pic" class="img-basics" [style.background-image]="'url(' + coverPicture + ')'">
+                  <div id="profile-pic" class="img-basics" [style.background-image]="'url(' + profilePicture + ')'"></div>
+                </div>
+            </div>
+            <div class="d-flex flex-row-reverse px-3 py-2">
+                <button class="btn btn-light d-flex justify-content-center p-3 rounded-5" (click)="openModal()">
+                    <mat-icon fontIcon="settings"></mat-icon>
+                </button>
+            </div>
+            <div id="profile-details">
+                <p id="user-name">{{ currentUser.name }}</p>
+                <p id="username"> @{{ currentUser.username }}</p>
+                <p id="bio">{{ currentUser.aboutMe}}</p>
+                <p id="joined-date">Since {{ currentUser.joinDate | date: 'MMMM yyyy' }}</p>
+                <p id="phone">{{ currentUser.phone }}</p>
+                <p id="friends-count"><span>{{ friendsCount }}</span> Friends</p>
+            </div>
         </div>
-        <!-- IMAGES SECTION ENDS  -->
-        <div class="d-flex justify-content-end mt-2 me-3 mb-0">
-            <button class="btn btn-light d-flex justify-content-center p-3 rounded-5"
-                    (click)="openModal()">
-                <mat-icon fontIcon="settings"></mat-icon>
+        <div id="my-post-label" class="row my-3">
+          <div class="col-4 d-flex justify-content-center align-items-center py-4">
+              <span>My Posts</span>
+          </div>
+          <div class="col-4 change-layout">
+            <button class="btn change-layout"
+                    (click)="showListView = false">
+                    <mat-icon fontIcon="grid_view"></mat-icon>
             </button>
+          </div>
+          <div class="col-4 change-layout">
+            <button class="btn change-layout"
+                    (click)="showListView = true">
+                    <mat-icon fontIcon="view_agenda"></mat-icon>
+            </button>
+          </div>
         </div>
-        <!-- USER DETAILS -->
-        <div class="details-div px-5">
-            <p class="h1 mb-0">{{ currentUser.name }}</p>
-            <p class="h6 fw-lighter"> @{{ currentUser.username }}</p>
-            <div id="friends-count" class="d-inline-block rounded-4" >
-              <div class="py-2 px-4 rounded-4">
-                <p class="h5 mb-0 text-light">999 Friends</p>
-              </div>
+        <div id="posts">
+            <div class="row" [class]="{ 'd-none': showListView}">
+                <div *ngFor="let post of posts" class="post border col-4 col-lg-3">
+                  <div *ngIf="post.postType === PostType.IMAGE"
+                       class="img-basics"
+                       [style.background-image]="'url('+postFiles.get(post.id)+')'">
+                  </div>
+                  <video *ngIf="post.postType === PostType.VIDEO"
+                         class="post-video img-basics" [src]="postFiles.get(post.id)">
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
             </div>
-            <p class="h5 fw-lighter">{{ currentUser.aboutMe}}</p>
-        </div>
-        <!-- USER DETAILS ENDS-->
-    </div>
+<!-- todo ======================================================================================= -->
+            <div id="post-list-view" [class]="{ 'd-none': !showListView,}" *ngFor="let post of posts">
+                <div class="d-flex align-items-center">
+                    <img [src]="profilePicture"
+                         alt="user profile picture"
+                         style="aspect-ratio: 1; width: 50px;"
+                         class="rounded-5 border img-basics border-black d-inline-block">
+                    <div class="ms-2">
+                        <span class="h4 text-light">{{ currentUser.name }}</span> <br>
+                        <span class="text-light">@{{ currentUser.username +" | "+ post.createdOn }}</span>
+                    </div>
+                </div>
 
-    <div id="container2" class="rounded-4">
-        <h1 class="ms-5 my-4 text-light fw-bold">Your Posts</h1>
-        <hr class="border">
-        <div id="post-group" class="container">
-            <div class="row">
-                <div class="post bg-black border col-4"></div>
-                <div class="post bg-black border col-4"></div>
-                <div class="post bg-black border col-4"></div>
-                <div class="post bg-black border col-4"></div>
+                <div class="my-3 mx-md-5">
+                    <span class="h6 text-light">{{post.description}}</span>
+                </div>
+                <div *ngIf="post.postType === PostType.IMAGE"
+                     class="post-image rounded mx-md-5 img-basics"
+                     [class]="aspectRatio.get(post.id)"
+                     [style.background-image]="'url('+postFiles.get(post.id)+')'">
+                </div>
 
+                <div *ngIf="post.postType === PostType.VIDEO">
+                  <video (mouseenter)="playVideo()"
+                         [src]="postFiles.get(post.id)"
+                         controls
+                         [class]="aspectRatio.get(post.id)"
+                         class="post-image rounded-3 mx-md-5 img-basics">
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+
+                <div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
             </div>
+<!-- todo ======================================================================================= -->
         </div>
-    </div>
+    </section>
 </article>

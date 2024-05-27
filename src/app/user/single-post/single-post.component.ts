@@ -5,6 +5,7 @@ import {Subscription} from "rxjs";
 import {ImageType, UserService} from "../../../Shared/Services/user.service";
 import {User} from "../../../Shared/Models/user.model";
 import {formatDistanceToNow} from "date-fns";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'single-post',
@@ -26,9 +27,10 @@ export class SinglePostComponent implements AfterViewInit , OnInit, OnDestroy{
   postServiceSub!: Subscription;
   readonly PostType = PostType;
 
-  constructor(private postService: PostService, private userService: UserService,) {}
+  constructor(private postService: PostService, private userService: UserService, private router : Router) {}
 
   ngOnInit(): void {
+        console.log(this.post)
       if (this.post) {
           if (this.post && this.post.postType === PostType.IMAGE)
               this.getPostImage();
@@ -168,5 +170,10 @@ export class SinglePostComponent implements AfterViewInit , OnInit, OnDestroy{
     }, options);
 
     observer.observe(element);
+  }
+
+
+  navigateTo(id: number) {
+    this.router.navigate([`/u/post`,id]);
   }
 }

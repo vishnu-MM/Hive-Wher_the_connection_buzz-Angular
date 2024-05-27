@@ -16,6 +16,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import { PostComponent } from './post/post.component';
 import { PostInteractionComponent } from './post-interaction/post-interaction.component';
 import {NgToastModule} from "ng-angular-popup";
+import {SingleCommentComponent} from "./single-comment/single-comment.component";
 
 @NgModule({
     declarations: [
@@ -27,6 +28,7 @@ import {NgToastModule} from "ng-angular-popup";
         UpdateProfileComponent,
         MyProfileComponent,
         PostComponent,
+        SingleCommentComponent,
         PostInteractionComponent
     ],
     exports: [

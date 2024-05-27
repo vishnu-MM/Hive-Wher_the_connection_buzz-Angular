@@ -1,8 +1,6 @@
 /* For tablets and smartphones */
 @media only screen  and (max-width: 1023px) {
-  #side-nav {
-    display: none;
-  }
+  #side-nav { display: none; }
 
   #posts {
 
@@ -21,13 +19,15 @@
   #posts{
     margin-left: 7%;
     width: 60%;
+    min-height: 100vh;
   }
   #people-online-line {
-    height: 60.5%;
+    height: 60%;
     width: 98.5%;
     background-color: #353535;
   }
   .posts-scroll {
+    min-height: 100vh;
     height: 100vh; /* Adjust the height as needed */
     overflow-y: scroll;
   }

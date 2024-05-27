@@ -14,9 +14,9 @@
 
     <img *ngIf="post.postType === PostType.IMAGE" #postImageElement
          [src]="postImage" [class]="aspectRatioClass"
-         alt="post image" class="post-image rounded mx-md-5">
+         alt="post image" class="post-image rounded mx-md-5" (click)="navigateTo(post.id)">
 
-    <div *ngIf="post.postType === PostType.VIDEO">
+    <div *ngIf="post.postType === PostType.VIDEO" (click)="navigateTo(post.id)">
         <video #postVideoElement
                (mouseenter)="playVideo()"
                [src]="postVideo" controls

@@ -13,7 +13,8 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { userReducer } from 'src/Shared/Store/user.reducer';
 import { UserEffects } from 'src/Shared/Store/user.effects';
-import { NgToastModule } from 'ng-angular-popup'
+import { NgToastModule } from 'ng-angular-popup';
+import { SingleCommentComponent } from './user/single-comment/single-comment.component'
 
 @NgModule({
   declarations: [

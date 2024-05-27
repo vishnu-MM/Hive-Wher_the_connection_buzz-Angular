@@ -1,0 +1,12 @@
+img{
+  aspect-ratio: 1;
+  width: 50px;
+}
+span {
+  color: white;
+  font-size: larger;
+  font-weight: lighter;
+}
+#comment {
+  width: 100%;
+}
