@@ -16,8 +16,8 @@
             <div (click)="chatWithUser(user)" class="user-tile">
                 <img src="assets/Screenshot%202024-04-29%20152644.png" alt="User Profile">
                 <div class="ms-3">
-                    <span class="h4 text-light"> {{ user.username }} </span> <br>
-                    <Span class="text-light">Online / Last Seen</Span>
+                    <p> {{ user.username }} </p>
+                    <Span>Online / Last Seen</Span>
                 </div>
             </div>
           </div>
@@ -25,6 +25,7 @@
     </div>
 
     <div id="chat-section">
+
         <div id="chat-header" *ngIf="receiver">
             <img class="user-profile-picture" src="assets/Screenshot%202024-04-29%20152644.png">
             <div class="ms-3">
@@ -32,21 +33,29 @@
               <Span class="text-light">Online / Last Seen</Span>
             </div>
         </div>
+
         <div id="chat-body"  class="chat-scroll container" *ngIf="receiver">
             <ng-container *ngIf="messages.length > 0">
               <!-- LOOP -->
-              <div class="message row  px-3" *ngFor="let message of messages">
-                  <div class="col-6 d-flex justify-content-start">
-                    <div class="message-right rounded-5" *ngIf="message.senderId === receiver.id?.toString()">
-                      <span>{{ message.content }}</span>
-                    </div>
+
+              <div class="message px-3 row" *ngFor="let message of messages">
+                  <div class="col-12 col-lg-6 d-flex justify-content-start">
+                      <div class="message-right py-3 px-4" *ngIf="message.senderId === receiver.id?.toString()">
+                          <span>{{ message.content }}</span>
+                      </div>
+                      <p class="message-time" *ngIf="message.senderId === receiver.id?.toString()">{{ message.timestamp}}</p>
                   </div>
-                  <div class="col-6 d-flex justify-content-end" >
-                    <div class="message-left rounded-5" *ngIf="message.senderId === currentUser.id?.toString()">
-                      <span>{{ message.content }}</span> </div>
+                  <div class="col-12 col-lg-6 d-flex justify-content-end" >
+                    <div>
+                      <div class="message-left  py-3 px-4" *ngIf="message.senderId === currentUser.id?.toString()">
+                          <span>{{ message.content }}</span>
+                      </div>
+                      <p class="d-flex justify-content-end message-time" *ngIf="message.senderId === currentUser.id?.toString()">{{ message.timestamp}}</p>
+                    </div>
                   </div>
               </div>
               <!-- LOOP ENDS -->
+
             </ng-container>
             <ng-container *ngIf="messages.length === 0">
                 <div id="no-message">
@@ -56,6 +65,7 @@
                 </div>
             </ng-container>
         </div>
+
         <div id="chat-input-outer" *ngIf="receiver">
             <div id="chat-input" class="rounded-5 d-flex justify-content-between">
               <input type="text"
@@ -69,5 +79,6 @@
               </button>
             </div>
         </div>
+
     </div>
 </article>
