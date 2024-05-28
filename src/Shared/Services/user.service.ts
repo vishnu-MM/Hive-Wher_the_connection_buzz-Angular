@@ -62,7 +62,8 @@ export class UserService {
 
   public getAllUsers(pageNo: number) : Observable<UserPage> {
     const headers = this.authHeader();
-    return this.http.get<UserPage>(`${this.BASE_URL}/all-users?pageNo=${pageNo}&pageSize=9`,{ headers });
+    const pageSize = 12;
+    return this.http.get<UserPage>(`${this.BASE_URL}/all-users?pageNo=${pageNo}&pageSize=${pageSize}`,{ headers });
   }
 }
 

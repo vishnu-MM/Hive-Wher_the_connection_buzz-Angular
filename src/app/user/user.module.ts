@@ -17,6 +17,8 @@ import { PostComponent } from './post/post.component';
 import { PostInteractionComponent } from './post-interaction/post-interaction.component';
 import {NgToastModule} from "ng-angular-popup";
 import {SingleCommentComponent} from "./single-comment/single-comment.component";
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
     declarations: [
@@ -29,7 +31,9 @@ import {SingleCommentComponent} from "./single-comment/single-comment.component"
         MyProfileComponent,
         PostComponent,
         SingleCommentComponent,
-        PostInteractionComponent
+        PostInteractionComponent,
+        UserProfileComponent,
+        ChatComponent
     ],
     exports: [
         PostsComponent
