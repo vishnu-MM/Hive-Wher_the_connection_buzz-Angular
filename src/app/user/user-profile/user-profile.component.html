@@ -1,1 +1,128 @@
-<p>user-profile works!</p>
+<ng-template #postModal>
+	<div class="d-flex justify-content-between align-items-center  m-3">
+		<h2 mat-dialog-title class="m-0">Settings</h2>
+		<button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
+			<mat-icon fontIcon="close"></mat-icon>
+		</button>
+	</div>
+	<mat-dialog-content>
+		<div>
+			<div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="/u/profile/update" (click)="closeModal()">
+				<h2 class="m-0 text-light">Edit My Profile</h2>
+				<p class="p-0 m-0 fw-lighter">Update Your Details</p>
+			</div>
+			<div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
+				<h2 class="m-0 text-light">Forgot Password</h2>
+				<p class="p-0 m-0 fw-lighter">Update your forgotten password from here</p>
+			</div>
+			<div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
+				<h2 class="m-0 text-light">Delete My account</h2>
+				<p class="p-0 m-0 fw-lighter">Permanently remove your account</p>
+			</div>
+		</div>
+	</mat-dialog-content>
+	<mat-dialog-actions>
+		<button class="btn btn-dark form-control"
+		        (click)="logout()">
+			<span class="text-danger">Log Out</span>
+		</button>
+	</mat-dialog-actions>
+</ng-template>
+
+<div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
+
+<article>
+	<section>
+		<div id="profile">
+			<div>
+				<div id="cover-pic" class="img-basics" [style.background-image]="'url(' + coverPicture + ')'">
+					<div id="profile-pic" class="img-basics" [style.background-image]="'url(' + profilePicture + ')'"></div>
+				</div>
+			</div>
+			<div class="d-flex flex-row-reverse px-3 py-2">
+				<!-- <button class="btn btn-light d-flex justify-content-center p-3 rounded-5" (click)="openModal()">
+					<mat-icon fontIcon="settings"></mat-icon>
+				</button>-->
+				<button class="btn rounded-5 px-5 my-1 ms-1"
+				        [class]="{'btn-dark' : isFriends, 'btn-light' : !isFriends}">
+						<span *ngIf="!isFriends">Add Friend</span>
+						<span *ngIf="isFriends">Remove</span>
+				</button>
+				<button class="btn btn-dark rounded-5 px-5 my-1">Message</button>
+			</div>
+			<div id="profile-details">
+				<p id="user-name">{{ user.name }}</p>
+				<p id="username"> @{{ user.username }}</p>
+				<p id="bio">{{ user.aboutMe}}</p>
+				<p id="joined-date">Since {{ user.joinDate | date: 'MMMM yyyy' }}</p>
+				<p id="phone">{{ user.phone }}</p>
+				<p id="friends-count"><span>{{ friendsCount }}</span> Friends</p>
+			</div>
+		</div>
+		<div id="my-post-label" class="row my-3">
+			<div class="col-4 d-flex justify-content-center align-items-center py-4">
+				<span>My Posts</span>
+			</div>
+			<div class="col-4 change-layout">
+				<button class="btn change-layout"
+				        (click)="showListView = false">
+					<mat-icon fontIcon="grid_view"></mat-icon>
+				</button>
+			</div>
+			<div class="col-4 change-layout">
+				<button class="btn change-layout" (click)="showListView = true">
+					<mat-icon fontIcon="view_agenda"></mat-icon>
+				</button>
+			</div>
+		</div>
+		<div id="posts">
+			<div class="row" [class]="{ 'd-none': showListView}">
+				<div *ngFor="let post of posts" class="post border col-4 col-lg-3">
+					<div *ngIf="post.postType === PostType.IMAGE"
+					     class="img-basics"
+					     [style.background-image]="'url('+postFiles.get(post.id)+')'">
+					</div>
+					<video *ngIf="post.postType === PostType.VIDEO"
+					       class="post-video img-basics" [src]="postFiles.get(post.id)">
+						Your browser does not support the video tag.
+					</video>
+				</div>
+			</div>
+			<!-- todo ======================================================================================= -->
+			<div id="post-list-view" [class]="{ 'd-none': !showListView,}" *ngFor="let post of posts">
+				<div class="d-flex align-items-center">
+					<img [src]="profilePicture"
+					     alt="user profile picture"
+					     style="aspect-ratio: 1; width: 50px;"
+					     class="rounded-5 border img-basics border-black d-inline-block">
+					<div class="ms-2">
+						<span class="h4 text-light">{{ user.name }}</span> <br>
+						<span class="text-light">@{{ user.username +" | "+ post.createdOn }}</span>
+					</div>
+				</div>
+				
+				<div class="my-3 mx-md-5">
+					<span class="h6 text-light">{{post.description}}</span>
+				</div>
+				<div *ngIf="post.postType === PostType.IMAGE"
+				     class="post-image rounded mx-md-5 img-basics"
+				     [class]="aspectRatio.get(post.id)"
+				     [style.background-image]="'url('+postFiles.get(post.id)+')'">
+				</div>
+				
+				<div *ngIf="post.postType === PostType.VIDEO">
+					<video (mouseenter)="playVideo()"
+					       [src]="postFiles.get(post.id)"
+					       controls
+					       [class]="aspectRatio.get(post.id)"
+					       class="post-image rounded-3 mx-md-5 img-basics">
+						Your browser does not support the video tag.
+					</video>
+				</div>
+				
+				<div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
+			</div>
+			<!-- todo ======================================================================================= -->
+		</div>
+	</section>
+</article>

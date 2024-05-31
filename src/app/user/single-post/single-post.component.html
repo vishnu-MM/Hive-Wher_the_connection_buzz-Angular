@@ -2,7 +2,8 @@
     <div class="d-flex align-items-center">
         <img [src]="profilePicture"
              alt="user profile picture"
-             class="rounded-5 border  border-black d-inline-block">
+             (click)="navigateToUser()"
+             class="rounded-5 border border-black d-inline-block">
         <div class="ms-2">
             <span class="h4 text-light">{{ name }}</span> <br>
             <span class="text-light">@{{ username }} | </span>

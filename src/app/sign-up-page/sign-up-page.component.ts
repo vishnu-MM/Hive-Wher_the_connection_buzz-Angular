@@ -47,19 +47,18 @@ export class SignUpPageComponent implements OnDestroy{
         this.isUsernameInUse = isUsernameInUse;
 
         if (!isEmailInUse && !isUsernameInUse) {
-          this.registrationSub = this.signUpService
-            .registerUser(this.userSignUpReq)
+          this.registrationSub = this.signUpService.registerUser(this.userSignUpReq)
             .subscribe({
-              next: (response) => {
-                  localStorage.setItem("AUTH_TOKEN", response.token);
-                  localStorage.setItem("USER_EMAIL", this.userSignUpReq.email);
-                  console.log("REGISTRATION SUCCESS");
-                  this.sentOtp(this.userSignUpReq.email)
-                  this.router.navigate(['/verify-otp'])
-              },
-              error: (error) => {
-                console.error('Error while registering user:', error);
-              }
+                next: (response) => {
+                    localStorage.setItem("AUTH_TOKEN", response.token);
+                    localStorage.setItem("CURRENT_USER", JSON.stringify({role : response.role, id : response.userId}));
+                    console.log("REGISTRATION SUCCESS");
+                    this.sentOtp(this.userSignUpReq.email)
+                    this.router.navigate(['/verify-otp'])
+                },
+                error: (error) => {
+                  console.error('Error while registering user:', error);
+                }
             });
           if (localStorage.getItem("AUTH_TOKEN_TEMP")) {
             this.signUpService.sendOTP(this.userSignUpReq.email)
