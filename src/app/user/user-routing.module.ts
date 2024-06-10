@@ -6,6 +6,8 @@ import {MyProfileComponent} from "./my-profile/my-profile.component";
 import {PostComponent} from "./post/post.component";
 import {ChatComponent} from "./chat/chat.component";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
+import {NotificationsComponent} from "./notifications/notifications.component";
+import {SearchComponent} from "./search/search.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -13,6 +15,8 @@ const routes: Routes = [
   { path: 'post/:id', component: PostComponent },
   { path: 'user/:id', component: UserProfileComponent },
   { path: 'chat', component: ChatComponent },
+  { path: 'notifications', component: NotificationsComponent },
+  { path: 'search', component: SearchComponent },
   {
     path: 'profile',
     children:[

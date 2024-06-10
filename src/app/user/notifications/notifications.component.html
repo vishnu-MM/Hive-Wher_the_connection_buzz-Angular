@@ -1,0 +1,58 @@
+<div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
+
+<article>
+	<section>
+		<div id="header">Notifications</div>
+		<hr>
+		<h2>New Updates</h2>
+		<div class="container">
+			<!-- LOOP STARTS -->
+			<div class="notification row rounded-4"
+			     *ngFor="let notification of oldNotifications">
+				<div class="col-2 d-flex justify-content-center align-items-center">
+					<img [src]="notificationIcon[notification.typeOfAction]"
+					     alt="Notification Icon"
+					     height="50px"
+					     width="50px">
+				</div>
+				<div class="col-8 d-flex justify-content-center align-items-center">
+					<span> {{ Description }}</span>
+				</div>
+				<div class="col-2 d-flex justify-content-center align-items-center">
+					<span>{{ dateTime }}</span>
+				</div>
+			</div>
+			<!-- LOOP ENDS-->
+		</div>
+		
+		<h2 *ngIf="oldNotifications.length !== 0">Old Updates</h2>
+		<div class="container">
+			<!-- LOOP STARTS -->
+			<div class="notification row rounded-4"
+			     *ngFor="let notification of oldNotifications">
+				<div class="col-2 d-flex justify-content-center align-items-center">
+					<img [src]="notificationIcon[notification.typeOfAction]"
+					     alt="Notification Icon"
+					     height="50px"
+					     width="50px">
+				</div>
+				<div class="col-8 d-flex justify-content-center align-items-center">
+					<span> {{ Description }}</span>
+				</div>
+				<div class="col-2 d-flex justify-content-center align-items-center">
+					<span>{{ dateTime }}</span>
+				</div>
+			</div>
+			<!-- LOOP ENDS-->
+		</div>
+		
+		<div class="d-flex justify-content-center align-items-center mt-2"
+		     *ngIf="oldNotifications.length !== 0">
+			<button type="button" class="btn btn-dark"
+			        *ngIf="hasNext"
+			        (click)="loadNextPage()">
+					Load More
+			</button>
+		</div>
+	</section>
+</article>

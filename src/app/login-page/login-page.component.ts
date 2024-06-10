@@ -6,6 +6,7 @@ import { User } from 'src/Shared/Models/user.model';
 import { AppService } from 'src/Shared/Services/app.service';
 import { USER_LOGIN } from 'src/Shared/Store/user.action';
 import {Role} from "../../Shared/Models/role";
+import {WebSocketService} from "../../Shared/Services/web-socket.service";
 
 @Component({
   selector: 'login-page',
@@ -28,8 +29,10 @@ export class LoginPageComponent implements OnDestroy{
     private loginSub! : Subscription;
 
     // LIFE CYCLE AND CONSTRUCTOR
-    constructor(private service : AppService, private router : Router,
-                private userStore : Store<{UserStore : User}> ) {}
+    constructor(private service : AppService,
+                private router : Router,
+                private userStore : Store<{UserStore : User}>,
+                private webSocketService : WebSocketService ) {}
 
     ngOnDestroy(): void {
       if ( this.loginSub !== undefined ) this.loginSub.unsubscribe()
@@ -55,8 +58,10 @@ export class LoginPageComponent implements OnDestroy{
                           localStorage.setItem("CURRENT_USER", JSON.stringify({role : response.role, id : response.userId}));
                           this.userStore.dispatch(USER_LOGIN());
 
-                          if (response.role === Role.USER)
-                              this.router.navigate(['/u/home'])
+                          if (response.role === Role.USER) {
+                              this.webSocketService.initNotificationConnection(response.userId);
+                              this.router.navigate(['/u/home']).then();
+                          }
                           else if (response.role === Role.ADMIN)
                               this.router.navigate(['/a/dashboard'])
                           else

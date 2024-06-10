@@ -226,7 +226,7 @@ p {
 
 .user-tile {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   /*margin: 5%;*/
   padding: 2% 5%;
@@ -234,6 +234,7 @@ p {
   border-bottom: #404040 solid 1px;
   cursor: pointer;
 }
+
 .user-tile:hover {
   background-color: #404040;
   transform: scale(1.05);
