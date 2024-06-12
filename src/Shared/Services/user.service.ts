@@ -65,6 +65,10 @@ export class UserService {
     const pageSize = 12;
     return this.http.get<UserPage>(`${this.BASE_URL}/all-users?pageNo=${pageNo}&pageSize=${pageSize}`,{ headers });
   }
+
+  public search(searchText : string) : Observable<User[]> {
+    return this.http.get<User[]>(`${this.BASE_URL}/search?searchQuery=${searchText}`);
+  }
 }
 
 export enum ImageType { COVER_IMAGE,PROFILE_IMAGE }
