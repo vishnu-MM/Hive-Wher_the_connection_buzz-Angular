@@ -39,12 +39,14 @@
 				<!-- LOOP -->
 
 				<div class="message px-3 row" *ngFor="let message of messages">
-					<div class="col-12 col-lg-6 d-flex justify-content-start">
-						<div class="message-right py-3 px-4"
-						     *ngIf="message.senderId === receiver.id?.toString() && message.senderId !== message.recipientId">
-							<span>{{ message.content }}</span>
-						</div>
-						<!--                      <p class="message-time" *ngIf="message.senderId === receiver.id?.toString()">{{ message.timestamp}}</p>-->
+					<div class="col-12 col-lg-6">
+            <div class="d-flex justify-content-start">
+              <div class="message-right py-3 px-4"
+                    *ngIf="message.senderId === receiver.id?.toString() && message.senderId !== message.recipientId">
+                <span>{{ message.content }}</span>
+              </div>
+            </div>
+            <p class="message-time text-light" *ngIf="message.senderId === receiver.id?.toString()">{{ message.timestamp | date:'dd MMM'}}</p>
 					</div>
 					<div class="col-12 col-lg-6 d-flex justify-content-end">
 						<div>
@@ -52,7 +54,7 @@
 							     *ngIf="message.senderId === currentUser.id?.toString()">
 								<span>{{ message.content }}</span>
 							</div>
-							<!--                      <p class="d-flex justify-content-end message-time" *ngIf="message.senderId === currentUser.id?.toString()">{{ message.timestamp}}</p>-->
+              <p class="d-flex justify-content-end message-time text-light" *ngIf="message.senderId === currentUser.id?.toString()">{{ message.timestamp | date:'dd MMM'}}</p>
 						</div>
 					</div>
 				</div>
