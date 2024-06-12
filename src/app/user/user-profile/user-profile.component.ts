@@ -1,20 +1,21 @@
-import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {User, UserResponse} from "../../../Shared/Models/user.model";
-import {Post, PostType} from "../../../Shared/Models/post.model";
-import {Subscription} from "rxjs";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {Store} from "@ngrx/store";
-import {ImageType, UserService} from "../../../Shared/Services/user.service";
-import {PostService} from "../../../Shared/Services/post.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {USER_LOGIN} from "../../../Shared/Store/user.action";
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { User, UserResponse } from "../../../Shared/Models/user.model";
+import { Post, PostType } from "../../../Shared/Models/post.model";
+import { Subscription } from "rxjs";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { Store } from "@ngrx/store";
+import { ImageType, UserService } from "../../../Shared/Services/user.service";
+import { PostService } from "../../../Shared/Services/post.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { USER_LOGIN } from "../../../Shared/Store/user.action";
+import { ComplaintsDTO } from 'src/Shared/Models/complaints.model';
 
 @Component({
 	selector: 'app-user-profile',
 	templateUrl: './user-profile.component.html',
 	styleUrls: ['./user-profile.component.css']
 })
-export class UserProfileComponent implements OnInit, OnDestroy{
+export class UserProfileComponent implements OnInit, OnDestroy {
 	user!: User;
 	coverPicture: string = '';
 	profilePicture: string = '';
@@ -25,28 +26,31 @@ export class UserProfileComponent implements OnInit, OnDestroy{
 	aspectRatio: Map<number, string> = new Map<number, string>();
 	showListView: boolean = true;
 	isFriends: boolean = false;
-	
-	
+	isValidReason: boolean = false;
+	description: string = '';
+
+
 	//SUBSCRIPTION for CLOSING
 	private getUserSub!: Subscription;
 	private getProfileSub!: Subscription;
 	private getCoverSub!: Subscription;
 	private getAllPostsSub!: Subscription;
 	private getPostFileSub!: Subscription;
-	@ViewChild('postModal') postModal!: TemplateRef<any>;
+	private ReportUserSub!: Subscription;
+	@ViewChild('reportModal') postModal!: TemplateRef<any>;
 	private dialogRef!: MatDialogRef<any>;
-	
+
 	//CONSTRUCTOR & LIFE-CYCLE METHODS
 	constructor(private userStore: Store<{ UserStore: User }>,
-				private userService: UserService,
-				private postService: PostService,
-				private dialog: MatDialog,
-				private router: Router,
-				private route: ActivatedRoute) {
+		private userService: UserService,
+		private postService: PostService,
+		private dialog: MatDialog,
+		private router: Router,
+		private route: ActivatedRoute) {
 	}
-	
+
 	ngOnInit(): void {
-		const userId : number = parseInt(<string>this.route.snapshot.paramMap.get('id'));
+		const userId: number = parseInt(<string>this.route.snapshot.paramMap.get('id'));
 		if (userId) {
 			this.getUserSub = this.userService.getProfileById(userId)
 				.subscribe({
@@ -68,17 +72,18 @@ export class UserProfileComponent implements OnInit, OnDestroy{
 			this.router.navigate(['/u/home']).then();
 		}
 	}
-	
+
 	ngOnDestroy(): void {
 		if (this.getUserSub != undefined) this.getUserSub.unsubscribe()
 		if (this.getProfileSub != undefined) this.getProfileSub.unsubscribe()
 		if (this.getCoverSub != undefined) this.getCoverSub.unsubscribe()
 		if (this.getAllPostsSub != undefined) this.getAllPostsSub.unsubscribe()
 		if (this.getPostFileSub != undefined) this.getAllPostsSub.unsubscribe()
+		if (this.ReportUserSub != undefined) this.ReportUserSub.unsubscribe()
 	}
-	
+
 	// LOGIC
-	async getCoverImage(userId : number) {
+	async getCoverImage(userId: number) {
 		this.coverPicture = "assets/LoginSignUpBg.jpg"
 		this.getCoverSub = this.userService
 			.getProfileImage(userId, ImageType.COVER_IMAGE)
@@ -89,8 +94,8 @@ export class UserProfileComponent implements OnInit, OnDestroy{
 				}
 			})
 	}
-	
-	async getProfileImage(userId : number) {
+
+	async getProfileImage(userId: number) {
 		this.profilePicture = "assets/LoginSignUpBg.jpg"
 		this.getProfileSub = this.userService
 			.getProfileImage(userId, ImageType.PROFILE_IMAGE)
@@ -103,8 +108,8 @@ export class UserProfileComponent implements OnInit, OnDestroy{
 				}
 			})
 	}
-	
-	async getAllPostsByUser(userId : number) {
+
+	async getAllPostsByUser(userId: number) {
 		this.getAllPostsSub = this.postService.getUserPosts(userId)
 			.subscribe({
 				next: posts => {
@@ -116,7 +121,7 @@ export class UserProfileComponent implements OnInit, OnDestroy{
 				}
 			})
 	}
-	
+
 	async getPostFile() {
 		for (const post of this.posts) {
 			this.getPostFileSub = this.postService.getImage(post.id)
@@ -125,7 +130,7 @@ export class UserProfileComponent implements OnInit, OnDestroy{
 						const reader = new FileReader();
 						reader.onload = (event: any) => {
 							this.postFiles.set(post.id, event.target.result);
-							
+
 							if (post.postType === 'IMAGE') {
 								// Create an image element to calculate the aspect ratio
 								const img = new Image();
@@ -155,7 +160,7 @@ export class UserProfileComponent implements OnInit, OnDestroy{
 				});
 		}
 	}
-	
+
 	private calculateAspectRatioClass(aspectRatio: number): string {
 		if (aspectRatio > 1.5)
 			return 'aspect-ratio-16-9';
@@ -165,22 +170,39 @@ export class UserProfileComponent implements OnInit, OnDestroy{
 			return 'aspect-ratio-4-5';
 		return 'aspect-ratio-1-1';
 	}
-	
+
 	openModal(): void {
 		this.dialogRef = this.dialog.open(this.postModal);
 	}
-	
+
 	closeModal(): void {
 		this.dialogRef.close();
 	}
-	
+
 	logout() {
 		this.closeModal();
 		localStorage.clear();
 		this.router.navigate(['/login'])
 	}
-	
+
 	playVideo() {
-	
+
+	}
+
+	reportUser() {
+		this.isValidReason = this.description !== '' || this.description.trim() !== '';
+		if (this.isValidReason) {
+			const userStr = localStorage.getItem('CURRENT_USER');
+			if (userStr) {
+				const user: UserResponse = JSON.parse(userStr);
+				const complaintsDTO: ComplaintsDTO = {
+					id: null, senderId: user.id, reportedUser: this.user.id!, date: new Date(), description: this.description
+				}
+				this.ReportUserSub = this.userService.reportAUser(complaintsDTO).subscribe({
+					next: res=> {this.closeModal()},
+					error: err=> {this.closeModal()}
+				});
+			}
+		}
 	}
 }

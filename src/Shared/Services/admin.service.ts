@@ -23,4 +23,10 @@ export class AdminService {
     const headers = this.authHeader();
     return this.http.put<void>(`${this.BASE_URL}/unblock-user?userId=${userid}`,null, { headers })
   }
+
+  // @GetMapping("all-complaints")
+  // public ResponseEntity<ComplaintsPage> getAllComplaints(@RequestParam(defaultValue = "0") Integer pageNo,
+  //                                                        @RequestParam(defaultValue = "10") Integer pageSize) {
+  //     return ResponseEntity.ok(complaintsService.findAll(pageNo, pageSize));
+  // }
 }

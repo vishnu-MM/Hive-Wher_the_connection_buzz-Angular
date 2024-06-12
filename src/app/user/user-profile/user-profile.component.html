@@ -1,33 +1,33 @@
-<ng-template #postModal>
-	<div class="d-flex justify-content-between align-items-center  m-3">
-		<h2 mat-dialog-title class="m-0">Settings</h2>
-		<button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
-			<mat-icon fontIcon="close"></mat-icon>
-		</button>
-	</div>
-	<mat-dialog-content>
-		<div>
-			<div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="/u/profile/update" (click)="closeModal()">
-				<h2 class="m-0 text-light">Edit My Profile</h2>
-				<p class="p-0 m-0 fw-lighter">Update Your Details</p>
-			</div>
-			<div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
-				<h2 class="m-0 text-light">Forgot Password</h2>
-				<p class="p-0 m-0 fw-lighter">Update your forgotten password from here</p>
-			</div>
-			<div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
-				<h2 class="m-0 text-light">Delete My account</h2>
-				<p class="p-0 m-0 fw-lighter">Permanently remove your account</p>
-			</div>
-		</div>
-	</mat-dialog-content>
-	<mat-dialog-actions>
-		<button class="btn btn-dark form-control"
-		        (click)="logout()">
-			<span class="text-danger">Log Out</span>
-		</button>
-	</mat-dialog-actions>
+<ng-template #reportModal>
+  <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-content">
+          <div class="d-flex justify-content-between align-items-center m-3 mb-0">
+              <h2 mat-dialog-title class="m-0">Settings</h2>
+              <button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
+                  <mat-icon fontIcon="close"></mat-icon>
+              </button>
+          </div>
+          <mat-dialog-content>
+              <div>
+                  <div class="px-4 settings-item rounded-4 py-2 mb-2">
+                      <h2 class="text-light">Report User</h2>
+                      <textarea name="report-reason"
+                                id="report-reason"
+                                placeholder="Reason for reporting"
+                                class="form-control"
+                                #Report="ngModel"
+                                [class]="{'is-invalid': ( !isValidReason && Report.touched )}"
+                                [(ngModel)]="description"></textarea>
+                      <span class="text-danger h6" *ngIf="( !isValidReason && Report.touched )">Please give a valid Reason for reporting</span>
+                      <button type="button" (click)="reportUser()"
+                              class="btn btn-danger form-control mt-1">Report</button>
+                  </div>
+              </div>
+          </mat-dialog-content>
+      </div>
+  </div>
 </ng-template>
+
 
 <div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
 
@@ -40,9 +40,9 @@
 				</div>
 			</div>
 			<div class="d-flex flex-row-reverse px-3 py-2">
-				<!-- <button class="btn btn-light d-flex justify-content-center p-3 rounded-5" (click)="openModal()">
-					<mat-icon fontIcon="settings"></mat-icon>
-				</button>-->
+				<button class="btn" (click)="openModal()">
+					<mat-icon fontIcon="more_vert" style="transform: scale(1.5); color: white;"></mat-icon>
+				</button>
 				<button class="btn rounded-5 px-5 my-1 ms-1"
 				        [class]="{'btn-dark' : isFriends, 'btn-light' : !isFriends}">
 						<span *ngIf="!isFriends">Add Friend</span>
@@ -100,7 +100,7 @@
 						<span class="text-light">@{{ user.username +" | "+ post.createdOn }}</span>
 					</div>
 				</div>
-				
+
 				<div class="my-3 mx-md-5">
 					<span class="h6 text-light">{{post.description}}</span>
 				</div>
@@ -109,7 +109,7 @@
 				     [class]="aspectRatio.get(post.id)"
 				     [style.background-image]="'url('+postFiles.get(post.id)+')'">
 				</div>
-				
+
 				<div *ngIf="post.postType === PostType.VIDEO">
 					<video (mouseenter)="playVideo()"
 					       [src]="postFiles.get(post.id)"
@@ -119,7 +119,7 @@
 						Your browser does not support the video tag.
 					</video>
 				</div>
-				
+
 				<div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
 			</div>
 			<!-- todo ======================================================================================= -->

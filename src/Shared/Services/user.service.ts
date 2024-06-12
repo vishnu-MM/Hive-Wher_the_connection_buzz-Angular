@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User, UserPage} from "../Models/user.model";
 import {Image} from "../Models/image.model";
+import { ComplaintsDTO } from "../Models/complaints.model";
 
 @Injectable({ providedIn: 'root'})
 export class UserService {
@@ -69,6 +70,12 @@ export class UserService {
   public search(searchText : string) : Observable<User[]> {
     return this.http.get<User[]>(`${this.BASE_URL}/search?searchQuery=${searchText}`);
   }
+
+  public reportAUser(complaintsDTO: ComplaintsDTO): Observable<void> {
+    console.log(complaintsDTO);
+    return this.http.post<void>(`${this.BASE_URL}/report-user`, complaintsDTO);
+  }
+
 }
 
 export enum ImageType { COVER_IMAGE,PROFILE_IMAGE }
