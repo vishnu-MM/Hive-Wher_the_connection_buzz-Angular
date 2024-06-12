@@ -21,7 +21,7 @@ export class MessageService {
       console.log('Connected to WebSocket');
       if (this.stompClient) {
         this.stompClient.subscribe(`/user/${userId}/queue/messages`, (message: any) => {
-          console.log("getting some this from " + message.body)
+          // console.log("getting some this from " + message.body)
           this.showMessage(message.body);
         });
       }

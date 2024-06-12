@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UserService} from "../../../Shared/Services/user.service";
 import {Subscription} from "rxjs";
 import {User, UserPage} from "../../../Shared/Models/user.model";
-import {AdminService} from "../../../Shared/Services/admin.services";
+import {AdminService} from "../../../Shared/Services/admin.service";
 import {Router} from "@angular/router";
 
 @Component({

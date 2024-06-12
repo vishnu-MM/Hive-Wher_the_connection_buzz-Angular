@@ -15,6 +15,8 @@ import { userReducer } from 'src/Shared/Store/user.reducer';
 import { UserEffects } from 'src/Shared/Store/user.effects';
 import { NgToastModule } from 'ng-angular-popup';
 import { SingleCommentComponent } from './user/single-comment/single-comment.component'
+import { HttpIntercepterProviders } from 'src/Shared/HTTP-Intercepters';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,7 @@ import { SingleCommentComponent } from './user/single-comment/single-comment.com
     HttpClientModule,
     NgToastModule
   ],
-  providers: [],
+  providers: [HttpIntercepterProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

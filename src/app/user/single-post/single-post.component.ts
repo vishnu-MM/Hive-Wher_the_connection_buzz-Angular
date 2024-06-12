@@ -26,12 +26,11 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 	getProfileSub!: Subscription;
 	postServiceSub!: Subscription;
 	readonly PostType = PostType;
-	
+
 	constructor(private postService: PostService, private userService: UserService, private router: Router) {
 	}
-	
+
 	ngOnInit(): void {
-		console.log(this.post)
 		if (this.post) {
 			if (this.post && this.post.postType === PostType.IMAGE)
 				this.getPostImage();
@@ -40,12 +39,12 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 			this.getUserByPost();
 		}
 	}
-	
+
 	ngOnDestroy(): void {
 		if (this.postServiceSub) this.postServiceSub.unsubscribe();
 		if (this.getProfileSub) this.getProfileSub.unsubscribe();
 	}
-	
+
 	ngAfterViewInit(): void {
 		if (this.postImageElement) {
 			const imgElement = this.postImageElement.nativeElement;
@@ -54,15 +53,15 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 				this.calculateAspectRatioClass(aspectRatio);
 			};
 		}
-		
+
 		if (this.postVideoElement) {
 			this.respondToVisibility(this.postVideoElement.nativeElement, (isVisible) => {
 				if (!this.postVideoElement.nativeElement.paused && !isVisible) this.pauseVideo();
 			});
 		}
 	}
-	
-	
+
+
 	private calculateAspectRatioClass(aspectRatio: number): void {
 		if (aspectRatio > 1.5)
 			this.aspectRatioClass = 'aspect-ratio-16-9';
@@ -72,9 +71,9 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 			this.aspectRatioClass = 'aspect-ratio-4-5';
 		else
 			this.aspectRatioClass = 'aspect-ratio-1-1';
-		
+
 	}
-	
+
 	async getPostImage() {
 		this.postServiceSub = this.postService
 			.getImage(this.post.id)
@@ -87,10 +86,10 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 					reader.readAsDataURL(blob);
 				},
 				error: (error) => console.error('Image loading failed', error)
-				
+
 			});
 	}
-	
+
 	async getPostVideo() {
 		this.postServiceSub = this.postService
 			.getImage(this.post.id)
@@ -105,7 +104,7 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 				}
 			});
 	}
-	
+
 	async getUserByPost() {
 		this.userService
 			.getProfileById(this.post.userId)
@@ -127,12 +126,12 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 				}
 			})
 	}
-	
+
 	get getRelativeTime(): string {
 		const parsedDate = new Date(this.post.createdOn.toString());
 		return formatDistanceToNow(parsedDate, {addSuffix: true});
 	}
-	
+
 	setAspectRatio(blob: Blob): void {
 		const video = document.createElement('video');
 		video.preload = 'metadata';
@@ -143,7 +142,7 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 		};
 		video.src = URL.createObjectURL(blob);
 	}
-	
+
 	getAspectRatioClass(aspectRatio: number): string {
 		if (Math.abs(aspectRatio - 0.5625) < 0.0001)
 			return 'aspect-ratio-9-16';
@@ -152,34 +151,34 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 		else
 			return 'aspect-ratio-16-9';
 	}
-	
+
 	playVideo(): void {
 		if (this.postVideoElement && this.postVideoElement.nativeElement)
 			this.postVideoElement.nativeElement.play();
 	}
-	
+
 	pauseVideo(): void {
 		if (this.postVideoElement && this.postVideoElement.nativeElement)
 			this.postVideoElement.nativeElement.pause();
 	}
-	
+
 	respondToVisibility(element: HTMLElement, callback: (isVisible: boolean) => void): void {
 		const options = {root: document.documentElement};
-		
+
 		const observer = new IntersectionObserver((entries, observer) => {
 			entries.forEach(entry => {
 				callback(entry.intersectionRatio > 0);
 			});
 		}, options);
-		
+
 		observer.observe(element);
 	}
-	
-	
+
+
 	navigateTo(id: number) {
 		this.router.navigate([`/u/post`, id]);
 	}
-	
+
 	navigateToUser() {
 		if (this.user) {
 			this.router.navigate(['/u/user', this.user.id]);

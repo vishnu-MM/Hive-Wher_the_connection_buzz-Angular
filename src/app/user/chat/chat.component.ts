@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MessageDTO, MessageService} from "../../../Shared/Services/MessageService";
+import {MessageDTO, MessageService} from "../../../Shared/Services/message.service";
 import {User, UserResponse} from "../../../Shared/Models/user.model";
 import {ImageType, UserService} from "../../../Shared/Services/user.service";
 import {Subscription} from "rxjs";
@@ -18,51 +18,51 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 	receiver!: User;
 	userProfileImageMap : Map<number, string> = new Map<number, string>();
 	private getProfileSubs = new Map<number, Subscription>();
-	
+
 	@ViewChild('chatBody') private chatBody!: ElementRef;
 	private getMessageSub!: Subscription;
 	private getProfileById!: Subscription;
 	private getProfileSub!: Subscription;
-	
+
 	constructor(private messageService: MessageService,
 				private userService: UserService,
 				private cdr: ChangeDetectorRef) {}
-	
+
 	ngOnInit(): void {
 		const userStr = localStorage.getItem('CURRENT_USER');
 		if (userStr) {
 			const user: UserResponse = JSON.parse(userStr);
-			
+
 			this.loadCurrentUser(user.id).then();
 			this.loadFriendsList().then();
-			
+
 			this.messageService.initConnectionSocket(user.id.toString());
-			
+
 			this.getMessageSub = this.messageService.message$
 				.subscribe(message => {
 				    this.addMessage(JSON.parse(message));
-			    });
+        });
 		} else {
 			//todo logout
 		}
 	}
-	
+
 	ngOnDestroy(): void {
 		this.messageService.disconnect();
 		if (this.getMessageSub) this.getMessageSub.unsubscribe();
 		if (this.getProfileById) this.getProfileById.unsubscribe();
 		if (this.getProfileSub) this.getProfileSub.unsubscribe();
 	}
-	
+
 	ngAfterViewInit(): void {
 		this.scrollToBottom();
 	}
-	
+
 	private addMessage(message: MessageDTO): void {
 		this.messages.push(message);
 		this.scrollToBottom();
 	}
-	
+
 	async loadCurrentUser(id: number) {
 		this.getProfileById = this.userService.getProfileById(id)
 			.subscribe({
@@ -74,7 +74,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 				}
 			});
 	}
-	
+
 	async loadFriendsList() {
 		this.userService.getAllUsers(0)
 			.subscribe({
@@ -86,12 +86,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 				}
 			});
 	}
-	
+
 	chatWithUser(user: User) {
 		this.receiver = user;
 		this.loadPreviousChats(user.id!);
 	}
-	
+
 	async loadPreviousChats(receiverId: number) {
 		if (this.currentUser.id) {
 			this.messageService.getMessages(this.currentUser.id, receiverId)
@@ -106,7 +106,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 				});
 		}
 	}
-	
+
 	sendMessage() {
 		if (this.newMessage.trim() && this.currentUser && this.receiver && this.currentUser.id && this.receiver.id) {
 			let message: MessageDTO = {
@@ -118,7 +118,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 				timestamp: new Date()
 			}
 			console.log(message)
-			
+
 			this.messageService.sendMessage(this.newMessage, this.receiver.id.toString(), this.currentUser.id.toString())
 				.subscribe({
 					next: () => {
@@ -132,7 +132,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 				});
 		}
 	}
-	
+
 	private scrollToBottom(): void {
 		try {
 			this.cdr.detectChanges();
@@ -141,20 +141,20 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 			console.error('Error while scrolling:', err);
 		}
 	}
-	
-	
+
+
 	private async loadUserProfilePictures(userList: User[]) {
 		for (let user of userList ) {
 			let userId : number  = user.id!;
 			this.userProfileImageMap.set(userId, await this.getUserProfilePicture(userId));
 		}
 	}
-	
+
 	getUserProfilePicture(userId: number): Promise<string> {
 		if (this.getProfileSubs.has(userId)) {
 			this.getProfileSubs.get(userId)!.unsubscribe();
 		}
-		
+
 		return new Promise((resolve, reject) => {
 			 const subscription = this.getProfileSub = this.userService
 				.getProfileImage(userId, ImageType.PROFILE_IMAGE)

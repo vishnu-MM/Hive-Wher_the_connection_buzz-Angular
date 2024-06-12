@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {AdminService} from "../../../Shared/Services/admin.services";
+import {AdminService} from "../../../Shared/Services/admin.service";
 import {Router} from "@angular/router";
 import {PostService} from "../../../Shared/Services/post.service";
 import {Subscription} from "rxjs";

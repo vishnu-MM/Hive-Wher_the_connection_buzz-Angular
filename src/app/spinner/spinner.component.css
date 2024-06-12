@@ -1,0 +1,16 @@
+/* @keyframes bouncing {
+    0% { top: 40%; }
+    100% { top: 30%; }
+}
+.page-overlay-wrapper {
+    .bee-spinner {
+        width: 100px;
+        height: 100px;
+        position: fixed;
+        z-index: 100;
+        background-image: url("src/assets/logo.png");
+        background-repeat: no-repeat;
+        background-size: 97%;
+        animation: bouncing 0.4s cubic-bezier(0.1, 0.25, 0.1, 1) 0s infinite alternate both;
+    }
+} */
