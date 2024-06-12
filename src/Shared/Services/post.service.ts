@@ -83,6 +83,10 @@ export class PostService {
   //   }
   // }
   //
+  public updatePost(post: Post): Observable<Post> {
+    return this.http.put<Post>(`${this.BASE_URL}/update`, post);
+  }
+
   //? POST END-POINTS ENDED
   //* COMMENT END-POINTS STARTS HERE
 

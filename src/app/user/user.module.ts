@@ -22,6 +22,7 @@ import { ChatComponent } from './chat/chat.component';
 import { SearchComponent } from './search/search.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { PostEditComponent } from './post-edit/post-edit.component';
 
 @NgModule({
     declarations: [
@@ -38,7 +39,8 @@ import { SpinnerComponent } from '../spinner/spinner.component';
         UserProfileComponent,
         ChatComponent,
         SearchComponent,
-        NotificationsComponent
+        NotificationsComponent,
+        PostEditComponent
     ],
     exports: [
         PostsComponent

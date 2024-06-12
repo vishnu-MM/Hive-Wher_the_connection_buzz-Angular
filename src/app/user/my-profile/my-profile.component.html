@@ -28,6 +28,38 @@
       </button>
   </mat-dialog-actions>
 </ng-template>
+<ng-template #EditDeleteModal>
+  <div class="d-flex justify-content-between align-items-center  m-3">
+      <h2 mat-dialog-title class="m-0">Post Settings</h2>
+     <button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
+       <mat-icon fontIcon="close"></mat-icon>
+     </button>
+  </div>
+  <mat-dialog-content>
+      <div>
+        <div class="px-4 settings-item rounded-4 py-2 mb-2"  (click)="editpost()">
+            <h2 class="m-0 text-light">Edit Post</h2>
+            <p class="p-0 m-0 fw-lighter">Update Post description</p>
+        </div>
+        <div class="px-4 settings-item rounded-4 py-2 mb-2" (click)="deletePost()">
+            <h2 class="m-0 text-light">Delete Post</h2>
+            <p class="p-0 m-0 fw-lighter">Post will be deleted Permanently</p>
+        </div>
+      </div>
+  </mat-dialog-content>
+</ng-template>
+
+<ng-template #EditPostModal>
+  <div class="d-flex justify-content-between align-items-center">
+      <h2 mat-dialog-title class="m-0">Edit Post</h2>
+  </div>
+  <mat-dialog-content>
+      <post-edit
+        (close)="closeEditPostModal()"
+        [postId]="selectedPostId!">
+      </post-edit>
+  </mat-dialog-content>
+</ng-template>
 
 <div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
 
@@ -85,7 +117,8 @@
             </div>
 <!-- todo ======================================================================================= -->
             <div id="post-list-view" [class]="{ 'd-none': !showListView,}" *ngFor="let post of posts">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center">
                     <img [src]="profilePicture"
                          alt="user profile picture"
                          style="aspect-ratio: 1; width: 50px;"
@@ -94,6 +127,10 @@
                         <span class="h4 text-light">{{ currentUser.name }}</span> <br>
                         <span class="text-light">@{{ currentUser.username +" | "+ post.createdOn }}</span>
                     </div>
+                  </div>
+                    <button type="button" class="btn" (click)="editDeleteModal(post.id)">
+                      <mat-icon fontIcon="more_vert" style="color: white;"></mat-icon>
+                    </button>
                 </div>
 
                 <div class="my-3 mx-md-5">

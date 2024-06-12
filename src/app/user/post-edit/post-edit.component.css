@@ -1,0 +1,88 @@
+@media only screen and (max-width: 767px) {
+  #side-nav { display: none; }
+  section { width: 100%; }
+  .aspect-ratio-16-9{
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+  .aspect-ratio-9-16{
+    width: 50%;
+    aspect-ratio: 9/16;
+  }
+  .aspect-ratio-4-5, .aspect-ratio-1-1{
+    width: 80%;
+    aspect-ratio: 1;
+  }
+}
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  #side-nav {
+      display: none;
+  }
+  section {
+      width: 100%;
+  }
+  .aspect-ratio-16-9{
+    width: 80%;
+    aspect-ratio: 16/9;
+  }
+  .aspect-ratio-9-16{
+    width: 35%;
+    aspect-ratio: 9/16;
+  }
+  .aspect-ratio-4-5, .aspect-ratio-1-1{
+    width: 50%;
+    aspect-ratio: 1;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  #side-nav {
+      position: fixed;
+      height: 100%;
+  }
+
+  article {
+      display: flex;
+      justify-content: center;
+  }
+
+  section {
+      width: 60%;
+  }
+  .aspect-ratio-16-9{
+    width: 50%;
+    aspect-ratio: 16/9;
+  }
+  .aspect-ratio-9-16{
+    width: 30%;
+    aspect-ratio: 9/16;
+  }
+  .aspect-ratio-4-5{
+    width: 30%;
+    aspect-ratio: 4/3;
+  }
+  .aspect-ratio-1-1{
+    width: 30%;
+    aspect-ratio: 1;
+  }
+}
+
+article {
+  height: 100%;
+  width: 100%;
+}
+section {
+  min-height: 100%;
+  background-color: #353535;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 0 5%;
+}
+img{
+  aspect-ratio: 1;
+  width: 50px;
+}
+.post-image {
+  background-color: black;
+  border: 1px solid black;
+  object-fit: contain;
+}

@@ -1,0 +1,27 @@
+<div>
+    <input type="text"
+           class="form-control my-3"
+           [(ngModel)]="post.description">
+
+	<img *ngIf="post.postType === PostType.IMAGE"
+        #postImageElement
+        [src]="postImage"
+        [class]="aspectRatioClass"
+        alt="post image"
+        class="post-image rounded mx-md-5">
+
+	<div *ngIf="post.postType === PostType.VIDEO">
+		<video #postVideoElement
+          (mouseenter)="playVideo()"
+          [src]="postVideo"
+          controls
+          [class]="aspectRatioClass"
+          class="post-image rounded-3 mx-md-5"> Your browser does not support the video tag.
+		</video>
+	</div>
+
+  <div class="d-flex justify-content-center align-items-center mt-1">
+    <button (click)="cancelUpdate()" type="button" class="btn btn-warning form-control me-1" >Cancel</button>
+    <button (click)="update()" type="button" class="btn btn-success form-control ms-1" >Update</button>
+  </div>
+</div>
