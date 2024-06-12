@@ -19,7 +19,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 	friendsList: User[] = [];
 	receiver!: User;
 	userProfileImageMap : Map<number, string> = new Map<number, string>();
-    private getProfileSubs = new Map<number, Subscription>();
+  private getProfileSubs = new Map<number, Subscription>();
 
 
 	@ViewChild('chatBody') private chatBody!: ElementRef;

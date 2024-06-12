@@ -7,7 +7,6 @@ article {
 /* Side Nav Bar */
 #side-nav-bar {
   position: fixed;
-  z-index: 2;
   height: 100%;
   width: 15%;
   background-color: #023047;
@@ -36,9 +35,6 @@ article {
 
 /* Top Nav Bar */
 #top-nav-bar-aligner {
-  position: sticky;
-  top: 0;
-  z-index: 1;
   height: 10%;
 }
 #top-nav-bar {
@@ -71,17 +67,33 @@ h1{
 
 section {
   width: 100%;
-  min-height: 90%;
+  height: 90%;
   background-color: #e2e1e1;
 }
 #content-div {
   width: 80%;
-  min-height: 95%;
-  }
+  height: 95%;
+}
+/*.content-header {*/
+/*    height: 10%;*/
+/*    width: 100%;*/
+/*}*/
+.content-body {
+  height: 90%;
+  width: 100%;
+}
+.content-footer {
+  height: 10%;
+  width: 100%;
+}
 
-.post{
-  height: 200px;
-  aspect-ratio: 1;
+#profile-picture {
+    height: 50px;
+    aspect-ratio: 1;
+}
+h2 {
+  margin: 0;
+  padding: 0;
 }
 .fwd-bwd-btn {
   background-color: #023047;

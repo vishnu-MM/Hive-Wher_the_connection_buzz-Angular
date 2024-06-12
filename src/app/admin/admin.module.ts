@@ -6,13 +6,15 @@ import {MatIconModule} from "@angular/material/icon";
 import { UserManagementComponent } from './user-management/user-management.component';
 import { PostManagementComponent } from './post-management/post-management.component';
 import { PostComponent } from './post/post.component';
+import { ComplaintsComponent } from './complaints/complaints.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     UserManagementComponent,
     PostManagementComponent,
-    PostComponent
+    PostComponent,
+    ComplaintsComponent
   ],
     imports: [
         CommonModule,
