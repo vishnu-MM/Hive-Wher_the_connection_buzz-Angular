@@ -3,6 +3,8 @@ import {MessageDTO, MessageService} from "../../../Shared/Services/message.servi
 import {User, UserResponse} from "../../../Shared/Models/user.model";
 import {ImageType, UserService} from "../../../Shared/Services/user.service";
 import {Subscription} from "rxjs";
+import { DomSanitizer } from '@angular/platform-browser';
+import RecordRTC from 'recordrtc';
 
 @Component({
 	selector: 'chat',
@@ -19,14 +21,22 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 	userProfileImageMap : Map<number, string> = new Map<number, string>();
 	private getProfileSubs = new Map<number, Subscription>();
 
+
 	@ViewChild('chatBody') private chatBody!: ElementRef;
 	private getMessageSub!: Subscription;
 	private getProfileById!: Subscription;
 	private getProfileSub!: Subscription;
+  // Voice Message related
+  recording : boolean = false;
+  record: any;
+  error!: string;
+  url!: any;
+  isAudioReadyToSent : boolean = false;
 
 	constructor(private messageService: MessageService,
 				private userService: UserService,
-				private cdr: ChangeDetectorRef) {}
+				private cdr: ChangeDetectorRef,
+        private dom : DomSanitizer) {}
 
 	ngOnInit(): void {
 		const userStr = localStorage.getItem('CURRENT_USER');
@@ -171,4 +181,42 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
 		});
 	}
 
+  // Audio Related
+
+  startRecording() {
+    this.recording = true;
+    let mediaConstraints = { video : false, audio : true }
+      navigator.mediaDevices.getUserMedia(mediaConstraints)
+      .then(
+        this.successCallback.bind(this),
+        this.errorCallback.bind(this)
+      )
+  }
+
+  successCallback(stream : any) {
+    let options = { mimeType : 'audio/wav' };
+    let StereoAudioRecorder = RecordRTC.StereoAudioRecorder;
+    this.record = new StereoAudioRecorder(stream, options);
+    this.record.record();
+  }
+
+  errorCallback(stream : any) {
+    this.error = 'Something went wrong';
+    console.log(this.error);
+  }
+
+  stopRecording() {
+      this.recording = false;
+      this.record.stop(this.processRecording.bind(this));
+      this.isAudioReadyToSent = true;
+  }
+
+  processRecording(blob: any) {
+    this.url = URL.createObjectURL(blob);
+    console.log(this.url);
+  }
+
+  sanitize(url : string) {
+    return this.dom.bypassSecurityTrustUrl(url)
+  }
 }

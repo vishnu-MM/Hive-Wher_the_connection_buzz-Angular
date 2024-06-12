@@ -1,6 +1,6 @@
 <article>
 	<div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
-	
+
 	<div id="peoples-section">
 		<div id="peoples-section-header">
 			<p> Chats </p>
@@ -23,9 +23,9 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div id="chat-section">
-		
+
 		<div id="chat-header" *ngIf="receiver">
 			<img class="user-profile-picture" [src]="userProfileImageMap.get(receiver.id!)">
 			<div class="ms-3">
@@ -33,11 +33,11 @@
 				<Span class="text-light">Online / Last Seen</Span>
 			</div>
 		</div>
-		
+
 		<div id="chat-body" #chatBody class="chat-scroll container" *ngIf="receiver">
 			<ng-container *ngIf="messages.length > 0">
 				<!-- LOOP -->
-				
+
 				<div class="message px-3 row" *ngFor="let message of messages">
 					<div class="col-12 col-lg-6 d-flex justify-content-start">
 						<div class="message-right py-3 px-4"
@@ -57,7 +57,7 @@
 					</div>
 				</div>
 				<!-- LOOP ENDS -->
-			
+
 			</ng-container>
 			<ng-container *ngIf="messages.length === 0">
 				<div id="no-message">
@@ -67,20 +67,41 @@
 				</div>
 			</ng-container>
 		</div>
-		
+
 		<div id="chat-input-outer" *ngIf="receiver">
 			<div id="chat-input" class="rounded-5 d-flex justify-content-between">
-				<input type="text"
+				<input type="text" *ngIf="!recording && !isAudioReadyToSent"
 				       class="rounded-5"
 				       id="message-input"
 				       name="message"
 				       placeholder="Type here..."
 				       [(ngModel)]="newMessage">
-				<button class="btn btn-light px-4 rounded-5" id="sent-btn" (click)="sendMessage()">
-					<mat-icon style="color: #353535" fontIcon="send"></mat-icon>
-				</button>
+        <div *ngIf="recording" class="d-flex justify-content-center align-items-center ps-5">
+          <h2 class="p-0 m-0">Recording...</h2>
+        </div>
+        <audio controls *ngIf="url">
+          <source [src]="sanitize(url)" type="audio/wav">
+        </audio>
+
+        <div class="d-flex flex-row">
+          <button class="btn btn-light rounded-5"
+                  id="sent-btn"
+                  (click)="startRecording()"
+                  *ngIf="!recording">
+            <mat-icon style="color: #353535" fontIcon="mic"></mat-icon>
+          </button>
+          <button class="btn btn-light rounded-5"
+                  id="sent-btn"
+                  (click)="stopRecording()"
+                  *ngIf="recording">
+            <mat-icon style="color: #353535" fontIcon="stop_circle" style="transform: scale(1.5); color: #353535;"></mat-icon>
+          </button>
+          <button class="btn btn-light px-4 rounded-5" id="sent-btn" (click)="sendMessage()">
+            <mat-icon style="color: #353535" fontIcon="send"></mat-icon>
+          </button>
+        </div>
 			</div>
 		</div>
-	
+
 	</div>
 </article>
