@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { NotificationDTO, NotificationPage, NotificationType } from "../../../Shared/Models/NotificationDTO";
 import { WebSocketService } from 'src/Shared/Services/web-socket.service';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ import { UserService } from 'src/Shared/Services/user.service';
 	styleUrls: ['./notifications.component.css']
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
-	hasNext: boolean = true;
+	hasNext: boolean = false;
 	notifications: NotificationDTO[] = [];
 	pageNo: number = 0;
 	userId: number = 0;
@@ -22,12 +22,16 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 	usernameMap : Map<number, string> = new Map<number,string>();
 	postMap : Map<number, string> = new Map<number,string>();
 
-	constructor(private notificationService: WebSocketService, private userService : UserService) { }
+	constructor(private notificationService: WebSocketService,
+              private userService : UserService,
+              private cdRef: ChangeDetectorRef) { }
 
 	ngOnInit(): void {
 		this.fetchNewNotificationSub = this.notificationService.notification$.subscribe(notification => {
-			this.notifications.unshift(notification);
-		})
+      const newNotification : NotificationDTO = JSON.parse(notification);
+			this.notifications.unshift(newNotification);
+      this.fetchUsername(this.notifications).then();  
+    })
 		const userStr = localStorage.getItem('CURRENT_USER');
 		if (userStr) {
 			const user: UserResponse = JSON.parse(userStr);
@@ -48,7 +52,10 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 				next: response => {
 					this.notifications = [...this.notifications, ...response.contents];
 					this.notificationPage = response;
+          this.hasNext = response.hasNext;
 					this.pageNo++;
+          console.log(response);
+
 					this.fetchUsername(response.contents).then();
 				},
 				error: error => { console.log(error) }

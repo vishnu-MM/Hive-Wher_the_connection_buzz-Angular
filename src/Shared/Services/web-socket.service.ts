@@ -9,8 +9,8 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 export class WebSocketService {
 	public readonly WEB_SOCKET_URL: string = 'http://localhost:8083/ws';
 	private notificationStompClient: CompatClient | null = null;
-	public notificationSubject: Subject<NotificationDTO> = new Subject<NotificationDTO>();
-	public notification$ : Observable<NotificationDTO> = this.notificationSubject.asObservable();
+	public notificationSubject: Subject<string> = new Subject<string>();
+	public notification$ : Observable<string> = this.notificationSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -31,7 +31,7 @@ export class WebSocketService {
 		});
 	}
 
-	loadNotification(notification: NotificationDTO): void {
+	loadNotification(notification: string): void {
 		console.log("getting Notification " + notification)
 		this.notificationSubject.next(notification);
 	}
