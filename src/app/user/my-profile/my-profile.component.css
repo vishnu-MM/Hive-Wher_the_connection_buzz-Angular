@@ -193,7 +193,7 @@ section {
   transform: scale(1.6);
   transition-duration: 0.1s;
 }
-.post-image {
+.post {
   background-color: black;
   border: 1px solid black;
 }

@@ -3,7 +3,7 @@ import { NotificationDTO, NotificationPage, NotificationType } from "../../../Sh
 import { WebSocketService } from 'src/Shared/Services/web-socket.service';
 import { Subscription } from 'rxjs';
 import { UserResponse } from 'src/Shared/Models/user.model';
-import { Post } from 'src/Shared/Models/post-image.model';
+import { Post } from 'src/Shared/Models/post.model';
 import { UserService } from 'src/Shared/Services/user.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 		this.fetchNewNotificationSub = this.notificationService.notification$.subscribe(notification => {
       const newNotification : NotificationDTO = JSON.parse(notification);
 			this.notifications.unshift(newNotification);
-      this.fetchUsername(this.notifications).then();  
+      this.fetchUsername(this.notifications).then();
     })
 		const userStr = localStorage.getItem('CURRENT_USER');
 		if (userStr) {
@@ -90,9 +90,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
 	description(type: NotificationType): string {
 		if (type === NotificationType.LIKE)
-			return 'Liked your post-image';
+			return 'Liked your post';
 		else if (type === NotificationType.COMMENT)
-			return 'Commented on your post-image';
+			return 'Commented on your post';
 		else if (type === NotificationType.FRIEND_REQUEST )
 			return 'Send friend request';
 		else if ( type === NotificationType.FRIEND_REQUEST_ACCEPTED)

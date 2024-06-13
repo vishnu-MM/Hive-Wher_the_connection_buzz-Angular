@@ -81,7 +81,7 @@ img{
   aspect-ratio: 1;
   width: 50px;
 }
-.post-image {
+.post {
   background-color: black;
   border: 1px solid black;
   object-fit: contain;

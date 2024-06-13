@@ -105,7 +105,7 @@
 					<span class="h6 text-light">{{post.description}}</span>
 				</div>
 				<div *ngIf="post.postType === PostType.IMAGE"
-				     class="post-image rounded mx-md-5 img-basics"
+				     class="post rounded mx-md-5 img-basics"
 				     [class]="aspectRatio.get(post.id)"
 				     [style.background-image]="'url('+postFiles.get(post.id)+')'">
 				</div>
@@ -115,7 +115,7 @@
 					       [src]="postFiles.get(post.id)"
 					       controls
 					       [class]="aspectRatio.get(post.id)"
-					       class="post-image rounded-3 mx-md-5 img-basics">
+					       class="post rounded-3 mx-md-5 img-basics">
 						Your browser does not support the video tag.
 					</video>
 				</div>
