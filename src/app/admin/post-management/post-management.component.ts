@@ -2,8 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AdminService} from "../../../Shared/Services/admin.service";
 import {Router} from "@angular/router";
 import {PostService} from "../../../Shared/Services/post.service";
-import {Subscription} from "rxjs";
+import {Subscription, Timestamp} from "rxjs";
 import {Post, PostPage} from "../../../Shared/Models/post.model";
+import { formatDistanceToNow } from 'date-fns';
 
 @Component({
   selector: 'app-post-management',
@@ -53,5 +54,10 @@ export class PostManagementComponent implements OnInit, OnDestroy{
     localStorage.clear();
     this.router.navigate(['/login'])
   }
+
+  getRelativeTime(createdOn : Timestamp<string>): string {
+		const parsedDate = new Date(createdOn.toString());
+		return formatDistanceToNow(parsedDate, {addSuffix: true});
+	}
 
 }

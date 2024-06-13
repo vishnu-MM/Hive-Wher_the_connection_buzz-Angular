@@ -3,7 +3,7 @@ import { NotificationDTO, NotificationPage, NotificationType } from "../../../Sh
 import { WebSocketService } from 'src/Shared/Services/web-socket.service';
 import { Subscription } from 'rxjs';
 import { UserResponse } from 'src/Shared/Models/user.model';
-import { Post } from 'src/Shared/Models/post.model';
+import { Post } from 'src/Shared/Models/post-image.model';
 import { UserService } from 'src/Shared/Services/user.service';
 
 @Component({
@@ -90,9 +90,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
 	description(type: NotificationType): string {
 		if (type === NotificationType.LIKE)
-			return 'Liked your post';
+			return 'Liked your post-image';
 		else if (type === NotificationType.COMMENT)
-			return 'Commented on your post';
+			return 'Commented on your post-image';
 		else if (type === NotificationType.FRIEND_REQUEST )
 			return 'Send friend request';
 		else if ( type === NotificationType.FRIEND_REQUEST_ACCEPTED)
