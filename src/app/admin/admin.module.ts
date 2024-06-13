@@ -6,6 +6,7 @@ import {MatIconModule} from "@angular/material/icon";
 import { UserManagementComponent } from './user-management/user-management.component';
 import { PostManagementComponent } from './post-management/post-management.component';
 import { ComplaintsComponent } from './complaints/complaints.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ComplaintsComponent } from './complaints/complaints.component';
     imports: [
         CommonModule,
         AdminRoutingModule,
-        MatIconModule
+        MatIconModule,
+        FormsModule
     ]
 })
 export class AdminModule {}

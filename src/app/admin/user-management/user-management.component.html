@@ -33,7 +33,11 @@
       <span class="m-0 display-6">User Management</span>
       <div id="search" style="width: 30%; height: 60%"
            class="form-control rounded-5 p-0 d-flex  align-items-center">
-        <input type="text" id="search-input" name="search" placeholder="Search here"
+        <input type="text"
+               id="search-input"
+               name="search"
+               placeholder="Search here"
+               [(ngModel)]="searchText"
                class="form-control rounded-5 d-flex justify-content-between align-items-center">
         <button type="button"
                 id="search-btn"
@@ -53,28 +57,20 @@
   <!--  MAIN CONTENT SPACE STARTS HERE -->
   <section class="d-flex justify-content-end align-items-center">
       <div id="content-div" class="me-4 card">
-        <div class="content-footer rounded"></div>
-          <div class="content-body border border-end-0 border-start-0 px-5 py-2">
+          <div id="table-div" class="content-body rounded border border-end-0 border-start-0 px-5 py-2">
             <table class="table">
                 <thead>
                     <tr>
-<!--                        <th scope="col"><h2>Profile</h2></th>-->
                         <th scope="col"><h2>Username</h2></th>
                         <th scope="col"><h2>Name</h2></th>
                         <th scope="col"><h2>Email</h2></th>
                         <th scope="col"><h2>Phone</h2></th>
                         <th scope="col"><h2>joinDate</h2></th>
-<!--                        <th scope="col"><h2>Verification Status</h2></th>-->
                         <th scope="col"><h2>Block/Unblock</h2></th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
                     <tr *ngFor="let user of users">
-<!--                      <td>-->
-<!--                        <img id="profile-picture"-->
-<!--                             class="rounded-5 border border-black"-->
-<!--                             [src]="profilePicture(user.id)">-->
-<!--                      </td>-->
                       <td><h3 class="m-0">@{{ user.username }}</h3></td>
                       <td><h3 class="m-0">{{ user.name }}</h3></td>
                       <td><h3 class="m-0">{{ user.email }}</h3></td>

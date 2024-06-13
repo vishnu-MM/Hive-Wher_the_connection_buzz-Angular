@@ -49,15 +49,21 @@ h1{
 #search-input, #search{
   background-color: #f1f1f1;
   color: #023047;
+  border: none;
+  outline: none;
 }
 #search-input {
   height: 100%;
   width: 90%;
+  border: none;
+  outline: none;
 }
 #search-input:focus{
   background-color: #f1f1f1;
   color: #023047;
   box-shadow: none;
+  border: none;
+  outline: none;
 }
 #search-input::placeholder{ color: #023047; }
 #search-btn {
@@ -97,4 +103,7 @@ h2 {
 }
 .fwd-bwd-btn {
   background-color: #023047;
+}
+#table-div {
+  overflow-y: scroll;
 }

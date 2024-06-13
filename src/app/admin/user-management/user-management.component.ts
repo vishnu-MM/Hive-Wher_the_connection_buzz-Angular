@@ -19,6 +19,7 @@ export class UserManagementComponent implements OnInit, OnDestroy{
   private getAllUserSUb!: Subscription;
   private blockUserSub!: Subscription;
   private unblockUserSub!: Subscription;
+  searchText: any;
 
   constructor(public userService: UserService,
               private adminService: AdminService,
@@ -33,7 +34,18 @@ export class UserManagementComponent implements OnInit, OnDestroy{
   }
 
 
-  search() {}
+  search() {
+    if(this.searchText.trim() !== '')
+      this.userService.search(this.searchText.trim())
+      .subscribe({
+        next: res => {
+          const users = this.users;
+          this.users = [...res,...users];
+        },
+        error: err => {console.log(err);
+        }
+      })
+  }
 
   loadUserList() {
     this.getAllUserSUb = this.userService
