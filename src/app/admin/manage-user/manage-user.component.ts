@@ -6,9 +6,9 @@ import { AdminService } from "../../../Shared/Services/admin.service";
 import { Router } from "@angular/router";
 
 @Component({
-    selector: 'user-management',
-    templateUrl: './user-management.component.html',
-    styleUrls: ['./user-management.component.css', '../shared-style.css']
+    selector: 'manage-user.',
+    templateUrl: './manage-user.component.html',
+    styleUrls: ['./manage-user.component.css', '../shared-style.css']
 })
 export class UserManagementComponent implements OnInit, OnDestroy {
     users: User[] = [];

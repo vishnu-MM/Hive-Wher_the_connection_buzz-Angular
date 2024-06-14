@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {AdminRoutingModule} from "./admin-routing.module";
 import {MatIconModule} from "@angular/material/icon";
-import { UserManagementComponent } from './user-management/user-management.component';
+import { UserManagementComponent } from './manage-user/manage-user.component';
 import { PostManagementComponent } from './post-management/post-management.component';
 import { ComplaintsComponent } from './complaints/complaints.component';
 import { FormsModule } from '@angular/forms';

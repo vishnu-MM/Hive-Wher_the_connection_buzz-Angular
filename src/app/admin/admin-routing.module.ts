@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {DashboardComponent} from "./dashboard/dashboard.component";
-import {UserManagementComponent} from "./user-management/user-management.component";
+import {UserManagementComponent} from "./manage-user/manage-user.component";
 import {PostManagementComponent} from "./post-management/post-management.component";
 import { ComplaintsComponent } from './complaints/complaints.component';
 
