@@ -16,22 +16,16 @@
             "outputPath": "dist/hive-app-front-end",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [ "zone.js" ],
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": [ "src/favicon.ico", "src/assets" ],
             "styles": [
               "@angular/material/prebuilt-themes/pink-bluegrey.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
-            "scripts": [
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-            ]
+            "scripts": [ "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" ],
+            "allowedCommonJsDependencies": [ "sockjs-client", "recordrtc" ]
           },
           "configurations": {
             "production": {

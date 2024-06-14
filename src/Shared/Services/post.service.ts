@@ -39,10 +39,10 @@ export class PostService {
     return this.http.get(`${this.BASE_URL}/files/${postId}`, { responseType: 'blob' });
   }
 
-  public getAllPosts(pageNo: number): Observable<PostPage> {
+  public getAllPosts(pageNo: number, pageSize: number): Observable<PostPage> {
     // const headers = this.authHeader();
     // return this.http.get<PostPage>(`${this.BASE_URL}/all-posts?pageNo=${pageNo}&pageSize=8`, { headers });
-    return this.http.get<PostPage>(`${this.BASE_URL}/all-posts?pageNo=${pageNo}&pageSize=8`);
+    return this.http.get<PostPage>(`${this.BASE_URL}/all-posts?pageNo=${pageNo}&pageSize=${pageSize}`);
   }
 
   //   @GetMapping("user-posts")

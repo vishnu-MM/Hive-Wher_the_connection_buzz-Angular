@@ -1,81 +1,90 @@
-import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {User, UserPage} from "../Models/user.model";
-import {Image} from "../Models/image.model";
+import { Injectable, OnDestroy } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, Subscription } from "rxjs";
+import { User, UserPage } from "../Models/user.model";
+import { Image } from "../Models/image.model";
 import { ComplaintsDTO } from "../Models/complaints.model";
 
-@Injectable({ providedIn: 'root'})
-export class UserService {
-  public readonly BASE_URL : string = 'http://localhost:8000/api/user';
-  constructor(private http : HttpClient) {}
+export enum ImageType { COVER_IMAGE, PROFILE_IMAGE }
 
-  private authHeader() : HttpHeaders {
-      const AuthToken = localStorage.getItem("AUTH_TOKEN");
-      if (!AuthToken) { throw new Error("No Token"); }
-      return new HttpHeaders().set('Authorization', `Bearer ${AuthToken}`);
-  }
+@Injectable({ providedIn: 'root' })
+export class UserService implements OnDestroy {
+    public readonly BASE_URL: string = 'http://localhost:8000/api/user';
+    private profilePictureMap: Map<number, string> = new Map<number, string>();
+    private ProfileSubMap = new Map<number, Subscription>();
 
-  // /profile : Get : @RequestHeader(name = "Authorization")
-  public getMyProfile() : Observable<User> {
-      const headers = this.authHeader();
-      return this.http.get<User>(`${this.BASE_URL}/profile`, { headers });
-  }
+    constructor(private http: HttpClient) {}
 
-  // /profile/{id} : Get
-  public getProfileById(id : number) : Observable<User> {
-    const headers = this.authHeader();
-    return this.http.get<User>(`${this.BASE_URL}/profile/${id}`, { headers });
-  }
+    ngOnDestroy(): void {
+        for (const key of this.ProfileSubMap.keys()) {
+            if (this.ProfileSubMap.has(key)) {
+                this.ProfileSubMap.get(key)!.unsubscribe();
+            }
+        }
+    }
 
-  // /update Put @RequestBody UserDTO
-  public updateProfile(user : User) : Observable<User> {
-    const headers = this.authHeader();
-    return this.http.put<User>(`${this.BASE_URL}/update`, user, { headers });
-  }
 
-  // /upload/image Post @RequestParam("image") @RequestParam("type")
-  public uploadProfileImage(file : File, imageType : ImageType ) : Observable<Image> {
-    const headers = this.authHeader();
-    const formData: FormData = new FormData();
-    formData.append('image', file, file.name);
-    formData.append('type', ImageType[imageType]);
-    return this.http.post<Image>(`${this.BASE_URL}/upload/image`, formData, { headers });
-  }
+    public getMyProfile(): Observable<User> {
+        return this.http.get<User>(`${this.BASE_URL}/profile`);
+    }
 
-  // /image Get @RequestParam("userID") @RequestParam("type")
-  public getProfileImage(userId : number, type : ImageType) : Observable<Image> {
-    const headers = this.authHeader();
-    return this.http.get<Image>(`${this.BASE_URL}/image?userID=${userId}&type=${ImageType[type]}`, { headers });
-  }
+    public getProfileById(id: number): Observable<User> {
+        return this.http.get<User>(`${this.BASE_URL}/profile/${id}`);
+    }
 
-  // /exists-profile/{id} Get Boolean
-  public isProfileExists(userId : number) : Observable<Boolean> {
-    const headers = this.authHeader();
-    return this.http.get<Boolean>(`${this.BASE_URL}/exists-profile/${userId}`, { headers });
-  }
+    public updateProfile(user: User): Observable<User> {
+        return this.http.put<User>(`${this.BASE_URL}/update`, user);
+    }
 
-  // /user-count Get Number
-  public getUserCount() : Observable<Number> {
-    const headers = this.authHeader();
-    return this.http.get<Number>(`${this.BASE_URL}/user-count`, { headers });
-  }
+    public uploadProfileImage(file: File, imageType: ImageType): Observable<Image> {
+        const formData: FormData = new FormData();
+        formData.append('image', file, file.name);
+        formData.append('type', ImageType[imageType]);
+        return this.http.post<Image>(`${this.BASE_URL}/upload/image`, formData);
+    }
 
-  public getAllUsers(pageNo: number) : Observable<UserPage> {
-    const headers = this.authHeader();
-    const pageSize = 12;
-    return this.http.get<UserPage>(`${this.BASE_URL}/all-users?pageNo=${pageNo}&pageSize=${pageSize}`,{ headers });
-  }
+    public getProfileImage(userId: number, type: ImageType): Observable<Image> {
+        return this.http.get<Image>(`${this.BASE_URL}/image?userID=${userId}&type=${ImageType[type]}`);
+    }
 
-  public search(searchText : string) : Observable<User[]> {
-    return this.http.get<User[]>(`${this.BASE_URL}/search?searchQuery=${searchText}`);
-  }
+    public isProfileExists(userId: number): Observable<Boolean> {
+        return this.http.get<Boolean>(`${this.BASE_URL}/exists-profile/${userId}`);
+    }
 
-  public reportAUser(complaintsDTO: ComplaintsDTO): Observable<void> {
-    console.log(complaintsDTO);
-    return this.http.post<void>(`${this.BASE_URL}/report-user`, complaintsDTO);
-  }
+    // /user-count Get Number
+    public getUserCount(): Observable<Number> {
+        return this.http.get<Number>(`${this.BASE_URL}/user-count`);
+    }
 
+    public getAllUsers(pageNo: number, pageSize: number): Observable<UserPage> {
+        return this.http.get<UserPage>(`${this.BASE_URL}/all-users?pageNo=${pageNo}&pageSize=${pageSize}`);
+    }
+
+    public search(searchText: string): Observable<User[]> {
+        return this.http.get<User[]>(`${this.BASE_URL}/search?searchQuery=${searchText}`);
+    }
+
+    public reportAUser(complaintsDTO: ComplaintsDTO): Observable<void> {
+        return this.http.post<void>(`${this.BASE_URL}/report-user`, complaintsDTO);
+    }
+
+    async loadProfilePiture(userList: User[], imageType: ImageType): Promise<Map<number, string>> {
+        for (let user of userList) {
+            if (this.ProfileSubMap.has(user.id!)) {
+                this.ProfileSubMap.get(user.id!)!.unsubscribe();
+            }
+            this.getProfileImage(user.id!, imageType)
+                .subscribe({
+                    next: res => {
+                        const imageUrl = 'data:image/png;base64,' + res.image;
+                        this.profilePictureMap.set(user.id!, imageUrl);
+                    },
+                    error: (error) => {
+                        const imageUrl = 'assets/no-profile-image.jpg';
+                        this.profilePictureMap.set(user.id!, imageUrl);
+                    }
+                })
+        }
+        return this.profilePictureMap;
+    }
 }
-
-export enum ImageType { COVER_IMAGE,PROFILE_IMAGE }

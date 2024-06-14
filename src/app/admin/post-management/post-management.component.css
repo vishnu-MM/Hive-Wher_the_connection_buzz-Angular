@@ -4,36 +4,6 @@ article {
   width: 100%;
 }
 
-/* Side Nav Bar */
-#side-nav-bar {
-  position: fixed;
-  z-index: 2;
-  height: 100%;
-  width: 15%;
-  background-color: #023047;
-}
-#side-nav-bar * {
-  background-color: #023047;
-}
-#logo-div {
-  height: 10%;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-#nav-links{
-  height: 80%;
-  width: 100%;
-}
-.nav-link {
-  width: 90%;
-  cursor: pointer;
-}
-#logout-div {
-  height: 10%;
-  width: 100%;
-  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-}
-
 /* Top Nav Bar */
 #top-nav-bar-aligner {
   position: sticky;
@@ -85,4 +55,7 @@ section {
 }
 .fwd-bwd-btn {
   background-color: #023047;
+}
+#table-div {
+  overflow-y: scroll;
 }

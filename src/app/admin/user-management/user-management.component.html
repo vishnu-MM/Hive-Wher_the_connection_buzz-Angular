@@ -1,127 +1,112 @@
-<nav id="side-nav-bar">
-  <div id="logo-div" class="d-flex justify-content-center align-items-center">
-    <span class="display-4 text-light">H<span class="text-warning">i</span>ve</span>
-  </div>
-
-  <div id="nav-links" class="mt-1">
-    <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/dashboard">
-      <span class="h5 ms-4 text-light">Dashboard</span>
-    </div>
-    <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/users">
-      <span class="h5 ms-4 text-light">Users</span>
-    </div>
-    <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/posts">
-      <span class="h5 ms-4 text-light">Content Monitor</span>
-    </div>
-    <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/complaints">
-      <span class="h5 ms-4 text-light">Reports & Complaints</span>
-    </div>
-    <div class="nav-link d-flex justify-content-start border-black py-4 m-1">
-      <span class="h5 ms-4 text-light">Profile</span>
-    </div>
-  </div>
-
-  <div id="logout-div" class="d-flex justify-content-center align-items-center" (click)="logout()">
-    <span class="h4 m-0 text-danger" style="cursor: pointer;">Log out</span>
-  </div>
-</nav>
-
+<!--  SIDE NAV BAR STARTS HERE -->
+<side-bar></side-bar>
+<!--  SIDE NAV BAR ENDS HERE -->
 <article>
-  <!--  TOP NAV BAR STARTS HERE -->
-  <div id="top-nav-bar-aligner" class="d-flex justify-content-end">
-    <nav id="top-nav-bar" class="d-flex justify-content-between align-items-center px-5">
-      <span class="m-0 display-6">User Management</span>
-      <div id="search" style="width: 30%; height: 60%"
-           class="form-control rounded-5 p-0 d-flex  align-items-center">
-        <input type="text"
-               id="search-input"
-               name="search"
-               placeholder="Search here"
-               [(ngModel)]="searchText"
-               class="form-control rounded-5 d-flex justify-content-between align-items-center">
-        <button type="button"
-                id="search-btn"
-                (click)="search()"
-                class="btn me-1 rounded-5 d-flex justify-content-center align-items-center p-2">
-          <mat-icon aria-hidden="false"
-                    aria-label="search"
-                    fontIcon="search"
-                    style="background: #023047; color: white">
-          </mat-icon>
-        </button>
-      </div>
-    </nav>
-  </div>
-  <!--  TOP NAV BAR ENDS HERE -->
+    <!--  TOP NAV BAR STARTS HERE -->
+    <top-bar [isSearchResultShowing]="isSearchResultShowing"
+             (clear)="loadUserList()"
+             (search)="search($event)">
+    </top-bar>
+    <!--  TOP NAV BAR ENDS HERE -->
 
-  <!--  MAIN CONTENT SPACE STARTS HERE -->
-  <section class="d-flex justify-content-end align-items-center">
-      <div id="content-div" class="me-4 card">
-          <div id="table-div" class="content-body rounded border border-end-0 border-start-0 px-5 py-2">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col"><h2>Username</h2></th>
-                        <th scope="col"><h2>Name</h2></th>
-                        <th scope="col"><h2>Email</h2></th>
-                        <th scope="col"><h2>Phone</h2></th>
-                        <th scope="col"><h2>joinDate</h2></th>
-                        <th scope="col"><h2>Block/Unblock</h2></th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <tr *ngFor="let user of users">
-                      <td><h3 class="m-0">@{{ user.username }}</h3></td>
-                      <td><h3 class="m-0">{{ user.name }}</h3></td>
-                      <td><h3 class="m-0">{{ user.email }}</h3></td>
-                      <td><h3 class="m-0">{{ user.phone }}</h3></td>
-                      <td><h3 class="m-0">{{ user.joinDate }}</h3></td>
-                      <td>
-                        <button type="button"
-                                *ngIf="!user.isBlocked"
-                                class="btn btn-warning"
-                                (click)="blockUser(user.id)">
-                                Block
-                        </button>
-                        <button type="button"
-                                *ngIf="user.isBlocked"
-                                class="btn btn-success text-black"
-                                (click)="unblockUser(user.id)">
-                                Un Block
-                        </button>
-                      </td>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-          <div class="content-footer rounded d-flex justify-content-between align-items-center px-5">
-            <div>
-              <button type="button"
-                      [disabled]="pageNo <= 0"
-                      class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
-                      (click)="pageNo = pageNo -1; loadUserList()">
-                      <mat-icon aria-hidden="false"
-                                aria-label="arrow_back_ios"
-                                style="background: #023047; color: white"
-                                fontIcon="arrow_back_ios">
-                      </mat-icon>
-              </button>
+    <!--  MAIN CONTENT SPACE STARTS HERE -->
+    <section>
+        <div id="content-div" class="me-4 card">
+            <div class="content-body rounded border border-end-0 border-start-0 px-5"
+                [class]="{'scrollable': !(isSearchResultShowing && users.length === 0)}">
+                <table class="table my-2">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <h2>Profile</h2>
+                            </th>
+                            <th scope="col">
+                                <h2>Username</h2>
+                            </th>
+                            <th scope="col">
+                                <h2>Name</h2>
+                            </th>
+                            <th scope="col">
+                                <h2>Email</h2>
+                            </th>
+                            <th scope="col">
+                                <h2>Phone</h2>
+                            </th>
+                            <th scope="col">
+                                <h2>joinDate</h2>
+                            </th>
+                            <th scope="col" class="table-content">
+                                <h2>Block/Unblock</h2>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of users">
+                            <td>
+                                <img [src]="profileMap.get(user.id!)"
+                                     alt="Profile"
+                                     id="profile-picture">
+                            </td>
+                            <td>
+                                <h3>@{{ user.username }}</h3>
+                            </td>
+                            <td>
+                                <h3 [class]="{'text-muted' : !user.name}">
+                                    {{ user.name? user.name : 'User Name' }}
+                                </h3>
+                            </td>
+                            <td>
+                                <h3>{{ user.email }}</h3>
+                            </td>
+                            <td>
+                                <h3 [class]="{'text-muted' : !user.phone}">
+                                    {{ user.phone? user.phone : 'Phone Number' }}
+                                </h3>
+                            </td>
+                            <td>
+                                <h3>{{ user.joinDate | date:"dd MMM yyy" }}</h3>
+                            </td>
+                            <td class="table-content">
+                                <button type="button"
+                                        *ngIf="!user.isBlocked" class="btn btn-warning"
+                                        (click)="blockUser(user.id)">
+                                        Block
+                                </button>
+                                <button type="button"
+                                        *ngIf="user.isBlocked" class="btn btn-success text-black"
+                                        (click)="unblockUser(user.id)">
+                                        Un Block
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="no-result" *ngIf="isSearchResultShowing && users.length === 0">
+                    <h2>No Result Found</h2>
+                </div>
             </div>
-            <div>{{pageNo+1}} out of {{totalPages}}</div>
-            <div>
-              <button type="button"
-                      [disabled]="isLast"
-                      class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
-                      (click)="pageNo = pageNo +1; loadUserList()">
-                      <mat-icon aria-hidden="false"
-                                aria-label="arrow_forward_ios"
-                                style="background: #023047; color: white"
-                                fontIcon="arrow_forward_ios">
-                      </mat-icon>
-              </button>
+            <div class="content-footer rounded d-flex justify-content-between align-items-center px-5">
+                <div>
+                    <button type="button" [disabled]="pageNo <= 0"
+                        class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
+                        (click)="pageNo = pageNo -1; loadUserList()">
+                        <mat-icon aria-hidden="false" aria-label="arrow_back_ios"
+                            style="background: #023047; color: white" fontIcon="arrow_back_ios">
+                        </mat-icon>
+                    </button>
+                </div>
+                <div>{{pageNo+1}} out of {{totalPages}}</div>
+                <div>
+                    <button type="button" [disabled]="isLast"
+                        class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
+                        (click)="pageNo = pageNo +1; loadUserList()">
+                        <mat-icon aria-hidden="false" aria-label="arrow_forward_ios"
+                            style="background: #023047; color: white" fontIcon="arrow_forward_ios">
+                        </mat-icon>
+                    </button>
+                </div>
             </div>
-          </div>
-      </div>
-  </section>
-  <!--  MAIN CONTENT SPACE ENDS HERE -->
+        </div>
+    </section>
+    <!--  MAIN CONTENT SPACE ENDS HERE -->
 </article>

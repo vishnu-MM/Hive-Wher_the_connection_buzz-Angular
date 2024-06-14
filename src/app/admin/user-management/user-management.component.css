@@ -1,77 +1,14 @@
-*{ background-color: white; }
+* {
+  background-color: white;
+}
 article {
   height: 100%;
   width: 100%;
 }
-
-/* Side Nav Bar */
-#side-nav-bar {
-  position: fixed;
-  height: 100%;
-  width: 15%;
-  background-color: #023047;
-}
-#side-nav-bar * {
-  background-color: #023047;
-}
-#logo-div {
-  height: 10%;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-#nav-links{
-  height: 80%;
-  width: 100%;
-}
-.nav-link {
-  width: 90%;
-  cursor: pointer;
-}
-#logout-div {
-  height: 10%;
-  width: 100%;
-  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Top Nav Bar */
-#top-nav-bar-aligner {
-  height: 10%;
-}
-#top-nav-bar {
-  width: 85%;
-  height: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-h1{
-  color : #023047;
-  font-weight: bold;
-}
-#search-input, #search{
-  background-color: #f1f1f1;
-  color: #023047;
-  border: none;
-  outline: none;
-}
-#search-input {
-  height: 100%;
-  width: 90%;
-  border: none;
-  outline: none;
-}
-#search-input:focus{
-  background-color: #f1f1f1;
-  color: #023047;
-  box-shadow: none;
-  border: none;
-  outline: none;
-}
-#search-input::placeholder{ color: #023047; }
-#search-btn {
-  background-color: #023047;
-}
-
-
 section {
+  display: flex;
+  justify-content: end;
+  align-items: center;
   width: 100%;
   height: 90%;
   background-color: #e2e1e1;
@@ -80,10 +17,6 @@ section {
   width: 80%;
   height: 95%;
 }
-/*.content-header {*/
-/*    height: 10%;*/
-/*    width: 100%;*/
-/*}*/
 .content-body {
   height: 90%;
   width: 100%;
@@ -94,16 +27,38 @@ section {
 }
 
 #profile-picture {
-    height: 50px;
-    aspect-ratio: 1;
+  height: 50px;
+  aspect-ratio: 1;
 }
-h2 {
+h2,
+h3 {
   margin: 0;
   padding: 0;
 }
 .fwd-bwd-btn {
   background-color: #023047;
 }
-#table-div {
-  overflow-y: scroll;
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1; /* Make sure it is above other content */
+  border-bottom: 2px solid #023047;
+}
+th,td {
+  text-align: center;
+  vertical-align: middle;
+}
+#profile-picture {
+    aspect-ratio: 1;
+    object-fit: contain;
+    border: 1px solid #023047;
+    border-radius: 50%;
+    background-color: white;
+}
+#no-result {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

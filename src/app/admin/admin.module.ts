@@ -7,13 +7,19 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { PostManagementComponent } from './post-management/post-management.component';
 import { ComplaintsComponent } from './complaints/complaints.component';
 import { FormsModule } from '@angular/forms';
+import { PostImageComponent } from './post-image/post-image.component';
+import { SideBarComponent } from './side-bar/side-bar.component';
+import { TopBarComponent } from './top-bar/top-bar.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     UserManagementComponent,
     PostManagementComponent,
-    ComplaintsComponent
+    ComplaintsComponent,
+    PostImageComponent,
+    SideBarComponent,
+    TopBarComponent
   ],
     imports: [
         CommonModule,

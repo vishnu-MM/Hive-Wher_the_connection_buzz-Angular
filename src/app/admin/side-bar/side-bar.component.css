@@ -1,0 +1,28 @@
+/* Side Nav Bar */
+#side-nav-bar {
+    position: fixed;
+    height: 100%;
+    width: 15%;
+    background-color: #023047;
+}
+#side-nav-bar * {
+  background-color: #023047;
+}
+#logo-div {
+    height: 10%;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+#nav-links{
+    height: 80%;
+    width: 100%;
+}
+.nav-link {
+    width: 90%;
+  cursor: pointer;
+}
+#logout-div {
+    height: 10%;
+    width: 100%;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}

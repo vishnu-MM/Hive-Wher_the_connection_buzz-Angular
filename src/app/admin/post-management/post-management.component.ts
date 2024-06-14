@@ -37,7 +37,7 @@ export class PostManagementComponent implements OnInit, OnDestroy{
 
   loadPosts() {
     this.loadPostsSub = this.postService
-      .getAllPosts(this.pageNo)
+      .getAllPosts(this.pageNo, 10)
       .subscribe({
           next: value => {
             this.postPage = value
