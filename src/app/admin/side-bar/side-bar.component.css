@@ -1,28 +1,39 @@
 /* Side Nav Bar */
 #side-nav-bar {
-    position: fixed;
-    height: 100%;
-    width: 15%;
-    background-color: #023047;
+  position: fixed;
+  height: 100%;
+  width: 15%;
+  background-color: #023047;
 }
-#side-nav-bar * {
+#side-nav-bar {
   background-color: #023047;
 }
 #logo-div {
-    height: 10%;
-    width: 100%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 10%;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-#nav-links{
-    height: 80%;
-    width: 100%;
+#nav-links {
+  height: 80%;
+  width: 100%;
 }
 .nav-link {
-    width: 90%;
+  width: 100%;
   cursor: pointer;
+  display: flex;
+  justify-content: start;
+  padding-left: 5%;
 }
 #logout-div {
-    height: 10%;
-    width: 100%;
-    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+  height: 10%;
+  width: 100%;
+  box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+.active {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 -4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+span {
+  margin: 0;
 }

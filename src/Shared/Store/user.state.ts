@@ -10,5 +10,6 @@ export const UserState: User = {
   aboutMe: "",
   role: Role.USER,
   joinDate: new Date(),
-  isBlocked : false
+  isBlocked : false,
+  isVerified: true
 };

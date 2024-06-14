@@ -10,7 +10,7 @@ import { Router } from "@angular/router";
     templateUrl: './manage-user.component.html',
     styleUrls: ['./manage-user.component.css', '../shared-style.css']
 })
-export class UserManagementComponent implements OnInit, OnDestroy {
+export class ManageUsersComponent implements OnInit, OnDestroy {
     users: User[] = [];
     pageNo: number = 0;
     totalPages: number = 0;
@@ -102,5 +102,9 @@ export class UserManagementComponent implements OnInit, OnDestroy {
                     error: err => { }
                 });
         }
+    }
+
+    redireactTo(userId: number) {
+        this.router.navigate(['/a/users/user',userId])
     }
 }

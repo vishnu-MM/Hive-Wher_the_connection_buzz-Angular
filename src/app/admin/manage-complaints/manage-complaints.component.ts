@@ -8,10 +8,13 @@ import { UserService } from 'src/Shared/Services/user.service';
 
 @Component({
 	selector: 'app-complaints',
-	templateUrl: './complaints.component.html',
-	styleUrls: ['./complaints.component.css']
+	templateUrl: './manage-complaints.component.html',
+	styleUrls: ['./manage-complaints.component.css', '../shared-style.css']
 })
-export class ComplaintsComponent implements OnInit, OnDestroy {
+export class ManageComplaintsComponent implements OnInit, OnDestroy {
+loadUserList() {
+throw new Error('Method not implemented.');
+}
 	complaints: ComplaintsDTO[] = [];
 	pageNo: number = 0;
 	pageSize: number = 10;
@@ -23,6 +26,7 @@ export class ComplaintsComponent implements OnInit, OnDestroy {
 	blockUserSub: any;
 	users: any;
 	unblockUserSub: any;
+    isSearchResultShowing: boolean = false;
 
 	constructor(private adminService: AdminService,
 		private router: Router,
@@ -45,14 +49,13 @@ export class ComplaintsComponent implements OnInit, OnDestroy {
 					this.complaintsPage = res
 					this.totalPages = res.totalPages;
 					this.isLast = res.isLast;
-					console.log(res);
 					this.loadUserDetails().then()
 				},
 				error: err => { }
 			})
 	}
 
-	search() {
+	search(event: any) {
 		throw new Error('Method not implemented.');
 	}
 
@@ -73,14 +76,10 @@ export class ComplaintsComponent implements OnInit, OnDestroy {
 			this.userService.getProfileById(userID)
 				.subscribe({
 					next: res => {
-						console.log(res);
-						if (!this.userDetailsMap.has(userID)) {
+						if (!this.userDetailsMap.has(userID))
 							this.userDetailsMap.set(userID, res);
-						}
 					},
-					error: err => {
-						console.log(err);
-					}
+					error: err => { console.log(err); }
 				});
 
 		}

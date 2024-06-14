@@ -1,0 +1,142 @@
+<!--  SIDE NAV BAR STARTS HERE -->
+<side-bar></side-bar>
+<!--  SIDE NAV BAR ENDS HERE -->
+<article>
+    <section>
+        <div id="content-div" class="me-4">
+            <div class="container">
+                <div class="row">
+                    <div class="left col-md-6 col-12 card p-0 rounded">
+                        <div id="profile">
+                            <div>
+                                <div id="cover-pic" class="img-basics rounded"
+                                    [style.background-image]="'url(' + coverPicture + ')'">
+                                    <div id="profile-pic" class="img-basics"
+                                        [style.background-image]="'url(' + profilePicture + ')'"></div>
+                                </div>
+                            </div>
+
+                            <div id="profile-details">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <h3 class="title">Username</h3>
+                                            </td>
+                                            <td>
+                                                <h3> @{{ user.username }} </h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h3 class="title">Name</h3>
+                                            </td>
+                                            <td>
+                                                <h3 [class]="{'text-muted' : !user.name}">
+                                                    {{ user.name? user.name : 'Not Provided' }}
+                                                </h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h3 class="title">Email</h3>
+                                            </td>
+                                            <td>
+                                                <h3> {{ user.email }} </h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h3 class="title">Phone</h3>
+                                            </td>
+                                            <td>
+                                                <h3 [class]="{'text-muted' : !user.phone}">
+                                                    {{ user.phone? user.phone : 'Not Provided' }}
+                                                </h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h3 class="title">Bio</h3>
+                                            </td>
+                                            <td>
+                                                <h3 [class]="{'text-muted' : !user.aboutMe}">
+                                                    {{ user.aboutMe? user.aboutMe : 'Not Provided' }}
+                                                </h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h3 class="title">Joined On</h3>
+                                            </td>
+                                            <td>
+                                                <h3> {{ user.joinDate | date:'dd MMMM yyyy' }} </h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h3 class="title">Verification Status</h3>
+                                            </td>
+                                            <td>
+                                                <h3 [class]="{'text-success' : user.isVerified, 'text-danger': !user.isVerified}">
+                                                    Verification {{ user.isVerified? ' Complete' : 'Pending' }}
+                                                </h3>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" id="block-btn">
+                                                <button type="button"
+                                                        class="btn text-black h2 m-0"
+                                                        [class]="{'btn-danger': (!user.isBlocked), 'btn-success': (user.isBlocked)}"
+                                                        (click)="toggleBlockOrUnblock()">
+                                                    {{ user.isBlocked? 'Un Block' : 'Block' }}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- POSTS STARTS -->
+                    <div class="right col-md-6 col-12 card rounded scrollable">
+                        <div class="loading-div" *ngIf="(posts.length === 0 || postFileMap.size === 0 || (postFileMap.size !== posts.length)) && !isPostCountZero">
+                            <div class="loader"></div>
+                        </div>
+                        <div class="loading-div" *ngIf="isPostCountZero">
+                            <h3>No Posts posted yet</h3>
+                        </div>
+                        <div *ngIf="!(posts.length === 0 || postFileMap.size === 0 || (postFileMap.size !== posts.length)) && !isPostCountZero">
+                            <div id="post-list-view" class="px-0 py-3" *ngFor="let post of posts">
+                                <div class="my-3 mx-md-5">
+                                    <span class="h6">{{ post.description }} {{ getPostDate(post.createdOn) | date:'dd MMM yyy hh:mm a' }}</span>
+                                </div>
+                                <div *ngIf="post.postType.toString() === 'IMAGE'"
+                                    class="post rounded mx-md-5 img-basics"
+                                    [class]="{'no-post' : (!postFileMap.has(post.id))}"
+                                    [class]="postFileMap.get(post.id)!.aspectRatio"
+                                    [style.background-image]="'url('+postFileMap.get(post.id)!.fileString+')'">
+                                </div>
+
+                                <div *ngIf="post.postType.toString() === 'VIDEO'">
+                                    <video [src]="postFileMap.get(post.id)!.fileString"
+                                        [class]="postFileMap.get(post.id)!.aspectRatio"
+                                        controls
+                                        class="post rounded-3 mx-md-5 img-basics">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</article>

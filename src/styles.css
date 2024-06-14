@@ -47,3 +47,24 @@ body {
 *::-webkit-scrollbar-button {
   display: none;
 }
+.loader {
+    border: 5px solid #87f7a9;
+    border-top: 5px solid #404040;
+    border-radius: 50%;
+    width: 50px;
+    aspect-ratio: 1;
+    animation: spin 2s linear infinite;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .loading-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

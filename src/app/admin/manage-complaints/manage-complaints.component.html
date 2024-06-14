@@ -1,0 +1,92 @@
+<!--  SIDE NAV BAR STARTS HERE -->
+<side-bar></side-bar>
+<!--  SIDE NAV BAR ENDS HERE -->
+<article>
+    <!--  TOP NAV BAR STARTS HERE -->
+    <top-bar [isSearchResultShowing]="isSearchResultShowing"
+             (clear)="loadUserList()"
+             (search)="search($event)">
+    </top-bar>
+    <!--  TOP NAV BAR ENDS HERE -->
+
+    <!--  MAIN CONTENT SPACE STARTS HERE -->
+    <section>
+        <div id="content-div" class="me-4 card">
+            <div class="content-body rounded border border-end-0 border-start-0 px-5"
+                [class]="{'scrollable': !(isSearchResultShowing && users.length === 0)}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <h2>Date</h2>
+                            </th>
+                            <th scope="col">
+                                <h2>Reporting User</h2>
+                            </th>
+                            <th scope="col">
+                                <h2>Reported User</h2>
+                            </th>
+                            <th scope="col">
+                                <h2>Description</h2>
+                            </th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr *ngFor="let complaint of complaints">
+                            <td>
+                                <h3 class="m-0">{{ complaint.date | date:'dd MMM yyyy' }}</h3>
+                            </td>
+                            <td>
+                                <h3 class="m-0"><user-pill [UserID]="complaint.senderId"></user-pill></h3>
+                            </td>
+                            <td>
+                                <h3 class="m-0"><user-pill [UserID]="complaint.reportedUser"></user-pill></h3>
+                            </td>
+                            <td>
+                                <h3 class="m-0">{{ complaint.description }}</h3>
+                            </td>
+                            <td>
+                                <button type="button" *ngIf="!userDetailsMap.get(complaint.reportedUser)?.isBlocked"
+                                    class="btn btn-warning"
+                                    (click)="blockUser(userDetailsMap.get(complaint.reportedUser)?.id!)">
+                                    Block
+                                </button>
+                                <button type="button" *ngIf="userDetailsMap.get(complaint.reportedUser)?.isBlocked"
+                                    class="btn btn-success text-black"
+                                    (click)="unblockUser(userDetailsMap.get(complaint.reportedUser)?.id!)">
+                                    Un Block
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="no-result" *ngIf="isSearchResultShowing && users.length === 0">
+                    <h2>No Result Found</h2>
+                </div>
+            </div>
+            <div class="content-footer rounded d-flex justify-content-between align-items-center px-5">
+                <div>
+                    <button type="button" [disabled]="pageNo <= 0"
+                        class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
+                        (click)="pageNo = pageNo -1; loadNextpage()">
+                        <mat-icon aria-hidden="false" aria-label="arrow_back_ios"
+                            style="background: #023047; color: white" fontIcon="arrow_back_ios">
+                        </mat-icon>
+                    </button>
+                </div>
+                <div>{{pageNo+1}} out of {{totalPages}}</div>
+                <div>
+                    <button type="button" [disabled]="isLast"
+                        class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
+                        (click)="pageNo = pageNo +1; loadNextpage()">
+                        <mat-icon aria-hidden="false" aria-label="arrow_forward_ios"
+                            style="background: #023047; color: white" fontIcon="arrow_forward_ios">
+                        </mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--  MAIN CONTENT SPACE ENDS HERE -->
+</article>

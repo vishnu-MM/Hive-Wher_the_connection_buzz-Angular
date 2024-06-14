@@ -174,7 +174,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewInit {
                         resolve(imageUrl);
                     },
                     error: (error) => {
-                        resolve('assets/Screenshot%202024-04-29%20152644.png');
+                        resolve('assets/no-profile-image.jpg');
                     }
                 });
             this.getProfileSubs.set(userId, subscription);

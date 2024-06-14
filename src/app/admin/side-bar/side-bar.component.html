@@ -3,21 +3,29 @@
         <span class="display-4 text-light">H<span class="text-warning">i</span>ve</span>
     </div>
 
-    <div id="nav-links" class="mt-1">
-        <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/dashboard">
-            <span class="h5 ms-4 text-light">Dashboard</span>
+    <div id="nav-links">
+        <div class="nav-link py-4 "
+             [class]="{'active': currentPage === CurrentPage.DASHBOARD}"
+             routerLink="/a/dashboard">
+            <span class="h5 text-light">Dashboard</span>
         </div>
-        <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/users">
-            <span class="h5 ms-4 text-light">Users</span>
+        <div class="nav-link border-black py-4 "
+             [class]="{'active': currentPage === CurrentPage.USER_MANAGEMENT}"
+             routerLink="/a/users">
+            <span class="h5 text-light">Users</span>
         </div>
-        <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/posts">
-            <span class="h5 ms-4 text-light">Content Monitor</span>
+        <div class="nav-link border-black py-4 "
+             [class]="{'active': currentPage === CurrentPage.POST_MANAGEMENT}"
+             routerLink="/a/posts">
+            <span class="h5 text-light">Content Monitor</span>
         </div>
-        <div class="nav-link d-flex justify-content-start border-black py-4 m-1" routerLink="/a/complaints">
-            <span class="h5 ms-4 text-light">Reports & Complaints</span>
+        <div class="nav-link border-black py-4 "
+             [class]="{'active': (currentPage === CurrentPage.COMPLAINT_MANAGEMENT)}"
+             routerLink="/a/complaints">
+            <span class="h5 text-light">Reports & Complaints</span>
         </div>
-        <div class="nav-link d-flex justify-content-start border-black py-4 m-1">
-            <span class="h5 ms-4 text-light">Profile</span>
+        <div class="nav-link border-black py-4 ">
+            <span class="h5 text-light">Profile</span>
         </div>
     </div>
 

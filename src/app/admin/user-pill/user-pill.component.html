@@ -1,0 +1,13 @@
+<div class="loading-div p-3" *ngIf="profilePicture === '' && username === ''">
+    <div class="loader" ></div>
+</div>
+<div id="outer-div"
+    class="rounded-5"
+    *ngIf="profilePicture !== '' && username !== ''"
+    (click)="redireactTo()">
+    <img [src]="profilePicture" alt="Profile Picture">
+    <div id="inner-div">
+        <span id="username"> {{ username }} </span>
+        <span id="userName"> {{ userName? userName : 'User' }} </span>
+    </div>
+</div>

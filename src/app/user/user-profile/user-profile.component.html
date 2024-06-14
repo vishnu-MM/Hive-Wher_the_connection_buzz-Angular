@@ -28,7 +28,6 @@
   </div>
 </ng-template>
 
-
 <div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
 
 <article>
@@ -88,8 +87,8 @@
 					</video>
 				</div>
 			</div>
-			<!-- todo ======================================================================================= -->
-			<div id="post-list-view" [class]="{ 'd-none': !showListView,}" *ngFor="let post of posts">
+
+            <div id="post-list-view" [class]="{ 'd-none': !showListView,}" *ngFor="let post of posts">
 				<div class="d-flex align-items-center">
 					<img [src]="profilePicture"
 					     alt="user profile picture"
@@ -122,7 +121,6 @@
 
 				<div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
 			</div>
-			<!-- todo ======================================================================================= -->
 		</div>
 	</section>
 </article>

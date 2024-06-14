@@ -10,6 +10,7 @@ export interface User {
   role : Role;
   joinDate : Date;
   isBlocked : boolean;
+  isVerified: boolean;
 }
 export interface UserPage{
   contents : User[];

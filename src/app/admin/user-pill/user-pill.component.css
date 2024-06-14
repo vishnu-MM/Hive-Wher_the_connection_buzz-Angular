@@ -1,0 +1,28 @@
+#outer-div {
+  background-color: rgba(2, 48, 71, 0.9);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 3%;
+}
+#inner-div {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+}
+#username {
+  color: white;
+  font-weight: bold;
+}
+#userName {
+  color: white;
+  font-weight: lighter;
+}
+img {
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 50%;
+  max-width: 50px;
+  margin-right: 3%;
+}

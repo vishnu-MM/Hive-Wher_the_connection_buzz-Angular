@@ -4,7 +4,7 @@ import {User} from "./user.model";
 export interface Post {
   id: number;
   description: string;
-  firstName: string;
+  fileName: string;
   fileType: string;
   filePath: string;
   createdOn: Timestamp<string>;

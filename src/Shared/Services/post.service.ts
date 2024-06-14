@@ -1,181 +1,139 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { CommentDTO, CommentRequestDTO, Like, LikeRequest, Post, PostCreation, PostPage } from "../Models/post.model";
+import { CommentDTO, CommentRequestDTO, Like, LikeRequest, Post, PostCreation, PostPage, PostType } from "../Models/post.model";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
+
+export interface PostFile {
+    postId: number;
+    fileString: string;
+    fileType: PostType;
+    aspectRatio: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
-  public readonly BASE_URL: string = 'http://localhost:8000/api/post';
-  constructor(private http: HttpClient) { }
+    public readonly BASE_URL: string = 'http://localhost:8000/api/post';
+    private postFileSubMap: Map<number, Subscription> = new Map<number, Subscription>();
+    private postFileMap: Map<number, PostFile> = new Map<number, PostFile>();
 
-  // private authHeader(): HttpHeaders {
-  //   const AuthToken = localStorage.getItem("AUTH_TOKEN");
-  //   if (!AuthToken) { throw new Error("No Token"); }
-  //   return new HttpHeaders().set('Authorization', `Bearer ${AuthToken}`);
-  // }
 
-  public createPost(file: File, postRequest: PostCreation): Observable<Post> {
-    // const headers = this.authHeader();
 
-    const formData: FormData = new FormData();
-    formData.append('file', file, file.name);
-    formData.append('description', postRequest.description);
-    formData.append('postType', postRequest.postType.toString());
-    formData.append('userId', postRequest.userId.toString());
+    constructor(private http: HttpClient) { }
 
-    return this.http.post<Post>(`${this.BASE_URL}/create`, formData);
-    // return this.http.post<Post>(`${this.BASE_URL}/create`, formData, { headers });
-  }
+    public createPost(file: File, postRequest: PostCreation): Observable<Post> {
+        const formData: FormData = new FormData();
+        formData.append('file', file, file.name);
+        formData.append('description', postRequest.description);
+        formData.append('postType', postRequest.postType.toString());
+        formData.append('userId', postRequest.userId.toString());
+        return this.http.post<Post>(`${this.BASE_URL}/create`, formData);
+    }
 
-  public getRandomPosts(): Observable<Post[]> {
-    // const headers = this.authHeader();
-    // return this.http.get<Post[]>(`${this.BASE_URL}/random?pageNo=0&pageSize=20`, { headers });
-    return this.http.get<Post[]>(`${this.BASE_URL}/random?pageNo=0&pageSize=20`);
-  }
+    public getRandomPosts(): Observable<Post[]> {
+        return this.http.get<Post[]>(`${this.BASE_URL}/random?pageNo=0&pageSize=20`);
+    }
 
-  public getImage(postId: number): Observable<Blob> {
-    // const headers = this.authHeader();
-    // return this.http.get(`${this.BASE_URL}/files/${postId}`, { headers, responseType: 'blob' });
-    return this.http.get(`${this.BASE_URL}/files/${postId}`, { responseType: 'blob' });
-  }
+    public getImage(postId: number): Observable<Blob> {
+        return this.http.get(`${this.BASE_URL}/files/${postId}`, { responseType: 'blob' });
+    }
 
-  public getAllPosts(pageNo: number, pageSize: number): Observable<PostPage> {
-    // const headers = this.authHeader();
-    // return this.http.get<PostPage>(`${this.BASE_URL}/all-posts?pageNo=${pageNo}&pageSize=8`, { headers });
-    return this.http.get<PostPage>(`${this.BASE_URL}/all-posts?pageNo=${pageNo}&pageSize=${pageSize}`);
-  }
+    public getAllPosts(pageNo: number, pageSize: number): Observable<PostPage> {
+        return this.http.get<PostPage>(`${this.BASE_URL}/all-posts?pageNo=${pageNo}&pageSize=${pageSize}`);
+    }
 
-  //   @GetMapping("user-posts")
-  //   public ResponseEntity<List<PostDTO>> getUserPosts(@RequestParam("userId") Long userId){
-  //   return new ResponseEntity<>(service.getUserPosts(userId), HttpStatus.OK);
-  // }
+    public getUserPosts(userId: number): Observable<Post[]> {
+        return this.http.get<Post[]>(`${this.BASE_URL}/user-posts`, { params: { userId: userId.toString() } });
+    }
 
-  public getUserPosts(userId: number): Observable<Post[]> {
-    // const headers = this.authHeader();
-    // return this.http.get<Post[]>(`${this.BASE_URL}/user-posts`, { headers, params: { userId: userId.toString() } });
-    return this.http.get<Post[]>(`${this.BASE_URL}/user-posts`, { params: { userId: userId.toString() } });
-  }
+    public getPost(postId: number): Observable<Post> {
+        return this.http.get<Post>(`${this.BASE_URL}/single-post`, { params: { postId: postId.toString() } });
+    }
 
-  // @GetMapping("single-post")
-  // public ResponseEntity<PostDTO> getPost(@RequestParam("postId") Long postId){
-  //   return new ResponseEntity<>(service.getPost(postId), HttpStatus.OK);
-  // }
+    public updatePost(post: Post): Observable<Post> {
+        return this.http.put<Post>(`${this.BASE_URL}/update`, post);
+    }
 
-  public getPost(postId: number): Observable<Post> {
-    // const headers = this.authHeader();
-    // return this.http.get<Post>(`${this.BASE_URL}/single-post`, { headers, params: { postId: postId.toString() } });
-    return this.http.get<Post>(`${this.BASE_URL}/single-post`, { params: { postId: postId.toString() } });
-  }
+    async getPostFile(postList: Post[]): Promise<Map<number, PostFile>> {
+        for (const post of postList) {
+            if (this.postFileSubMap.has(post.id!)) {
+                this.postFileSubMap.get(post.id!)!.unsubscribe();
+            }
+            this.getImage(post.id).subscribe({
+                next: (blob) => {
+                    const reader = new FileReader();
+                    reader.onload = (event: any) => {
+                        const fileStr = event.target.result;
+                        const aspectRatio = this.getAspectRatio(post, event)
+                        const postFile : PostFile = {
+                            postId: post.id,
+                            fileString: fileStr,
+                            fileType: post.postType,
+                            aspectRatio: aspectRatio
+                        }
+                        this.postFileMap.set(post.id, postFile );
+                    };
+                    reader.readAsDataURL(blob);
+                },
+                error: (error) => console.error('File loading failed', error)
+            });
+        }
+        return this.postFileMap;
+    }
 
-  // @GetMapping("")
-  // public ResponseEntity<List<PostDTO>> getPostsForUser(@RequestParam("postId") Long userId){
-  //   return new ResponseEntity<>(service.getPostsForUser(userId), HttpStatus.OK);
-  // }
-  //
-  // @DeleteMapping("delete")
-  // public ResponseEntity<Void> deletePost(@RequestParam("postId") Long postId){
-  //   try{
-  //     service.deletePost(postId);
-  //     return ResponseEntity.status(HttpStatus.OK).build();
-  //   }
-  //   catch(Exception e){
-  //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-  //   }
-  // }
-  //
-  public updatePost(post: Post): Observable<Post> {
-    return this.http.put<Post>(`${this.BASE_URL}/update`, post);
-  }
+    private getAspectRatio(post : Post, event : any) : string {
+        let aspectRatio = 1;
+        if (post.postType === PostType.IMAGE) {
+            const img = new Image();
+            img.onload = () => { aspectRatio = img.width / img.height; };
+            img.src = event.target.result;
+        }
+        else if (post.postType === PostType.VIDEO) {
+            const video = document.createElement('video');
+            video.onloadedmetadata = () => { aspectRatio = video.videoWidth / video.videoHeight; };
+            video.src = event.target.result;
+        }
 
-  //? POST END-POINTS ENDED
-  //* COMMENT END-POINTS STARTS HERE
+        if (aspectRatio > 1.5)
+			return 'aspect-ratio-16-9';
+		else if (aspectRatio < 0.6)
+			return 'aspect-ratio-9-16';
+		else if (aspectRatio < 1 && aspectRatio >= 0.8)
+			return 'aspect-ratio-4-5';
+		return 'aspect-ratio-1-1';
+    }
 
-  public createComment(commentRequest: CommentRequestDTO): Observable<CommentDTO> {
-    // const headers = this.authHeader();
-    // return this.http.post<CommentDTO>(`${this.BASE_URL}/add-comment`, commentRequest, { headers });
-    return this.http.post<CommentDTO>(`${this.BASE_URL}/add-comment`, commentRequest);
-  }
+    //? POST END-POINTS ENDED
+    //* COMMENT END-POINTS STARTS HERE
 
-  // @DeleteMapping("remove-comment")
-  // public ResponseEntity<Void> deleteComment(@RequestParam("commentId") Long commentId){
-  //   try{
-  //     service.deleteComment(commentId);
-  //     return ResponseEntity.status(HttpStatus.OK).build();
-  //   }
-  //   catch(Exception e){
-  //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-  //   }
-  // }
-  //
-  // @GetMapping("all-comments")
-  // public ResponseEntity<List<CommentDTO>> getCommentsForPost(@RequestParam("postId") Long postId){
-  //   return new ResponseEntity<>(service.getCommentsForPost(postId), HttpStatus.OK);
-  // }
-  public getCommentsForPost(postId: number): Observable<CommentDTO[]> {
-    // const headers = this.authHeader();
-    // return this.http.get<CommentDTO[]>(`${this.BASE_URL}/all-comments`, { headers, params: { postId: postId.toString() } });
-    return this.http.get<CommentDTO[]>(`${this.BASE_URL}/all-comments`, { params: { postId: postId.toString() } });
-  }
-  // @GetMapping("single-comment")
-  // public ResponseEntity<CommentDTO> getComment(@RequestParam("commentId") Long commentId){
-  //   return new ResponseEntity<>(service.getComment(commentId), HttpStatus.OK);
-  // }
-  //
-  // @GetMapping("total-comment")
-  // public ResponseEntity<Long> getCommentCount(@RequestParam("postId") Long postId){
-  //   return ResponseEntity.ok(service.commentCount(postId));
-  // }
-  //
-  //? COMMENT END-POINTS ENDED
-  //* LIKE END-POINTS STARTS HERE
+    public createComment(commentRequest: CommentRequestDTO): Observable<CommentDTO> {
+        return this.http.post<CommentDTO>(`${this.BASE_URL}/add-comment`, commentRequest);
+    }
 
-  public addLike(likeDTO: LikeRequest): Observable<Like> {
-    // const headers = this.authHeader();
-    // return this.http.post<Like>(`${this.BASE_URL}/add-like`, likeDTO, { headers });
-    return this.http.post<Like>(`${this.BASE_URL}/add-like`, likeDTO);
-  }
+    public getCommentsForPost(postId: number): Observable<CommentDTO[]> {
+        return this.http.get<CommentDTO[]>(`${this.BASE_URL}/all-comments`, { params: { postId: postId.toString() } });
+    }
 
-  public removeLike(likeDTO: LikeRequest): Observable<Like> {
-    console.log(likeDTO);
-    return this.http.delete<Like>(`${this.BASE_URL}/remove-like`, { body:likeDTO});
-  }
+    //? COMMENT END-POINTS ENDED
+    //* LIKE END-POINTS STARTS HERE
 
-  public getLikeCount(postId: number): Observable<number> {
-    // const headers = this.authHeader();
-    // return this.http.get<number>(`${this.BASE_URL}/total-like`, { headers, params: { postId: postId.toString() } });
-    return this.http.get<number>(`${this.BASE_URL}/total-like`, { params: { postId: postId.toString() } });
-  }
+    public addLike(likeDTO: LikeRequest): Observable<Like> {
+        return this.http.post<Like>(`${this.BASE_URL}/add-like`, likeDTO);
+    }
 
-  public isUserLiked(likeDTO: LikeRequest): Observable<boolean> {
-    // const headers = this.authHeader();
-    // return this.http.get<boolean>(`${this.BASE_URL}/is-liked`,
-    //   { headers, params: { userId: likeDTO.userId.toString(), postId: likeDTO.postId.toString() }}
-    // );
-    return this.http.get<boolean>(`${this.BASE_URL}/is-liked`,
-      { params: { userId: likeDTO.userId.toString(), postId: likeDTO.postId.toString() }}
-    );
-  }
+    public removeLike(likeDTO: LikeRequest): Observable<Like> {
+        return this.http.delete<Like>(`${this.BASE_URL}/remove-like`, { body: likeDTO });
+    }
 
-  // @GetMapping("single-like")
-  // public ResponseEntity<LikeDTO> getLike(@RequestParam("likeId") Long likeId){
-  //   return ResponseEntity.ok().body(service.getLike(likeId));
-  // }
-  //
-  // @GetMapping("all-like")
-  // public ResponseEntity<List<LikeDTO>> getLikesForPost(@RequestParam("postId") Long postId){
-  //   return new ResponseEntity<>(service.getLikesForPost(postId), HttpStatus.OK);
-  // }
-  //
-  // @DeleteMapping("remove-like")
-  // public ResponseEntity<Void> deleteLike(@RequestParam("likeId") Long likeId){
-  //   try{
-  //     service.deleteLike(likeId);
-  //     return ResponseEntity.status(HttpStatus.OK).build();
-  //   }
-  //   catch(Exception e){
-  //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-  //   }
-  // }
-  //
+    public getLikeCount(postId: number): Observable<number> {
+        return this.http.get<number>(`${this.BASE_URL}/total-like`, { params: { postId: postId.toString() } });
+    }
+
+    public isUserLiked(likeDTO: LikeRequest): Observable<boolean> {
+        return this.http.get<boolean>(
+            `${this.BASE_URL}/is-liked`,
+            { params: { userId: likeDTO.userId.toString(), postId: likeDTO.postId.toString() } }
+        );
+    }
+
 
 }

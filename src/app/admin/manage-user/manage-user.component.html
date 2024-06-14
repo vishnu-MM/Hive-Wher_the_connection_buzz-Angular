@@ -42,28 +42,30 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let user of users">
-                            <td>
-                                <img [src]="profileMap.get(user.id!)"
+                            <td (click)="redireactTo(user.id!)">
+                                <div class="loader" *ngIf="!profileMap.has(user.id!)"></div>
+                                <img *ngIf="profileMap.has(user.id!)"
+                                     [src]="profileMap.get(user.id!)"
                                      alt="Profile"
                                      id="profile-picture">
                             </td>
-                            <td>
+                            <td (click)="redireactTo(user.id!)">
                                 <h3>@{{ user.username }}</h3>
                             </td>
-                            <td>
+                            <td (click)="redireactTo(user.id!)">
                                 <h3 [class]="{'text-muted' : !user.name}">
                                     {{ user.name? user.name : 'User Name' }}
                                 </h3>
                             </td>
-                            <td>
+                            <td (click)="redireactTo(user.id!)">
                                 <h3>{{ user.email }}</h3>
                             </td>
-                            <td>
+                            <td (click)="redireactTo(user.id!)">
                                 <h3 [class]="{'text-muted' : !user.phone}">
                                     {{ user.phone? user.phone : 'Phone Number' }}
                                 </h3>
                             </td>
-                            <td>
+                            <td (click)="redireactTo(user.id!)">
                                 <h3>{{ user.joinDate | date:"dd MMM yyy" }}</h3>
                             </td>
                             <td class="table-content">
