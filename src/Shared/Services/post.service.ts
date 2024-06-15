@@ -14,7 +14,7 @@ export interface PostFile {
 export class PostService {
     public readonly BASE_URL: string = 'http://localhost:8000/api/post';
     private postFileSubMap: Map<number, Subscription> = new Map<number, Subscription>();
-    private postFileMap: Map<number, PostFile> = new Map<number, PostFile>();
+    private getPostFilesSub!: Subscription;
 
     constructor(private http: HttpClient) { }
 
@@ -30,10 +30,6 @@ export class PostService {
 
     public getRandomPosts(): Observable<Post[]> {
         return this.http.get<Post[]>(`${this.BASE_URL}/random?pageNo=0&pageSize=20`);
-    }
-
-    public getImage(postId: number): Observable<Blob> {
-        return this.http.get(`${this.BASE_URL}/files/${postId}`, { responseType: 'blob' });
     }
 
     public getAllPosts(pageNo: number, pageSize: number): Observable<PostPage> {
@@ -52,55 +48,61 @@ export class PostService {
         return this.http.put<Post>(`${this.BASE_URL}/update`, post);
     }
 
-    async getPostFile(postList: Post[]): Promise<Map<number, PostFile>> {
-        for (const post of postList) {
-            if (this.postFileSubMap.has(post.id!)) {
-                this.postFileSubMap.get(post.id!)!.unsubscribe();
-            }
-            this.getImage(post.id).subscribe({
-                next: (blob) => {
-                    const reader = new FileReader();
-                    reader.onload = (event: any) => {
-                        const fileStr = event.target.result;
-                        const aspectRatio = this.getAspectRatio(post, event)
-                        const postFile : PostFile = {
-                            postId: post.id,
-                            fileString: fileStr,
-                            fileType: post.postType,
-                            aspectRatio: aspectRatio
-                        }
-                        this.postFileMap.set(post.id, postFile );
-                    };
-                    reader.readAsDataURL(blob);
-                },
-                error: (error) => console.error('File loading failed', error)
-            });
-        }
-        return this.postFileMap;
+    private getFile(postId: number): Observable<Blob> {
+        return this.http.get(`${this.BASE_URL}/files/${postId}`, { responseType: 'blob' });
     }
 
-    private getAspectRatio(post : Post, event : any) : string {
-        let aspectRatio = 1;
-        if (post.postType === PostType.IMAGE) {
-            const img = new Image();
-            img.onload = () => { aspectRatio = img.width / img.height; };
-            img.src = event.target.result;
-        }
-        else if (post.postType === PostType.VIDEO) {
-            const video = document.createElement('video');
-            video.onloadedmetadata = () => { aspectRatio = video.videoWidth / video.videoHeight; };
-            video.src = event.target.result;
+    public async getPostFile(postId: number): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.getPostFilesSub = this.getFile(postId).subscribe({
+                next: (blob) => { resolve(URL.createObjectURL(blob)) },
+                error: (err) => { reject(err) }
+            });
+        });
+    }
+
+    public async getPostFiles(postList?: Post[], postIdList?: number[]): Promise<Map<number, string>> {
+        if (!postList && !postIdList) {
+            throw new Error('Either postList or postIdList must be provided.');
         }
 
-        if (aspectRatio > 1.5)
+        const postFileMap: Map<number, string> = new Map<number, string>();
+        if (postIdList) {
+            for(let postId of postIdList) {
+                try {
+                    const postFile = await this.getPostFile(postId);
+                    postFileMap.set(postId, postFile);
+                } 
+                catch (err) {
+                    console.error(`Error fetching post file for postId ${postId}:`, err);
+                }
+            }
+        }
+        else if (postList) {
+            for(let post of postList) {
+                try {
+                    const postFile = await this.getPostFile(post.id);
+                    postFileMap.set(post.id, postFile);
+                } 
+                catch (err) {
+                    console.error(`Error fetching post file for postId ${post.id}:`, err);
+                }
+            }
+        }
+        return postFileMap;
+    }
+
+    public getAspectRatio(aspectRatio : number): string {
+		if (aspectRatio > 1.5)
 			return 'aspect-ratio-16-9';
 		else if (aspectRatio < 0.6)
 			return 'aspect-ratio-9-16';
 		else if (aspectRatio < 1 && aspectRatio >= 0.8)
 			return 'aspect-ratio-4-5';
-		return 'aspect-ratio-1-1';
+		else
+			return 'aspect-ratio-1-1';
     }
-
+    
     //? POST END-POINTS ENDED
     //* COMMENT END-POINTS STARTS HERE
 

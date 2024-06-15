@@ -17,8 +17,7 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 	user!: User;
 	name: string = '';
 	username: string = '';
-	postImage: string = '';
-	postVideo: string = '';
+	postFile: string = '';
 	profilePicture: string = '';
 	aspectRatioClass: string = '';
 	@ViewChild('postImageElement') postImageElement!: ElementRef<HTMLImageElement>;
@@ -27,16 +26,15 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 	postServiceSub!: Subscription;
 	readonly PostType = PostType;
 
-	constructor(private postService: PostService, private userService: UserService, private router: Router) {
-	}
+	constructor(private postService: PostService, 
+                private userService: UserService, 
+                private router: Router) {}
 
 	ngOnInit(): void {
 		if (this.post) {
-			if (this.post && this.post.postType === PostType.IMAGE)
-				this.getPostImage();
-			if (this.post && this.post.postType === PostType.VIDEO)
-				this.getPostVideo();
-			this.getUserByPost();
+            this.getUserByPost();
+			if (!(this.post.postType === PostType.TEXT_ONLY))
+				this.loadPostFile(this.post).then();
 		}
 	}
 
@@ -46,14 +44,6 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 	}
 
 	ngAfterViewInit(): void {
-		if (this.postImageElement) {
-			const imgElement = this.postImageElement.nativeElement;
-			imgElement.onload = () => {
-				const aspectRatio = imgElement.naturalWidth / imgElement.naturalHeight;
-				this.calculateAspectRatioClass(aspectRatio);
-			};
-		}
-
 		if (this.postVideoElement) {
 			this.respondToVisibility(this.postVideoElement.nativeElement, (isVisible) => {
 				if (!this.postVideoElement.nativeElement.paused && !isVisible) this.pauseVideo();
@@ -61,54 +51,16 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 		}
 	}
 
+    async loadPostFile(post: Post): Promise<void> {
+        this.postFile = await this.postService.getPostFile(post.id);
+    }
 
-	private calculateAspectRatioClass(aspectRatio: number): void {
-		if (aspectRatio > 1.5)
-			this.aspectRatioClass = 'aspect-ratio-16-9';
-		else if (aspectRatio < 0.6)
-			this.aspectRatioClass = 'aspect-ratio-9-16';
-		else if (aspectRatio < 1 && aspectRatio >= 0.8)
-			this.aspectRatioClass = 'aspect-ratio-4-5';
-		else
-			this.aspectRatioClass = 'aspect-ratio-1-1';
+    getAspectRatio(aspectRatio : number): string {
+        return this.postService.getAspectRatio(aspectRatio);
+    }
 
-	}
-
-	async getPostImage() {
-		this.postServiceSub = this.postService
-			.getImage(this.post.id)
-			.subscribe({
-				next: (blob) => {
-					const reader = new FileReader();
-					reader.onload = (event: any) => {
-						this.postImage = event.target.result;
-					};
-					reader.readAsDataURL(blob);
-				},
-				error: (error) => console.error('Image loading failed', error)
-
-			});
-	}
-
-	async getPostVideo() {
-		this.postServiceSub = this.postService
-			.getImage(this.post.id)
-			.subscribe({
-				next: (blob) => {
-					const videoUrl = URL.createObjectURL(blob);
-					this.postVideo = videoUrl;
-					this.setAspectRatio(blob);
-				},
-				error: (error) => {
-					console.error('Image loading failed', error);
-				}
-			});
-	}
-
-	async getUserByPost() {
-		this.userService
-			.getProfileById(this.post.userId)
-			.subscribe({
+	async getUserByPost(): Promise<void> {
+		this.userService.getProfileById(this.post.userId).subscribe({
 				next: (response) => {
 					this.name = response.name;
 					this.username = response.username;
@@ -132,26 +84,6 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 		return formatDistanceToNow(parsedDate, {addSuffix: true});
 	}
 
-	setAspectRatio(blob: Blob): void {
-		const video = document.createElement('video');
-		video.preload = 'metadata';
-		video.onloadedmetadata = () => {
-			const aspectRatio = parseFloat((video.videoWidth / video.videoHeight).toFixed(4));
-			this.aspectRatioClass = this.getAspectRatioClass(aspectRatio);
-			URL.revokeObjectURL(video.src);
-		};
-		video.src = URL.createObjectURL(blob);
-	}
-
-	getAspectRatioClass(aspectRatio: number): string {
-		if (Math.abs(aspectRatio - 0.5625) < 0.0001)
-			return 'aspect-ratio-9-16';
-		else if (Math.abs(aspectRatio - 16 / 9) < 0.0001)
-			return 'aspect-ratio-16-9';
-		else
-			return 'aspect-ratio-16-9';
-	}
-
 	playVideo(): void {
 		if (this.postVideoElement && this.postVideoElement.nativeElement)
 			this.postVideoElement.nativeElement.play();
@@ -166,9 +98,7 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 		const options = {root: document.documentElement};
 
 		const observer = new IntersectionObserver((entries, observer) => {
-			entries.forEach(entry => {
-				callback(entry.intersectionRatio > 0);
-			});
+			entries.forEach(entry => callback(entry.intersectionRatio > 0) );
 		}, options);
 
 		observer.observe(element);
@@ -180,8 +110,6 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 	}
 
 	navigateToUser() {
-		if (this.user) {
-			this.router.navigate(['/u/user', this.user.id]);
-		}
+		if (this.user) this.router.navigate(['/u/user', this.user.id]);
 	}
 }

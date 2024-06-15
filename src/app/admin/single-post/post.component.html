@@ -13,31 +13,28 @@
                                     <div class="loader" *ngIf="!post"></div>
                                     <user-pill *ngIf="post" [UserID]="post.userId"></user-pill>
                                 </div>
-                            </div>
-                            <div id="post-main">
-                                <div id="description-time-div">
-                                    <span [class]="{'text-muted': (!post) || (!post.description) }"> 
-                                        {{ post? (post.description? post.description : 'No description') : 'Loading' }}
-                                    </span>
+                                <div id="date-time-div" class="col-6">
                                     <span>
                                         {{ getPostDate(post.createdOn) | date:'dd MMM yyy [hh:mm a]' }}
                                     </span>
                                 </div>
+                            </div>
+                            <div id="post-main">
+                                <div>
+                                    <span [class]="{'text-muted': (!post) || (!post.description) }">
+                                        {{ post? (post.description? post.description : 'No description') : 'Loading' }}
+                                    </span>
+                                </div>
                                 <div id="post-div">
-                                    <img *ngIf="post.postType.toString() === 'IMAGE'" #postImageElement
-                                         [src]="postFile.get(post.id)?.fileString" 
-                                         [class]="postFile.get(post.id)?.aspectRatio"
-                                         alt="post image" 
-                                         class="post img-basics rounded">
-                           
-                               <div *ngIf="post.postType.toString() === 'VIDEO'">
-                                   <video [src]="postFile.get(post.id)?.fileString"
-                                          controls
-                                          [class]="postFile.get(post.id)?.aspectRatio"
-                                          class="post img-basics rounded-3">
-                                          Your browser does not support the video tag.
-                                   </video>
-                               </div>
+                                    <img *ngIf="post.postType.toString() === 'IMAGE'" #postImageElement [src]="postFile"
+                                        [class]="getAspectRatio(post.aspectRatio)" alt="post image"
+                                        class="post img-basics rounded">
+
+                                    <video [src]="postFile" *ngIf="post.postType.toString() === 'VIDEO'" controls
+                                        [class]="getAspectRatio(post.aspectRatio)"
+                                        class="post img-basics rounded-3">
+                                        Your browser does not support the video tag.
+                                    </video>
                                 </div>
                             </div>
                         </div>
@@ -46,9 +43,13 @@
                     <div id="right" class="col-md-6 col-12 card rounded">
                         <div class="card-header container">
                             <div class="row">
-                                <div class="col-6 title"><h2>Comments</h2></div>
-                                <div class="col-6 title"><h2>Liked By</h2></div>
-                            </div>                          
+                                <div class="col-6 title">
+                                    <h2>Comments</h2>
+                                </div>
+                                <div class="col-6 title">
+                                    <h2>Liked By</h2>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">Special title treatment</h5>

@@ -103,20 +103,17 @@
 				<div class="my-3 mx-md-5">
 					<span class="h6 text-light">{{post.description}}</span>
 				</div>
+                 
 				<div *ngIf="post.postType === PostType.IMAGE"
-				     class="post rounded mx-md-5 img-basics"
-				     [class]="aspectRatio.get(post.id)"
-				     [style.background-image]="'url('+postFiles.get(post.id)+')'">
-				</div>
+				     class="rounded mx-md-5 img-basics"
+				     [class]="getAspectRatio(post.aspectRatio)"
+				     [style.background-image]="'url('+postFiles.get(post.id)+')'"></div>
 
 				<div *ngIf="post.postType === PostType.VIDEO">
-					<video (mouseenter)="playVideo()"
-					       [src]="postFiles.get(post.id)"
-					       controls
-					       [class]="aspectRatio.get(post.id)"
-					       class="post rounded-3 mx-md-5 img-basics">
-						Your browser does not support the video tag.
-					</video>
+					<video [src]="postFiles.get(post.id)"					       
+					       [class]="getAspectRatio(post.aspectRatio)"
+					       class="rounded-3 mx-md-5 img-basics" 
+                           controls >Your browser does not support the video tag.</video>
 				</div>
 
 				<div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>

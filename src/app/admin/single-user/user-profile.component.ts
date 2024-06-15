@@ -20,14 +20,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     profilePicture: string = '';
     //POSTS
     posts: Post[] = [];
-    postFileMap: Map<number, PostFile> = new Map<number, PostFile>();
+    postFiles: Map<number, string> = new Map<number, string>();
     isPostCountZero : boolean = false;
 
     //Subscription
     private loadUserDetailsSub!: Subscription;
     private loadUserImagesSub!: Subscription;
     private loadUserPostsSub!: Subscription;
-    private getPostFileSub!: Subscription;
+    private getPostFilesSub!: Subscription;
 
     constructor(private userService: UserService,
         private postService: PostService,
@@ -101,57 +101,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             })
     }
 
-    async loadPostFiles(postList: Post[]): Promise<void> {
-        for (const post of this.posts) {
-            this.getPostFileSub = this.postService.getImage(post.id)
-                .subscribe({
-                    next: (blob) => {
-                        const reader = new FileReader();
-                        reader.onload = (event: any) => {
-                            const postFile: PostFile = {
-                                postId: post.id,
-                                fileString: event.target.result,
-                                fileType: post.postType,
-                                aspectRatio: ''
-                            }
-                            this.postFileMap.set(post.id, postFile);
+	async loadPostFiles(postList: Post[]): Promise<void> {
+        this.postFiles = await this.postService.getPostFiles(postList);
+	}
 
-                            if (post.postType === 'IMAGE') {
-                                const img = new Image();
-                                img.onload = () => {
-                                    const aspectRatio = this.calculateAspectRatioClass((img.width / img.height));
-                                    const postFile: PostFile = this.postFileMap.get(post.id)!;
-                                    postFile.aspectRatio = aspectRatio;
-                                    this.postFileMap.set(post.id, postFile);
-                                };
-                                img.src = event.target.result;
-                            }
-                            else if (post.postType === 'VIDEO') {
-                                const video = document.createElement('video');
-                                video.onloadedmetadata = () => {
-                                    const aspectRatio = this.calculateAspectRatioClass((video.videoWidth / video.videoHeight));
-                                    const postFile: PostFile = this.postFileMap.get(post.id)!;
-                                    postFile.aspectRatio = aspectRatio;
-                                    this.postFileMap.set(post.id, postFile);
-                                };
-                                video.src = event.target.result;
-                            }
-                        };
-                        reader.readAsDataURL(blob);
-                    },
-                    error: (error) => { console.error('File loading failed ', error) }
-                });
-        }
-    }
-
-    private calculateAspectRatioClass(aspectRatio: number): string {
-        if (aspectRatio > 1.5)
-            return 'aspect-ratio-16-9';
-        else if (aspectRatio < 0.6)
-            return 'aspect-ratio-9-16';
-        else if (aspectRatio < 1 && aspectRatio >= 0.8)
-            return 'aspect-ratio-4-5';
-        return 'aspect-ratio-1-1';
+    getAspectRatio(aspectRatio : number): string {
+        return this.postService.getAspectRatio(aspectRatio);
     }
 
     getPostDate(createdOn: Timestamp<string>): Date {

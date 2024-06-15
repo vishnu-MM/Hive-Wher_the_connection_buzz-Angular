@@ -106,27 +106,27 @@
                     </div>
                     <!-- POSTS STARTS -->
                     <div class="right col-md-6 col-12 card rounded scrollable">
-                        <div class="loading-div" *ngIf="(posts.length === 0 || postFileMap.size === 0 || (postFileMap.size !== posts.length)) && !isPostCountZero">
+                        <div class="loading-div" *ngIf="(posts.length === 0 || postFiles.size === 0 || (postFiles.size !== posts.length)) && !isPostCountZero">
                             <div class="loader"></div>
                         </div>
                         <div class="loading-div" *ngIf="isPostCountZero">
                             <h3>No Posts posted yet</h3>
                         </div>
-                        <div *ngIf="!(posts.length === 0 || postFileMap.size === 0 || (postFileMap.size !== posts.length)) && !isPostCountZero">
+                        <div *ngIf="!(posts.length === 0 || postFiles.size === 0 || (postFiles.size !== posts.length)) && !isPostCountZero">
                             <div id="post-list-view" class="px-0 py-3" *ngFor="let post of posts">
                                 <div class="my-3 mx-md-5">
                                     <span class="h6">{{ post.description }} {{ getPostDate(post.createdOn) | date:'dd MMM yyy hh:mm a' }}</span>
                                 </div>
                                 <div *ngIf="post.postType.toString() === 'IMAGE'"
                                     class="post rounded mx-md-5 img-basics"
-                                    [class]="{'no-post' : (!postFileMap.has(post.id))}"
-                                    [class]="postFileMap.get(post.id)!.aspectRatio"
-                                    [style.background-image]="'url('+postFileMap.get(post.id)!.fileString+')'">
+                                    [class]="{'no-post' : (!postFiles.has(post.id))}"
+                                    [class]="getAspectRatio(post.aspectRatio)"
+                                    [style.background-image]="'url('+postFiles.get(post.id)+')'">
                                 </div>
 
                                 <div *ngIf="post.postType.toString() === 'VIDEO'">
-                                    <video [src]="postFileMap.get(post.id)!.fileString"
-                                        [class]="postFileMap.get(post.id)!.aspectRatio"
+                                    <video [src]="postFiles.get(post.id)"
+                                        [class]="getAspectRatio(post.aspectRatio)"
                                         controls
                                         class="post rounded-3 mx-md-5 img-basics">
                                         Your browser does not support the video tag.

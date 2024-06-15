@@ -36,16 +36,16 @@
                         <tr *ngFor="let post of postList">
                             <td id="post-td" (click)="redireactTo(post.id)">
                                 <div class="loading-div p-3"
-                                    *ngIf="(post.postType.toString() === 'VIDEO' || post.postType.toString() === 'IMAGE') && !postFileMap.has(post.id)">
+                                    *ngIf="(post.postType.toString() === 'VIDEO' || post.postType.toString() === 'IMAGE') && !postFiles.has(post.id)">
                                     <div class="loader" ></div>
                                 </div>
-                                <img *ngIf="post.postType.toString() === 'IMAGE' && postFileMap.has(post.id)"
+                                <img *ngIf="post.postType.toString() === 'IMAGE' && postFiles.has(post.id)"
                                      alt="Post Image"
                                      class="post-file"
-                                     [src]="postFileMap.get(post.id)?.fileString">
+                                     [src]="postFiles.get(post.id)">
 
-                                <video *ngIf="post.postType.toString() === 'VIDEO' && postFileMap.has(post.id)"
-                                        [src]="postFileMap.get(post.id)?.fileString"
+                                <video *ngIf="post.postType.toString() === 'VIDEO' && postFiles.has(post.id)"
+                                        [src]="postFiles.get(post.id)"
                                         class="post-file">
                                     Your browser does not support the video tag.
                                 </video>

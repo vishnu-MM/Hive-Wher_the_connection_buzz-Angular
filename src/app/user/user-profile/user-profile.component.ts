@@ -3,12 +3,11 @@ import { User, UserResponse } from "../../../Shared/Models/user.model";
 import { Post, PostType } from "../../../Shared/Models/post.model";
 import { Subscription } from "rxjs";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { Store } from "@ngrx/store";
 import { ImageType, UserService } from "../../../Shared/Services/user.service";
 import { PostService } from "../../../Shared/Services/post.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { USER_LOGIN } from "../../../Shared/Store/user.action";
 import { ComplaintsDTO } from 'src/Shared/Models/complaints.model';
+import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
     selector: 'app-user-profile',
@@ -16,33 +15,39 @@ import { ComplaintsDTO } from 'src/Shared/Models/complaints.model';
     styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
+    //USER
     user!: User;
     coverPicture: string = '';
     profilePicture: string = '';
     friendsCount: number = 0;
-    posts: Post[] = [];
-    protected readonly PostType = PostType;
-    postFiles: Map<number, string> = new Map<number, string>();
-    aspectRatio: Map<number, string> = new Map<number, string>();
-    showListView: boolean = true;
     isFriends: boolean = false;
-    isValidReason: boolean = false;
+    
+    //POSTS
+    posts: Post[] = [];
     description: string = '';
+    postFiles: Map<number, string> = new Map<number, string>();
+    showListView: boolean = true;
 
-
+    //COMPLAINTS
+    isValidReason: boolean = false;
+    
     //SUBSCRIPTION for CLOSING
     private getUserSub!: Subscription;
     private getProfileSub!: Subscription;
     private getCoverSub!: Subscription;
     private getAllPostsSub!: Subscription;
-    private getPostFileSub!: Subscription;
+    private getPostFilesSub!: Subscription;
     private ReportUserSub!: Subscription;
-    @ViewChild('reportModal') postModal!: TemplateRef<any>;
+
+    //OTHERS
+    protected readonly PostType = PostType;
     private dialogRef!: MatDialogRef<any>;
+    @ViewChild('reportModal') postModal!: TemplateRef<any>;
 
     //CONSTRUCTOR & LIFE-CYCLE METHODS
     constructor(private userService: UserService,
                 private postService: PostService,
+                private appService : AppService,
                 private dialog: MatDialog,
                 private router: Router,
                 private route: ActivatedRoute) {}
@@ -50,21 +55,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         const userId: number = parseInt(<string>this.route.snapshot.paramMap.get('id'));
         if (userId) {
-            this.getUserSub = this.userService.getProfileById(userId)
-                .subscribe({
-                    next: value => {
-                        this.user = value
-                        console.log(this.user)
-                        if (this.user && this.user.id) {
-                            this.getProfileImage(this.user.id).then();
-                            this.getCoverImage(this.user.id).then();
-                            this.getAllPostsByUser(this.user.id).then();
-                        }
-                    },
-                    error: err => {
-                        console.log(err)
-                    }
-                })
+            this.loadUserDetails(userId).then()
         }
         else {
             this.router.navigate(['/u/home']).then();
@@ -76,12 +67,27 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         if (this.getProfileSub != undefined) this.getProfileSub.unsubscribe()
         if (this.getCoverSub != undefined) this.getCoverSub.unsubscribe()
         if (this.getAllPostsSub != undefined) this.getAllPostsSub.unsubscribe()
-        if (this.getPostFileSub != undefined) this.getAllPostsSub.unsubscribe()
+        if (this.getPostFilesSub != undefined) this.getAllPostsSub.unsubscribe()
         if (this.ReportUserSub != undefined) this.ReportUserSub.unsubscribe()
     }
 
     // LOGIC
-    async getCoverImage(userId: number) {
+    // USER
+    async loadUserDetails(userId: number): Promise<void> {
+        this.getUserSub = this.userService.getProfileById(userId).subscribe({
+            next: value => {
+                if (value && value.id) {
+                    this.user = value
+                    this.getProfileImage(this.user.id!).then();
+                    this.getCoverImage(this.user.id!).then();
+                    this.getAllPostsByUser(this.user.id!).then();
+                }
+            },
+            error: err => { console.log(err) }
+        })
+    }
+
+    async getCoverImage(userId: number): Promise<void> {
         this.coverPicture = "assets/LoginSignUpBg.jpg"
         this.getCoverSub = this.userService
             .getProfileImage(userId, ImageType.COVER_IMAGE)
@@ -107,12 +113,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             })
     }
 
+    // POSTS
+
     async getAllPostsByUser(userId: number) {
         this.getAllPostsSub = this.postService.getUserPosts(userId)
             .subscribe({
                 next: posts => {
                     this.posts = posts;
-                    this.getPostFile().then();
+                    this.loadPostFiles(posts).then();
                 },
                 error: err => {
                     console.log('Error occurred during getAllPostsByUser ' + err)
@@ -120,87 +128,50 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             })
     }
 
-    async getPostFile() {
-        for (const post of this.posts) {
-            this.getPostFileSub = this.postService.getImage(post.id)
-                .subscribe({
-                    next: (blob) => {
-                        const reader = new FileReader();
-                        reader.onload = (event: any) => {
-                            this.postFiles.set(post.id, event.target.result);
+    async loadPostFiles(postList: Post[]): Promise<void> {
+        this.postFiles = await this.postService.getPostFiles(postList);
+	}
 
-                            if (post.postType === 'IMAGE') {
-                                // Create an image element to calculate the aspect ratio
-                                const img = new Image();
-                                img.onload = () => {
-                                    const aspectRatio = img.width / img.height;
-                                    this.aspectRatio.set(post.id, this.calculateAspectRatioClass(aspectRatio));
-                                };
-                                img.src = event.target.result;
-                            }
-                            else if (post.postType === 'VIDEO') {
-                                // Create a video element to calculate the aspect ratio
-                                const video = document.createElement('video');
-                                video.onloadedmetadata = () => {
-                                    const aspectRatio = video.videoWidth / video.videoHeight;
-                                    this.aspectRatio.set(post.id, this.calculateAspectRatioClass(aspectRatio));
-                                };
-                                video.src = event.target.result;
-                            }
-                        };
-                        reader.readAsDataURL(blob);
-                        if (this.getPostFileSub != undefined) this.getAllPostsSub.unsubscribe();
-                    },
-                    error: (error) => {
-                        console.error('File loading failed ', error)
-                        if (this.getPostFileSub != undefined) this.getAllPostsSub.unsubscribe();
-                    }
-                });
+    getAspectRatio(aspectRatio : number): string {
+        return this.postService.getAspectRatio(aspectRatio);
+    }
+
+    // COMPLAINTS
+
+    protected reportUser(): void {
+        this.isValidReason = this.description !== '' || this.description.trim() !== '';
+        if (this.isValidReason) return;
+
+        const userStr = localStorage.getItem('CURRENT_USER');
+        if (!userStr) return;
+
+        const user: UserResponse = JSON.parse(userStr);
+        const complaintsDTO: ComplaintsDTO = {
+            id: null, 
+            senderId: user.id, 
+            reportedUser: this.user.id!, 
+            date: new Date(), 
+            description: this.description
         }
+
+        this.ReportUserSub = this.userService.reportAUser(complaintsDTO).subscribe({
+            next: res => { this.closeModal() },
+            error: err => { this.closeModal() }
+        });
     }
 
-    private calculateAspectRatioClass(aspectRatio: number): string {
-        if (aspectRatio > 1.5)
-            return 'aspect-ratio-16-9';
-        else if (aspectRatio < 0.6)
-            return 'aspect-ratio-9-16';
-        else if (aspectRatio < 1 && aspectRatio >= 0.8)
-            return 'aspect-ratio-4-5';
-        return 'aspect-ratio-1-1';
-    }
+    // OTHERS
 
-    openModal(): void {
+    protected openModal(): void {
         this.dialogRef = this.dialog.open(this.postModal);
     }
 
-    closeModal(): void {
+    protected closeModal(): void {
         this.dialogRef.close();
     }
 
-    logout() {
+    protected logout(): void {
         this.closeModal();
-        localStorage.clear();
-        this.router.navigate(['/login'])
-    }
-
-    playVideo() {
-
-    }
-
-    reportUser() {
-        this.isValidReason = this.description !== '' || this.description.trim() !== '';
-        if (this.isValidReason) {
-            const userStr = localStorage.getItem('CURRENT_USER');
-            if (userStr) {
-                const user: UserResponse = JSON.parse(userStr);
-                const complaintsDTO: ComplaintsDTO = {
-                    id: null, senderId: user.id, reportedUser: this.user.id!, date: new Date(), description: this.description
-                }
-                this.ReportUserSub = this.userService.reportAUser(complaintsDTO).subscribe({
-                    next: res => { this.closeModal() },
-                    error: err => { this.closeModal() }
-                });
-            }
-        }
+        this.appService.logout();
     }
 }

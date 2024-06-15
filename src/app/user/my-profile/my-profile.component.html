@@ -1,64 +1,78 @@
 <ng-template #postModal>
-  <div class="d-flex justify-content-between align-items-center  m-3">
-      <h2 mat-dialog-title class="m-0">Settings</h2>
-     <button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
-       <mat-icon fontIcon="close"></mat-icon>
-     </button>
-  </div>
-  <mat-dialog-content>
-      <div>
-        <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="/u/profile/update" (click)="closeModal()">
-            <h2 class="m-0 text-light">Edit My Profile</h2>
-            <p class="p-0 m-0 fw-lighter">Update Your Details</p>
+    <div class="d-flex justify-content-between align-items-center  m-3">
+        <h2 mat-dialog-title class="m-0">Settings</h2>
+        <button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
+            <mat-icon fontIcon="close"></mat-icon>
+        </button>
+    </div>
+    <mat-dialog-content>
+        <div>
+            <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="/u/profile/update" (click)="closeModal()">
+                <h2 class="m-0 text-light">Edit My Profile</h2>
+                <p class="p-0 m-0 fw-lighter">Update Your Details</p>
+            </div>
+            <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
+                <h2 class="m-0 text-light">Forgot Password</h2>
+                <p class="p-0 m-0 fw-lighter">Update your forgotten password from here</p>
+            </div>
+            <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
+                <h2 class="m-0 text-light">Delete My account</h2>
+                <p class="p-0 m-0 fw-lighter">Permanently remove your account</p>
+            </div>
         </div>
-        <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
-            <h2 class="m-0 text-light">Forgot Password</h2>
-            <p class="p-0 m-0 fw-lighter">Update your forgotten password from here</p>
-        </div>
-        <div class="px-4 settings-item rounded-4 py-2 mb-2" routerLink="" (click)="closeModal()">
-            <h2 class="m-0 text-light">Delete My account</h2>
-            <p class="p-0 m-0 fw-lighter">Permanently remove your account</p>
-        </div>
-      </div>
-  </mat-dialog-content>
-  <mat-dialog-actions>
-      <button class="btn btn-dark form-control"
-              (click)="logout()">
-        <span class="text-danger">Log Out</span>
-      </button>
-  </mat-dialog-actions>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="btn btn-dark form-control" (click)="logout()">
+            <span class="text-danger">Log Out</span>
+        </button>
+    </mat-dialog-actions>
 </ng-template>
+
 <ng-template #EditDeleteModal>
-  <div class="d-flex justify-content-between align-items-center  m-3">
-      <h2 mat-dialog-title class="m-0">Post Settings</h2>
-     <button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
-       <mat-icon fontIcon="close"></mat-icon>
-     </button>
-  </div>
-  <mat-dialog-content>
-      <div>
-        <div class="px-4 settings-item rounded-4 py-2 mb-2"  (click)="editpost()">
-            <h2 class="m-0 text-light">Edit Post</h2>
-            <p class="p-0 m-0 fw-lighter">Update Post description</p>
+    <div class="d-flex justify-content-between align-items-center  m-3">
+        <h2 mat-dialog-title class="m-0">Post Settings</h2>
+        <button class="btn btn-outline-dark d-flex justify-content-center p-2 rounded-5" (click)="closeModal()">
+            <mat-icon fontIcon="close"></mat-icon>
+        </button>
+    </div>
+    <mat-dialog-content>
+        <div>
+            <div class="px-4 settings-item rounded-4 py-2 mb-2" (click)="editpost()">
+                <h2 class="m-0 text-light">Edit Post</h2>
+                <p class="p-0 m-0 fw-lighter">Update Post description</p>
+            </div>
+            <div class="px-4 settings-item rounded-4 py-2 mb-2" (click)="deletePost()">
+                <h2 class="m-0 text-light">Delete Post</h2>
+                <p class="p-0 m-0 fw-lighter">Post will be deleted Permanently</p>
+            </div>
         </div>
-        <div class="px-4 settings-item rounded-4 py-2 mb-2" (click)="deletePost()">
-            <h2 class="m-0 text-light">Delete Post</h2>
-            <p class="p-0 m-0 fw-lighter">Post will be deleted Permanently</p>
-        </div>
-      </div>
-  </mat-dialog-content>
+    </mat-dialog-content>
 </ng-template>
 
 <ng-template #EditPostModal>
-  <div class="d-flex justify-content-between align-items-center">
-      <h2 mat-dialog-title class="m-0">Edit Post</h2>
-  </div>
-  <mat-dialog-content>
-      <post-edit
-        (close)="closeEditPostModal()"
-        [postId]="selectedPostId!">
-      </post-edit>
-  </mat-dialog-content>
+    <div>
+        <h2 mat-dialog-title class="m-0">Edit Post</h2>
+    </div>
+    <mat-dialog-content class="py-0">
+        <div *ngIf="selectedPost">
+            <div>
+                <input type="text" [(ngModel)]="selectedPost.description" class="form-control my-3">
+            </div>
+
+            <img [src]="postFiles.get(selectedPost.id)" *ngIf="selectedPost.postType.toString() === 'IMAGE'"
+                alt="Post Image" style="max-width: 400px;" class="rounded">
+
+            <div *ngIf="selectedPost.postType.toString() === 'VIDEO'">
+                <video [src]="postFiles.get(selectedPost.id)" class="rounded-3" controls>
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button (click)="update()" type="button" class="btn btn-success form-control m-1">Update</button>
+        <button (click)="closeEditPostModal()" type="button" class="btn btn-warning form-control m-1">Cancel</button>
+    </mat-dialog-actions>
 </ng-template>
 
 <div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
@@ -68,7 +82,8 @@
         <div id="profile">
             <div>
                 <div id="cover-pic" class="img-basics" [style.background-image]="'url(' + coverPicture + ')'">
-                  <div id="profile-pic" class="img-basics" [style.background-image]="'url(' + profilePicture + ')'"></div>
+                    <div id="profile-pic" class="img-basics" [style.background-image]="'url(' + profilePicture + ')'">
+                    </div>
                 </div>
             </div>
             <div class="d-flex flex-row-reverse px-3 py-2">
@@ -86,75 +101,66 @@
             </div>
         </div>
         <div id="my-post-label" class="row my-3">
-          <div class="col-4 d-flex justify-content-center align-items-center py-4">
-              <span>My Posts</span>
-          </div>
-          <div class="col-4 change-layout">
-            <button class="btn change-layout"
-                    (click)="showListView = false">
+            <div class="col-4 d-flex justify-content-center align-items-center py-4">
+                <span>My Posts</span>
+            </div>
+            <div class="col-4 change-layout">
+                <button class="btn change-layout" (click)="showListView = false">
                     <mat-icon fontIcon="grid_view"></mat-icon>
-            </button>
-          </div>
-          <div class="col-4 change-layout">
-            <button class="btn change-layout"
-                    (click)="showListView = true">
+                </button>
+            </div>
+            <div class="col-4 change-layout">
+                <button class="btn change-layout" (click)="showListView = true">
                     <mat-icon fontIcon="view_agenda"></mat-icon>
-            </button>
-          </div>
+                </button>
+            </div>
         </div>
         <div id="posts">
             <div class="row" [class]="{ 'd-none': showListView}">
                 <div *ngFor="let post of posts" class="post border col-4 col-lg-3">
-                  <div *ngIf="post.postType === PostType.IMAGE"
-                       class="img-basics"
-                       [style.background-image]="'url('+postFiles.get(post.id)+')'">
-                  </div>
-                  <video *ngIf="post.postType === PostType.VIDEO"
-                         class="post-video img-basics" [src]="postFiles.get(post.id)">
-                    Your browser does not support the video tag.
-                  </video>
+                    <div *ngIf="post.postType === PostType.IMAGE" class="img-basics"
+                        [style.background-image]="'url('+postFiles.get(post.id)+')'">
+                    </div>
+                    <video *ngIf="post.postType === PostType.VIDEO" class="post-video img-basics"
+                        [src]="postFiles.get(post.id)">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </div>
-<!-- todo ======================================================================================= -->
+
             <div id="post-list-view" [class]="{ 'd-none': !showListView,}" *ngFor="let post of posts">
                 <div class="d-flex align-items-center justify-content-between">
-                  <div class="d-flex align-items-center">
-                    <img [src]="profilePicture"
-                         alt="user profile picture"
-                         style="aspect-ratio: 1; width: 50px;"
-                         class="rounded-5 border img-basics border-black d-inline-block">
-                    <div class="ms-2">
-                        <span class="h4 text-light">{{ currentUser.name }}</span> <br>
-                        <span class="text-light">@{{ currentUser.username +" | "+ post.createdOn }}</span>
+                    <div class="d-flex align-items-center">
+                        <img [src]="profilePicture" alt="user profile picture" style="aspect-ratio: 1; width: 50px;"
+                            class="rounded-5 border img-basics border-black d-inline-block">
+                        <div class="ms-2">
+                            <span class="h4 text-light">{{ currentUser.name }}</span> <br>
+                            <span class="text-light">@{{ currentUser.username +" | "+ post.createdOn }}</span>
+                        </div>
                     </div>
-                  </div>
-                    <button type="button" class="btn" (click)="editDeleteModal(post.id)">
-                      <mat-icon fontIcon="more_vert" style="color: white;"></mat-icon>
+                    <button type="button" class="btn" (click)="editDeleteModal(post)">
+                        <mat-icon fontIcon="more_vert" style="color: white;"></mat-icon>
                     </button>
                 </div>
 
                 <div class="my-3 mx-md-5">
                     <span class="h6 text-light">{{post.description}}</span>
                 </div>
-                <div *ngIf="post.postType === PostType.IMAGE"
-                     class="post rounded mx-md-5 img-basics"
-                     [class]="aspectRatio.get(post.id)"
-                     [style.background-image]="'url('+postFiles.get(post.id)+')'">
+                <div *ngIf="post.postType === PostType.IMAGE" class="rounded mx-md-5 img-basics"
+                    [class]="getAspectRatio(post.aspectRatio)"
+                    [style.background-image]="'url('+postFiles.get(post.id)+')'">
                 </div>
 
                 <div *ngIf="post.postType === PostType.VIDEO">
-                  <video (mouseenter)="playVideo()"
-                         [src]="postFiles.get(post.id)"
-                         controls
-                         [class]="aspectRatio.get(post.id)"
-                         class="post rounded-3 mx-md-5 img-basics">
-                    Your browser does not support the video tag.
-                  </video>
+                    <video (mouseenter)="playVideo()" [src]="postFiles.get(post.id)" controls
+                        [class]="getAspectRatio(post.aspectRatio)" class="rounded-3 mx-md-5 img-basics">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
 
                 <div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
             </div>
-<!-- todo ======================================================================================= -->
+
         </div>
     </section>
 </article>

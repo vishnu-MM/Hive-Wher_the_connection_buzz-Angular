@@ -13,15 +13,18 @@
 
     <div class="my-3 mx-md-5"> <span class="h6 text-light">{{post.description}}</span> </div>
 
-    <img *ngIf="post.postType === PostType.IMAGE" #postImageElement
-         [src]="postImage" [class]="aspectRatioClass"
+    <img *ngIf="post.postType === PostType.IMAGE" 
+         #postImageElement
+         [src]="postFile" 
+         [class]="getAspectRatio(post.aspectRatio)"
          alt="post image" class="post rounded mx-md-5" (click)="navigateTo(post.id)">
 
     <div *ngIf="post.postType === PostType.VIDEO" (click)="navigateTo(post.id)">
         <video #postVideoElement
                (mouseenter)="playVideo()"
-               [src]="postVideo" controls
-               [class]="aspectRatioClass"
+               [src]="postFile" 
+               controls
+               [class]="getAspectRatio(post.aspectRatio)"
                class="post rounded-3 mx-md-5">
                Your browser does not support the video tag.
         </video>

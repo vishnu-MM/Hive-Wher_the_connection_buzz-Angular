@@ -16,10 +16,18 @@
     width: 50%;
     aspect-ratio: 9/16;
   }
-  .aspect-ratio-4-5, .aspect-ratio-1-1{
+  .aspect-ratio-4-5 {
+    width: 80%;
+    aspect-ratio: 4/5;
+  } 
+  .aspect-ratio-1-1{
     width: 80%;
     aspect-ratio: 1;
   }
+  .width-16-9{ width: 100%; }
+  .width-9-16{ width: 50%; }
+  .width-4-5,
+  .width-1-1{ width: 80%; }
 }
 /* For tablets */
 @media only screen and (min-width: 768px) and (max-width: 1023px) {
@@ -39,7 +47,11 @@
     width: 35%;
     aspect-ratio: 9/16;
   }
-  .aspect-ratio-4-5, .aspect-ratio-1-1{
+  .aspect-ratio-4-5 {
+    width: 50%;
+    aspect-ratio: 4/5;
+  }
+  .aspect-ratio-1-1 {
     width: 50%;
     aspect-ratio: 1;
   }
@@ -68,13 +80,12 @@
   }
   .aspect-ratio-4-5{
     width: 50%;
-    aspect-ratio: 4/3;
+    aspect-ratio: 4/5;
   }
   .aspect-ratio-1-1{
     width: 50%;
     aspect-ratio: 1;
   }
-
 }
 
 

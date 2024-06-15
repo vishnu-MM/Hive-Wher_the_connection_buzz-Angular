@@ -13,7 +13,7 @@ enum LodingData { POST, LIKE, COMMENT, POST_FILE }
 })
 export class PostComponent implements OnInit, OnDestroy {
     post!: Post;
-    postFile!: Map<number, PostFile>;
+    postFile: string = '';
     likeCount: number = 0;
     commentCount: number = 0;
     commentList: CommentDTO[] = [];
@@ -62,10 +62,13 @@ export class PostComponent implements OnInit, OnDestroy {
     }
 
     async loadPostFile(post: Post): Promise<void> {
-        this.postFile = await this.service.getPostFile([post]);
+        this.postFile = await this.service.getPostFile(post.id);
+    }
+
+    getAspectRatio(aspectRatio : number): string {
+        return this.service.getAspectRatio(aspectRatio);
     }
     
-
     async loadCommenList(postId: number): Promise<void> {
         this.commentListSub = this.service.getCommentsForPost(postId).subscribe({
             next: res => {

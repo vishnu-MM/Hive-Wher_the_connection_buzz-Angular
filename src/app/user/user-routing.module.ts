@@ -8,7 +8,6 @@ import {ChatComponent} from "./chat/chat.component";
 import {UserProfileComponent} from "./user-profile/user-profile.component";
 import {NotificationsComponent} from "./notifications/notifications.component";
 import {SearchComponent} from "./search/search.component";
-import { PostEditComponent } from './post-edit/post-edit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -23,7 +22,6 @@ const routes: Routes = [
     children:[
       {path: '', component: MyProfileComponent, pathMatch: 'full'},
       { path: 'update', component: UpdateProfileComponent},
-      { path: 'edit-post/:id', component: PostEditComponent}
     ]
  },
 ];

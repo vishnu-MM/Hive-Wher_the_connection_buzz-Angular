@@ -60,7 +60,7 @@ h2 {
 }
 
 .aspect-ratio-16-9 {
-    width: 70%;
+    width: 100%;
     aspect-ratio: 16/9;
 }
 
@@ -70,8 +70,8 @@ h2 {
 }
 
 .aspect-ratio-4-5 {
-    width: 6cqb;
-    aspect-ratio: 4/3;
+    width: 60%;
+    aspect-ratio: 4/5;
 }
 
 .aspect-ratio-1-1 {
@@ -90,11 +90,12 @@ h2 {
     padding: 1%;
     padding-top: 3%;
 }
-#description-time-div {
+#date-time-div {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    align-items: center;
 }
-#description-time-div span{
+span{
     font-size: large;
     font-weight: lighter;
 }
@@ -102,4 +103,9 @@ h2 {
     background-color: black;
     border: 1px solid black;
     object-fit: contain;
+}
+#post-div {
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
 }

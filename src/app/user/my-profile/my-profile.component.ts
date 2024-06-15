@@ -10,190 +10,167 @@ import { PostService } from "../../../Shared/Services/post.service";
 import { Post, PostType } from "../../../Shared/Models/post.model";
 
 @Component({
-	selector: 'app-my-profile',
-	templateUrl: './my-profile.component.html',
-	styleUrls: ['./my-profile.component.css']
+    selector: 'app-my-profile',
+    templateUrl: './my-profile.component.html',
+    styleUrls: ['./my-profile.component.css']
 })
 export class MyProfileComponent implements OnInit, OnDestroy {
-	currentUser!: User;
-	coverPicture!: string;
-	profilePicture!: string;
-	friendsCount: number = 0;
-	posts: Post[] = [];
-	protected readonly PostType = PostType;
-	postFiles: Map<number, string> = new Map<number, string>();
-	aspectRatio: Map<number, string> = new Map<number, string>();
-	showListView: boolean = true;
+    currentUser!: User;
+    coverPicture!: string;
+    profilePicture!: string;
+    friendsCount: number = 0;
+    posts: Post[] = [];
+    postFiles: Map<number, string> = new Map<number, string>();
+    showListView: boolean = true;
+    selectedPost: Post | null = null;
+    aspectRatio: number = 1;
 
-	//SUBSCRIPTION for CLOSING
-	private userStoreSub!: Subscription;
-	private getProfileSub!: Subscription;
-	private getCoverSub!: Subscription;
-	private getAllPostsSub!: Subscription;
-	private getPostFileSub!: Subscription;
-	@ViewChild('postModal') postModal!: TemplateRef<any>;
-	@ViewChild('EditDeleteModal') editDeleteModalRef!: TemplateRef<any>;
-	@ViewChild('EditPostModal') EditPostModalRef!: TemplateRef<any>;
-	private dialogRef!: MatDialogRef<any>;
-	private EditPostModaldialogRef!: MatDialogRef<any>;
-	selectedPostId: number | null = null;
+    //SUBSCRIPTION for CLOSING
+    private userStoreSub!: Subscription;
+    private getProfileSub!: Subscription;
+    private getCoverSub!: Subscription;
+    private getAllPostsSub!: Subscription;
+    private getPostFilesSub!: Subscription;
 
-	//CONSTRUCTOR & LIFE-CYCLE METHODS
-	constructor(private userStore: Store<{ UserStore: User }>,
-		private userService: UserService,
-		private postService: PostService,
-		private dialog: MatDialog,
-		private router: Router) { }
+    @ViewChild('postModal') postModal!: TemplateRef<any>;
+    @ViewChild('EditDeleteModal') editDeleteModalRef!: TemplateRef<any>;
+    @ViewChild('EditPostModal') EditPostModalRef!: TemplateRef<any>;
+    private dialogRef!: MatDialogRef<any>;
+    private EditPostModaldialogRef!: MatDialogRef<any>;
+    protected readonly PostType = PostType;
 
-	ngOnInit(): void {
-		this.userStore.dispatch(USER_LOGIN());
-		this.userStoreSub = this.userStore.select('UserStore')
-			.subscribe(data => {
-				this.currentUser = { ...data }
-				if (this.currentUser.id) {
-					this.getProfileImage();
-					this.getCoverImage();
-				}
-			});
-		this.getAllPostsByUser();
-	}
+    //CONSTRUCTOR & LIFE-CYCLE METHODS
+    constructor(private userStore: Store<{ UserStore: User }>,
+        private userService: UserService,
+        private postService: PostService,
+        private dialog: MatDialog,
+        private router: Router) { }
 
-	ngOnDestroy(): void {
-		if (this.userStoreSub != undefined) this.userStoreSub.unsubscribe()
-		if (this.getProfileSub != undefined) this.getProfileSub.unsubscribe()
-		if (this.getCoverSub != undefined) this.getCoverSub.unsubscribe()
-		if (this.getAllPostsSub != undefined) this.getAllPostsSub.unsubscribe()
-		if (this.getPostFileSub != undefined) this.getAllPostsSub.unsubscribe()
-	}
+    ngOnInit(): void {
+        this.userStore.dispatch(USER_LOGIN());
+        this.userStoreSub = this.userStore.select('UserStore')
+            .subscribe(data => {
+                this.currentUser = { ...data }
+                if (this.currentUser.id) {
+                    this.getProfileImage();
+                    this.getCoverImage();
+                }
+            });
+        this.getAllPostsByUser();
+    }
 
+    ngOnDestroy(): void {
+        if (this.userStoreSub != undefined) this.userStoreSub.unsubscribe()
+        if (this.getProfileSub != undefined) this.getProfileSub.unsubscribe()
+        if (this.getCoverSub != undefined) this.getCoverSub.unsubscribe()
+        if (this.getAllPostsSub != undefined) this.getAllPostsSub.unsubscribe()
+        if (this.getPostFilesSub != undefined) this.getAllPostsSub.unsubscribe()
+    }
 
+    // LOGIC
+    async getCoverImage() {
+        this.coverPicture = "assets/LoginSignUpBg.jpg"
+        this.getCoverSub = this.userService
+            .getProfileImage(this.currentUser.id!, ImageType.COVER_IMAGE)
+            .subscribe({
+                next: (response) => this.coverPicture = 'data:image/png;base64,' + response.image,
+                error: (error) => { }
+            })
+    }
 
-	// LOGIC
-	async getCoverImage() {
-		this.coverPicture = "assets/LoginSignUpBg.jpg"
-		this.getCoverSub = this.userService
-			.getProfileImage(this.currentUser.id!, ImageType.COVER_IMAGE)
-			.subscribe({
-				next: (response) => this.coverPicture = 'data:image/png;base64,' + response.image,
-				error: (error) => { }
-			})
-	}
+    async getProfileImage() {
+        this.profilePicture = "assets/LoginSignUpBg.jpg"
+        this.getProfileSub = this.userService
+            .getProfileImage(this.currentUser.id!, ImageType.PROFILE_IMAGE)
+            .subscribe({
+                next: (response) => {
+                    this.profilePicture = 'data:image/png;base64,' + response.image
+                },
+                error: (error) => { }
+            })
+    }
 
-	async getProfileImage() {
-		this.profilePicture = "assets/LoginSignUpBg.jpg"
-		this.getProfileSub = this.userService
-			.getProfileImage(this.currentUser.id!, ImageType.PROFILE_IMAGE)
-			.subscribe({
-				next: (response) => {
-					this.profilePicture = 'data:image/png;base64,' + response.image
-				},
-				error: (error) => { }
-			})
-	}
+    async getAllPostsByUser() {
+        const userStr = localStorage.getItem('CURRENT_USER');
+        if (userStr) {
+            const user: UserResponse = JSON.parse(userStr);
+            this.getAllPostsSub = this.postService.getUserPosts(user.id).subscribe({
+                next: posts => {
+                    this.posts = posts;
+                    this.loadPostFiles(posts);
+                },
+                error: err => { }
+            })
+        }
+    }
 
-	async getAllPostsByUser() {
-		const userStr = localStorage.getItem('CURRENT_USER');
-		if (userStr) {
-			const user: UserResponse = JSON.parse(userStr);
-			this.getAllPostsSub = this.postService.getUserPosts(user.id).subscribe({
-				next: posts => {
-					this.posts = posts;
-					this.getPostFile();
-				},
-				error: err => { }
-			})
-		}
-	}
+    async loadPostFiles(postList: Post[]): Promise<void> {
+        this.postFiles = await this.postService.getPostFiles(postList);
+    }
 
-	async getPostFile() {
-		for (const post of this.posts) {
-			if (this.getPostFileSub != undefined) this.getAllPostsSub.unsubscribe();
-			this.getPostFileSub = this.postService.getImage(post.id)
-				.subscribe({
-					next: (blob) => {
-						const reader = new FileReader();
-						reader.onload = (event: any) => {
-							this.postFiles.set(post.id, event.target.result);
+    getAspectRatio(aspectRatio: number): string {
+        return this.postService.getAspectRatio(aspectRatio);
+    }
 
-							if (post.postType === 'IMAGE') {
-								// Create an image element to calculate the aspect ratio
-								const img = new Image();
-								img.onload = () => {
-									const aspectRatio = img.width / img.height;
-									this.aspectRatio.set(post.id, this.calculateAspectRatioClass(aspectRatio));
-								};
-								img.src = event.target.result;
-							} else if (post.postType === 'VIDEO') {
-								// Create a video element to calculate the aspect ratio
-								const video = document.createElement('video');
-								video.onloadedmetadata = () => {
-									const aspectRatio = video.videoWidth / video.videoHeight;
-									this.aspectRatio.set(post.id, this.calculateAspectRatioClass(aspectRatio));
-								};
-								video.src = event.target.result;
-							}
-						};
-						reader.readAsDataURL(blob);
-					},
-					error: (error) => console.error('File loading failed', error)
-				});
-		}
-	}
+    openModal(): void {
+        this.dialogRef = this.dialog.open(this.postModal);
+    }
 
-	private calculateAspectRatioClass(aspectRatio: number): string {
-		if (aspectRatio > 1.5)
-			return 'aspect-ratio-16-9';
-		else if (aspectRatio < 0.6)
-			return 'aspect-ratio-9-16';
-		else if (aspectRatio < 1 && aspectRatio >= 0.8)
-			return 'aspect-ratio-4-5';
-		return 'aspect-ratio-1-1';
-	}
+    closeModal(): void {
+        this.dialogRef.close();
+    }
 
-	openModal(): void {
-		this.dialogRef = this.dialog.open(this.postModal);
-	}
+    logout() {
+        this.closeModal();
+        localStorage.clear();
+        this.router.navigate(['/login'])
+    }
 
-	closeModal(): void {
-		this.dialogRef.close();
-	}
+    playVideo() {
 
-	logout() {
-		this.closeModal();
-		localStorage.clear();
-		this.router.navigate(['/login'])
-	}
+    }
 
-	playVideo() {
+    getWidthClass(aspectRatio: number) {
+        if (aspectRatio > 1.5) { return 'width-16-9' }
+		else if (aspectRatio < 0.6) { return 'width-9-16' }
+		else if (aspectRatio < 1 && aspectRatio >= 0.8) { return 'width-4-5' }
+		else return 'width-1-1';
+    }
 
-	}
+    editDeleteModal(post: Post) {
+        this.selectedPost = post;
+        this.dialogRef = this.dialog.open(this.editDeleteModalRef);
+    }
 
-	editDeleteModal(postId: number) {
-		this.selectedPostId = postId;
-		this.dialogRef = this.dialog.open(this.editDeleteModalRef);
-		console.log(this.selectedPostId);
-	}
+    editPostModal() {
+        this.EditPostModaldialogRef = this.dialog.open(this.EditPostModalRef);
+    }
 
-	editPostModal() {
-		console.log(this.selectedPostId);
-		this.EditPostModaldialogRef = this.dialog.open(this.EditPostModalRef);
-	}
+    closeEditPostModal() {
+        this.EditPostModaldialogRef.close();
+        this.selectedPost = null;
+    }
 
-  closeEditPostModal() {
-		this.EditPostModaldialogRef.close();
-    this.selectedPostId = null;
-  }
+    editpost() {
+        if (this.selectedPost !== null) {
+            this.editPostModal()
+            this.closeModal();
+        }
+    }
 
-	editpost() {
-		if (this.selectedPostId !== null) {
-			this.editPostModal()
-			this.closeModal();
-		}
-	}
+    deletePost() {
+        if (this.selectedPost !== null) {
 
-	deletePost() {
-		if (this.selectedPostId !== null) {
+        }
+    }
 
-		}
-	}
+    async update(): Promise<void> {
+        if (this.selectedPost) {
+            this.selectedPost.description = this.selectedPost.description.trim();
+            this.postService.updatePost(this.selectedPost).subscribe({
+                next: res => { this.closeEditPostModal(); },
+                error: err => { console.log(err) }
+            })
+        }
+    }
 }

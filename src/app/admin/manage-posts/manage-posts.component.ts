@@ -16,7 +16,7 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
     totalPages: number = 0;
     isLast: boolean = true;
     isSearchResultShowing: boolean = false;
-    postFileMap: Map<number, PostFile> = new Map<number, PostFile>();
+    postFiles: Map<number, string> = new Map<number, string>();
     private loadPostListSub!: Subscription;
 
     constructor(private postService: PostService, private router: Router) {}
@@ -37,14 +37,18 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
                     this.isLast = res.isLast;
                     this.totalPages = res.totalPages;
                     if (this.isSearchResultShowing) this.isSearchResultShowing = false;
-                    this.loadPostFiles().then();
+                    this.loadPostFiles(res.contents).then();
                 },
                 error: err => {}
             })
     }
 
-    async loadPostFiles(): Promise<void> {
-        this.postFileMap = await this.postService.getPostFile(this.postList);
+	async loadPostFiles(postList: Post[]): Promise<void> {
+        this.postFiles = await this.postService.getPostFiles(postList);
+	}
+
+    getAspectRatio(aspectRatio : number): string {
+        return this.postService.getAspectRatio(aspectRatio);
     }
 
     search($event: string) {

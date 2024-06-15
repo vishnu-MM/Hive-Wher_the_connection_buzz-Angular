@@ -15,14 +15,12 @@ import { MyProfileComponent } from './my-profile/my-profile.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import { PostComponent } from './post/post.component';
 import { PostInteractionComponent } from './post-interaction/post-interaction.component';
-import {NgToastModule} from "ng-angular-popup";
-import {SingleCommentComponent} from "./single-comment/single-comment.component";
+import { NgToastModule} from "ng-angular-popup";
+import { SingleCommentComponent } from "./single-comment/single-comment.component";
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ChatComponent } from './chat/chat.component';
 import { SearchComponent } from './search/search.component';
 import { NotificationsComponent } from './notifications/notifications.component';
-import { SpinnerComponent } from '../spinner/spinner.component';
-import { PostEditComponent } from './post-edit/post-edit.component';
 
 @NgModule({
     declarations: [
@@ -40,7 +38,6 @@ import { PostEditComponent } from './post-edit/post-edit.component';
         ChatComponent,
         SearchComponent,
         NotificationsComponent,
-        PostEditComponent
     ],
     exports: [
         PostsComponent
