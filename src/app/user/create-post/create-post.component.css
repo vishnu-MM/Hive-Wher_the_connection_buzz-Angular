@@ -4,6 +4,7 @@
 textarea{
   background-color: #353535;
   color: white;
+  box-shadow: none;
 }
 textarea::placeholder {
   color: darkgray;
@@ -11,6 +12,7 @@ textarea::placeholder {
 textarea:focus{
   background-color: #353535;
   color: white;
+  box-shadow: none;
 }
 input{
   background-color: #353535;

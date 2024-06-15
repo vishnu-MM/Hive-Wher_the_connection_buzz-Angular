@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription, Timestamp } from 'rxjs';
 import { Post, PostType } from 'src/Shared/Models/post.model';
 import { PostFile, PostService } from 'src/Shared/Services/post.service';
@@ -9,8 +10,6 @@ import { PostFile, PostService } from 'src/Shared/Services/post.service';
     styleUrls: ['./manage-posts.component.css', '../shared-style.css']
 })
 export class ManagePostsComponent implements OnInit, OnDestroy {
-[x: string]: any;
-
     postList: Post[] = [];
     pageNo: number = 0;
     pageSize: number = 10;
@@ -20,7 +19,7 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
     postFileMap: Map<number, PostFile> = new Map<number, PostFile>();
     private loadPostListSub!: Subscription;
 
-    constructor(private postService: PostService) {}
+    constructor(private postService: PostService, private router: Router) {}
 
     ngOnInit(): void {
         this.loadPostList().then();
@@ -56,4 +55,7 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
         return new Date(createdOn.toString());
     }
 
+    redireactTo(postId: number) {
+        this.router.navigate(['/a/posts/post',postId])
+    }
 }

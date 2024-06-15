@@ -18,7 +18,7 @@ export class CreatePostComponent implements OnInit, OnDestroy{
   @Input() file: File | undefined;
   @Input() previewImg!: string;
   @Input() aspectRatio!: number;
-  description!: string;
+  description: string = '';
   userStoreSub!: Subscription;
   currentUser!: User;
   postServiceSub!: Subscription;
@@ -61,7 +61,8 @@ export class CreatePostComponent implements OnInit, OnDestroy{
               let postCreation : PostCreation = {
                   description: (this.description) ? this.description.trim() : '',
                   postType: PostType.IMAGE,
-                  userId: this.currentUser.id!
+                  userId: this.currentUser.id!,
+                  aspectRatio: this.aspectRatio
               }
             this.postServiceSub = this.postService
               .createPost(this.file, postCreation)
@@ -77,9 +78,10 @@ export class CreatePostComponent implements OnInit, OnDestroy{
           }
           else if (this.file.type.startsWith('video/')) {
               let postCreation : PostCreation = {
-                description: this.description.trim(),
-                postType: PostType.VIDEO,
-                userId: this.currentUser.id!
+                  description: this.description.trim(),
+                  postType: PostType.VIDEO,
+                  userId: this.currentUser.id!,
+                  aspectRatio: 0
               }
               this.postServiceSub = this.postService
                 .createPost(this.file, postCreation)
@@ -96,9 +98,10 @@ export class CreatePostComponent implements OnInit, OnDestroy{
       }
       else {
           let postCreation : PostCreation = {
-            description: this.description.trim(),
-            postType: PostType.TEXT_ONLY,
-            userId: this.currentUser.id!
+              description: this.description.trim(),
+              postType: PostType.TEXT_ONLY,
+              userId: this.currentUser.id!,
+              aspectRatio: 0
           }
       }
   }

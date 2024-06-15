@@ -7,6 +7,7 @@ export interface Post {
   fileName: string;
   fileType: string;
   filePath: string;
+  aspectRatio: number;
   createdOn: Timestamp<string>;
   userId: number;
   isBlocked: boolean;
@@ -16,6 +17,7 @@ export interface PostCreation {
   description : string;
   userId: number;
   postType: PostType;
+  aspectRatio: number;
 }
 export enum PostType {  IMAGE="IMAGE",VIDEO="VIDEO",TEXT_ONLY="TEXT_ONLY" }
 export interface PostPage{

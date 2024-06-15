@@ -34,7 +34,7 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let post of postList">
-                            <td id="post-td">
+                            <td id="post-td" (click)="redireactTo(post.id)">
                                 <div class="loading-div p-3"
                                     *ngIf="(post.postType.toString() === 'VIDEO' || post.postType.toString() === 'IMAGE') && !postFileMap.has(post.id)">
                                     <div class="loader" ></div>
@@ -50,15 +50,15 @@
                                     Your browser does not support the video tag.
                                 </video>
                             </td>
-                            <td>
+                            <td (click)="redireactTo(post.id)">
                                 <h3 [class]="{'text-muted' : !post.description}">
                                     {{ post.description? post.description : 'No Description' }}
                                 </h3>
                             </td>
-                            <td>
+                            <td (click)="redireactTo(post.id)">
                                 <h3>{{ post.postType | titlecase }}</h3>
                             </td>
-                            <td>
+                            <td (click)="redireactTo(post.id)">
                                 <h3>{{ getPostDate(post.createdOn) | date:'dd MMM yyy | hh:mm a' }}</h3>
                             </td>
                             <td>

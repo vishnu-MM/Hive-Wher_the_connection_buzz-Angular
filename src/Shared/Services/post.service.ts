@@ -16,8 +16,6 @@ export class PostService {
     private postFileSubMap: Map<number, Subscription> = new Map<number, Subscription>();
     private postFileMap: Map<number, PostFile> = new Map<number, PostFile>();
 
-
-
     constructor(private http: HttpClient) { }
 
     public createPost(file: File, postRequest: PostCreation): Observable<Post> {
@@ -25,6 +23,7 @@ export class PostService {
         formData.append('file', file, file.name);
         formData.append('description', postRequest.description);
         formData.append('postType', postRequest.postType.toString());
+        formData.append('aspectRatio', postRequest.aspectRatio.toString());
         formData.append('userId', postRequest.userId.toString());
         return this.http.post<Post>(`${this.BASE_URL}/create`, formData);
     }
@@ -135,5 +134,10 @@ export class PostService {
         );
     }
 
-
+    public getLikesForPost(postId: number): Observable<Like[]> {
+        return this.http.get<Like[]>( 
+            `${this.BASE_URL}/all-like`,
+            { params: { postId: postId.toString() } }
+        );
+    }
 }
