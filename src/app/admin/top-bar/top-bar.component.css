@@ -1,6 +1,6 @@
 #top-nav-bar-aligner {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
   height: 10%;
 }
 #top-nav-bar {
