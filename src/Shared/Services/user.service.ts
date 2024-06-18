@@ -87,4 +87,8 @@ export class UserService implements OnDestroy {
         }
         return this.profilePictureMap;
     }
+
+    fetchData(filter: string): Observable<Map<string, number>> {
+        return this.http.get<Map<string, number>>(`${this.BASE_URL}/user-count-date?filterBy=${filter}`);
+    }
 }
