@@ -1,12 +1,12 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MessageDTO, MessageService } from "../../../Shared/Services/message.service";
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MessageService } from "../../../Shared/Services/message.service";
 import { User, UserResponse } from "../../../Shared/Models/user.model";
 import { ImageType, UserService } from "../../../Shared/Services/user.service";
 import { Subscription } from "rxjs";
 import { DomSanitizer } from '@angular/platform-browser';
 import RecordRTC from 'recordrtc';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Group } from 'src/Shared/Models/group.model';
+import { Group, MessageDTO, MessageType } from 'src/Shared/Models/chat.model';
 
 @Component({
     selector: 'chat',
@@ -19,14 +19,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     messages: MessageDTO[] = [];
     currentUser!: User;
     friendsList: User[] = [];
-    receiver!: User;
+    allUsers: User[] = [];
+    receiver!: User | undefined;
     userProfileImageMap: Map<number, string> = new Map<number, string>();
     private getProfileSubs = new Map<number, Subscription>();
-
+    pageNo: number = 0;
 
     @ViewChild('chatBody') private chatBody!: ElementRef;
     @ViewChild('NewGroup') newGroup!: TemplateRef<any>;
+    @ViewChild('NewChat') newChat!: TemplateRef<any>;
     private dialogRef!: MatDialogRef<any>;
+    private dialogRefNewChat!: MatDialogRef<any>;
     private getMessageSub!: Subscription;
     private getProfileById!: Subscription;
     private getProfileSub!: Subscription;
@@ -43,6 +46,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     userIds: string[] = [];
     notInGroupUsers: Map<number, User> = new Map<number, User>;
     inGroupUsers: Map<number, User> = new Map<number, User>;
+    showGroups: boolean = false;
+    groups: Group[] = [];
+    group!: Group | undefined;
 
     constructor(private messageService: MessageService,
         private userService: UserService,
@@ -63,6 +69,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
             this.getMessageSub = this.messageService.message$
                 .subscribe(message => {
+                    console.log(message)
                     this.addMessage(JSON.parse(message));
                 });
         } else {
@@ -89,7 +96,7 @@ export class ChatComponent implements OnInit, OnDestroy {
                     if (isCurrentUser) {
                         this.currentUser = value;
                     }
-                    this.friendsList.push(value);                    
+                    this.friendsList.push(value);
                     this.loadUserProfilePictures(this.friendsList).then();
                 },
                 error: err => {
@@ -102,65 +109,75 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.messageService.getusers(id)
             .subscribe({
                 next: value => {
-                    for ( let userId of value) {
+                    for (let userId of value) {
                         this.loadUser(userId, false).then();
-                    }                    
+                    }
                 },
                 error: err => {
                 }
             });
     }
 
-    async loadGroupsList(id: number) {
-        this.messageService.getGroups(id)
-            .subscribe({
-                next: value => {
-                    for ( let res of value) {
-                       console.log(res)
-                    }                    
-                },
-                error: err => {
-                }
-            });
+    openNewChat() {
+        this.loadAllUsers().then()
+        this.dialogRefNewChat = this.dialog.open(this.newChat);
+    }
+
+    async loadAllUsers(): Promise<void> {
+        this.userService.getAllUsers(this.pageNo, 20).subscribe({
+            next: res => {
+                this.allUsers = res.contents;
+                this.pageNo++;
+                this.loadUserProfilePictures(res.contents).then();
+            },
+            error: err => {}
+        })
     }
 
     chatWithUser(user: User) {
+        this.group = undefined;
         this.receiver = user;
-        this.loadPreviousChats(user.id!);
+        this.loadPreviousChats(user.id!.toString());
     }
 
-    async loadPreviousChats(receiverId: number) {
+    async loadPreviousChats(receiverId: string) {
         if (this.currentUser.id) {
-            this.messageService.getMessages(this.currentUser.id, receiverId)
+            let messageType: MessageType;
+            if (this.receiver) {
+                messageType = MessageType.PRIVATE;
+            }
+            else if (this.group) {
+                messageType = MessageType.GROUP;
+            }
+            else {
+                return;
+            }
+            console.log("loading")
+            this.messageService.getMessages(this.currentUser.id, receiverId, messageType)
                 .subscribe({
                     next: value => {
                         this.messages = value;
+                        console.log(value)
+                        console.log(this.messages)
                         this.scrollToBottom();
                     },
                     error: err => {
-                        console.log(err)
+                        console.log('Error while fetching old chat'+err)
                     }
                 });
         }
     }
 
     sendMessage() {
-        if (this.newMessage.trim() && this.currentUser && this.receiver && this.currentUser.id && this.receiver.id) {
-            let message: MessageDTO = {
-                chatId: "",
-                content: this.newMessage,
-                id: "",
-                recipientId: this.receiver.id.toString(),
-                senderId: this.currentUser.id.toString(),
-                timestamp: new Date()
-            }
-            console.log(message)
-
-            this.messageService.sendMessage(this.newMessage, this.receiver.id.toString(), this.currentUser.id.toString())
+        let message: MessageDTO | null = this.getMessageObject();
+        console.log(message)
+        if (message !== null) {
+            this.messageService.sendMessage(message)
                 .subscribe({
                     next: () => {
+                        console.log(message);
                         this.newMessage = '';
-                        this.messages.push(message)
+                        this.messages.push(message!)
                         this.scrollToBottom();
                     },
                     error: err => {
@@ -168,6 +185,36 @@ export class ChatComponent implements OnInit, OnDestroy {
                     }
                 });
         }
+    }
+
+    private getMessageObject(): MessageDTO | null {
+        if (!(this.newMessage.trim() && this.currentUser && this.currentUser.id)) {
+            return null;
+        }
+        console.log(this.group)
+        if (this.receiver && this.receiver.id) {
+            return {
+                chatId: "",
+                content: this.newMessage,
+                id: "",
+                recipientId: this.receiver.id.toString(),
+                senderId: this.currentUser.id.toString(),
+                timestamp: (new Date()).toString(),
+                messageType: MessageType.PRIVATE
+            }
+        }
+        else if (this.group && this.group.id) {
+            return {
+                chatId: "",
+                content: this.newMessage,
+                id: "",
+                recipientId: this.group.id.toString(),
+                senderId: this.currentUser.id.toString(),
+                timestamp: (new Date()).toString(),
+                messageType: MessageType.GROUP
+            }
+        }
+        return null;
     }
 
     private scrollToBottom(): void {
@@ -249,13 +296,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     createNewGroup() {
         if (this.groupName !== '' || this.groupName.trim() !== '') {
-            for (let userId of this.inGroupUsers.keys()){
+            for (let userId of this.inGroupUsers.keys()) {
                 this.userIds.push(userId.toString());
             }
 
             const group: Group = {
                 id: null,
-                groupName: this.groupName.trim() ,
+                groupName: this.groupName.trim(),
                 membersId: this.userIds,
                 imageData: null,
                 imageName: null,
@@ -264,12 +311,12 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.close();
             this.messageService.createGroup(group).subscribe({
                 next: res => { console.log(res) },
-                error: err => { 
-                    console.log( 'error while creating group' )
+                error: err => {
+                    console.log('error while creating group')
                     console.log(err)
                 }
             })
-            
+
         }
     }
 
@@ -278,7 +325,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             const user: User = this.notInGroupUsers.get(id)!;
             this.notInGroupUsers.delete(id)
             this.inGroupUsers.set(id, user);
-     }
+        }
     }
 
     removeFromGroup(id: number) {
@@ -286,21 +333,64 @@ export class ChatComponent implements OnInit, OnDestroy {
             const user: User = this.inGroupUsers.get(id)!;
             this.inGroupUsers.delete(id)
             this.notInGroupUsers.set(id, user);
-     }
+        }
     }
 
     close() {
         this.dialogRef.close();
+        this.dialogRefNewChat.close();
     }
 
     open() {
-        if (this.friendsList.length > 0) {          
-            for(let user of this.friendsList) {
+        if (this.friendsList.length > 0) {
+            for (let user of this.friendsList) {
                 if (user === this.currentUser) continue;
                 this.notInGroupUsers.set(user.id!, user);
             }
             this.inGroupUsers.set(this.currentUser.id!, this.currentUser);
             this.dialogRef = this.dialog.open(this.newGroup);
+        }
+    }
+
+    async loadGroupsList(id: number) {
+        this.messageService.getGroups(id)
+            .subscribe({
+                next: value => {
+                    this.groups = value
+                },
+                error: err => {
+                }
+            });
+    }
+
+    chatInGroup(group: Group) {
+        this.receiver = undefined;
+        this.group = group;
+        this.loadPreviousChats(group.id!);
+    }
+
+    isMessageComming(message: MessageDTO): boolean {
+        if (this.receiver) {
+            return (message.senderId === this.receiver.id!.toString() && message.senderId !== this.currentUser.id?.toString());
+        }
+        else if (this.group) {
+            return (message.senderId !== this.currentUser.id?.toString() && message.recipientId === this.group.id);
+            
+        }
+        else {
+            return false;
+        }
+    }
+
+    isMessageGoing(message: MessageDTO) {
+        if (this.receiver) {
+            return (message.senderId === this.currentUser!.id?.toString());
+        }
+        else if (this.group) {
+            return (message.senderId === this.currentUser.id?.toString() && message.recipientId === this.group.id);
+        }
+        else {
+            return false;
         }
     }
 }

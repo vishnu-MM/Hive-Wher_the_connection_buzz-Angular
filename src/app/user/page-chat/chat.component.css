@@ -101,7 +101,7 @@
 }
 
 #peoples-section-header {
-    height: 15vh;
+    height: 18vh;
     width: 100%;
     padding-right: 5%;
     padding-left: 5%;
@@ -115,7 +115,7 @@
 }
 
 .peoples-scroll {
-    height: 80vh;
+    height: 78vh;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -297,4 +297,7 @@ p {
     display: flex;
     justify-content: space-between;
     align-items: center
+}
+.active {
+    color: greenyellow;
 }

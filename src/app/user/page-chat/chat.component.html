@@ -1,10 +1,11 @@
 <ng-template #NewGroup>
     <div>
-        <h2 mat-dialog-title class="m-0">Edit Post</h2>
+        <h2 mat-dialog-title class="m-0">New Group</h2>
     </div>
     <mat-dialog-content class="py-0">
         <div style="width: 767px;">
-            <input type="text" name="group-name" id="group-name-input" placeholder="Name of Group" class="form-control mb-2" [(ngModel)]="groupName">
+            <input type="text" name="group-name" id="group-name-input" placeholder="Name of Group"
+                class="form-control mb-2" [(ngModel)]="groupName">
             <h2>Group Members</h2>
             <div id="peoples-section-body">
                 <div *ngFor="let userId of inGroupUsers.keys()" class="inGroupUsers">
@@ -15,13 +16,14 @@
                             <p> {{ inGroupUsers.get(userId)!.name }} </p>
                         </div>
                     </div>
-                    <mat-icon fontIcon="close" *ngIf="userId !== currentUser.id" (click)="removeFromGroup(userId)"></mat-icon>
+                    <mat-icon fontIcon="close" *ngIf="userId !== currentUser.id"
+                        (click)="removeFromGroup(userId)"></mat-icon>
                 </div>
             </div>
             <h2>Add Members From</h2>
             <div id="peoples-section-body">
                 <div *ngFor="let userId of notInGroupUsers.keys()">
-                    <div (click)="addToGroup(userId)" class="user-tile" >
+                    <div (click)="addToGroup(userId)" class="user-tile">
                         <img [src]="userProfileImageMap.get(userId)" alt="User Profile">
                         <div class="ms-3">
                             <p> {{ '@'+notInGroupUsers.get(userId)!.username }} </p>
@@ -37,6 +39,29 @@
         <button (click)="close()" type="button" class="btn btn-warning form-control m-1">Cancel</button>
     </mat-dialog-actions>
 </ng-template>
+<ng-template #NewChat>
+    <div>
+        <h2 mat-dialog-title class="m-0">New Chat</h2>
+    </div>
+    <mat-dialog-content class="py-0">
+        <div>
+            <div id="peoples-section-body">
+                <div *ngFor="let user of allUsers">
+                    <div (click)="chatWithUser(user); close()" class="user-tile">
+                        <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
+                        <div class="ms-3">
+                            <p> {{ user.username }} </p>
+                            <Span>Online / Last Seen</Span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button (click)="close()" type="button" class="btn btn-dark form-control m-1">Cancel</button>
+    </mat-dialog-actions>
+</ng-template>
 
 <article>
     <div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
@@ -46,8 +71,23 @@
             <p> Chats </p>
             <input type="text" class="form-control rounded-5" id="search" name="search" placeholder="Search"
                 [(ngModel)]="searchText">
+            <div id="peoples-section-footer" class="pt-3">
+                <div (click)="showGroups = false" [class]="{'active': !showGroups}">Personal</div>
+                <div (click)="showGroups = true" [class]="{'active': showGroups}">Groups</div>
+            </div>
         </div>
-        <div id="peoples-section-body" class="peoples-scroll">
+        <div id="peoples-section-body" class="peoples-scroll" *ngIf="showGroups">
+            <div *ngFor="let group of groups">
+                <div (click)="chatInGroup(group)" class="user-tile">
+                    <img src="assets/no-profile-image.jpg" alt="User Profile">
+                    <div class="ms-3">
+                        <p> {{ group.groupName }} </p>
+                        <Span>{{ group.membersId.length +' Members'}}</Span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="peoples-section-body" class="peoples-scroll" *ngIf="!showGroups">
             <div *ngFor="let user of friendsList">
                 <div (click)="chatWithUser(user)" class="user-tile">
                     <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
@@ -59,7 +99,7 @@
             </div>
         </div>
         <div id="peoples-section-footer">
-            <div>New Chat</div>
+            <div (click)="openNewChat()">New Chat</div>
             <div (click)="open()">New Group</div>
         </div>
     </div>
@@ -73,48 +113,53 @@
             </div>
         </div>
 
-        <div id="chat-body" #chatBody class="chat-scroll container" *ngIf="receiver">
+        <div id="chat-header" *ngIf="group">
+            <img class="user-profile-picture" src="assets/no-profile-image.jpg">
+            <div class="ms-3">
+                <span class="h4 text-light"> {{ group.groupName }} </span> <br>
+                <Span class="text-light">{{ group.membersId.length + ' Members'}}</Span>
+            </div>
+        </div>
+
+        <div id="chat-body" #chatBody class="chat-scroll container" *ngIf="receiver || group">
             <ng-container *ngIf="messages.length > 0">
                 <!-- LOOP -->
-
                 <div class="message px-3 row" *ngFor="let message of messages">
                     <div class="col-12 col-lg-6">
-                        <div class="d-flex justify-content-start">
-                            <div class="message-right py-3 px-4"
-                                *ngIf="message.senderId === receiver.id?.toString() && message.senderId !== message.recipientId">
-                                <span>{{ message.content }}</span>
+                        <div class="d-flex justify-content-start" 
+                            *ngIf="isMessageComming(message)">
+                            <div class="message-right py-3 px-4" >
+                                <span>{{ message.content}}</span>
                             </div>
                         </div>
-                        <p class="message-time text-light" *ngIf="message.senderId === receiver.id?.toString()">
-                            {{ message.timestamp | date:'dd MMM'}}
+                        <p class="message-time text-light" *ngIf="isMessageComming(message)">
+                            {{ message.timestamp | date:'hh:mm aa'}}
                         </p>
                     </div>
+
                     <div class="col-12 col-lg-6 d-flex justify-content-end">
-                        <div>
-                            <div class="message-left  py-3 px-4"
-                                *ngIf="message.senderId === currentUser.id?.toString()">
-                                <span>{{ message.content }}</span>
+                        <div *ngIf="isMessageGoing(message)">
+                            <div class="message-left py-3 px-4">
+                                <span >
+                                    {{ message.content }}
+                                </span>
                             </div>
-                            <p class="d-flex justify-content-end message-time text-light"
-                                *ngIf="message.senderId === currentUser.id?.toString()">
-                                {{ message.timestamp | date:'dd MMM'}}
+                            <p class="d-flex justify-content-end message-time text-light">
+                                {{ message.timestamp | date:'hh:mm aa'}}
                             </p>
                         </div>
                     </div>
                 </div>
                 <!-- LOOP ENDS -->
-
             </ng-container>
             <ng-container *ngIf="messages.length === 0">
                 <div id="no-message">
-                    <div class="h3 p-3 rounded-5">
-                        Start a new Conversation
-                    </div>
+                    <div class="h3 p-3 rounded-5">Start a new Conversation</div>
                 </div>
             </ng-container>
         </div>
 
-        <div id="chat-input-outer" *ngIf="receiver">
+        <div id="chat-input-outer" *ngIf="receiver || group">
             <div id="chat-input" class="rounded-5 d-flex justify-content-between">
                 <input type="text" *ngIf="!recording && !isAudioReadyToSent" class="rounded-5" id="message-input"
                     name="message" placeholder="Type here..." [(ngModel)]="newMessage">
