@@ -1,13 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {HomeComponent} from './home/home.component';
-import {UpdateProfileComponent} from './update-profile/update-profile.component';
-import {MyProfileComponent} from "./my-profile/my-profile.component";
-import {PostComponent} from "./post/post.component";
-import {ChatComponent} from "./chat/chat.component";
-import {UserProfileComponent} from "./user-profile/user-profile.component";
-import {NotificationsComponent} from "./notifications/notifications.component";
-import {SearchComponent} from "./search/search.component";
+import {HomeComponent} from './page-home/home.component';
+import {UpdateProfileComponent} from './page-update-profile/update-profile.component';
+import {MyProfileComponent} from "./page-my-profile/my-profile.component";
+import {PostComponent} from "./page-post/post.component";
+import {ChatComponent} from "./page-chat/chat.component";
+import {UserProfileComponent} from "./page-user-profile/user-profile.component";
+import {NotificationsComponent} from "./page-notifications/notifications.component";
+import {SearchComponent} from "./page-search/search.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -27,4 +27,4 @@ const routes: Routes = [
 ];
 
 @NgModule({ imports: [RouterModule.forChild(routes)], exports: [RouterModule] })
-export class UserRoutingModule { }
+export class UserRoutingModule {}

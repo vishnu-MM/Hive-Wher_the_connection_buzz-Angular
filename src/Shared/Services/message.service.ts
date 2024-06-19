@@ -3,6 +3,7 @@ import SockJS from 'sockjs-client';
 import {CompatClient, Stomp} from '@stomp/stompjs';
 import {Observable, Subject} from 'rxjs';
 import {HttpClient, HttpParams} from "@angular/common/http";
+import { Group } from '../Models/group.model';
 
 @Injectable({ providedIn: 'root' })
 export class MessageService {
@@ -67,6 +68,22 @@ export class MessageService {
 
     return this.http.get<MessageDTO[]>(`${this.baseUrl}/messages`, { params });
   }
+
+  public getusers(userId: number): Observable<number[]> {
+    const params = new HttpParams().set('userId', userId.toString());
+    return this.http.get<number[]>(`${this.baseUrl}/get-users`, { params });
+  }
+
+  public getGroups(userId: number): Observable<number[]> {
+    const params = new HttpParams().set('userId', userId.toString());
+    return this.http.get<number[]>(`${this.baseUrl}/groups`, { params });
+  }
+
+  public createGroup(group: Group): Observable<Group> {
+    return this.http.post<Group>(`${this.baseUrl}/new-group`, group);
+  }
+
+
 }
 
 

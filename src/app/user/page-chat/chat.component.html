@@ -1,0 +1,144 @@
+<ng-template #NewGroup>
+    <div>
+        <h2 mat-dialog-title class="m-0">Edit Post</h2>
+    </div>
+    <mat-dialog-content class="py-0">
+        <div style="width: 767px;">
+            <input type="text" name="group-name" id="group-name-input" placeholder="Name of Group" class="form-control mb-2" [(ngModel)]="groupName">
+            <h2>Group Members</h2>
+            <div id="peoples-section-body">
+                <div *ngFor="let userId of inGroupUsers.keys()" class="inGroupUsers">
+                    <div (click)="addToGroup(userId)" class="user-tile">
+                        <img [src]="userProfileImageMap.get(userId)" alt="User Profile">
+                        <div class="ms-3">
+                            <p> {{ '@'+inGroupUsers.get(userId)!.username }} </p>
+                            <p> {{ inGroupUsers.get(userId)!.name }} </p>
+                        </div>
+                    </div>
+                    <mat-icon fontIcon="close" *ngIf="userId !== currentUser.id" (click)="removeFromGroup(userId)"></mat-icon>
+                </div>
+            </div>
+            <h2>Add Members From</h2>
+            <div id="peoples-section-body">
+                <div *ngFor="let userId of notInGroupUsers.keys()">
+                    <div (click)="addToGroup(userId)" class="user-tile" >
+                        <img [src]="userProfileImageMap.get(userId)" alt="User Profile">
+                        <div class="ms-3">
+                            <p> {{ '@'+notInGroupUsers.get(userId)!.username }} </p>
+                            <p> {{ notInGroupUsers.get(userId)!.name }} </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button (click)="createNewGroup()" type="button" class="btn btn-success form-control m-1">Create</button>
+        <button (click)="close()" type="button" class="btn btn-warning form-control m-1">Cancel</button>
+    </mat-dialog-actions>
+</ng-template>
+
+<article>
+    <div id="side-nav"> <side-nav-bar></side-nav-bar> </div>
+
+    <div id="peoples-section">
+        <div id="peoples-section-header">
+            <p> Chats </p>
+            <input type="text" class="form-control rounded-5" id="search" name="search" placeholder="Search"
+                [(ngModel)]="searchText">
+        </div>
+        <div id="peoples-section-body" class="peoples-scroll">
+            <div *ngFor="let user of friendsList">
+                <div (click)="chatWithUser(user)" class="user-tile">
+                    <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
+                    <div class="ms-3">
+                        <p> {{ user.username }} </p>
+                        <Span>Online / Last Seen</Span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="peoples-section-footer">
+            <div>New Chat</div>
+            <div (click)="open()">New Group</div>
+        </div>
+    </div>
+
+    <div id="chat-section">
+        <div id="chat-header" *ngIf="receiver">
+            <img class="user-profile-picture" [src]="userProfileImageMap.get(receiver.id!)">
+            <div class="ms-3">
+                <span class="h4 text-light"> {{ receiver.name ? receiver.name : receiver.username }} </span> <br>
+                <Span class="text-light">Online / Last Seen</Span>
+            </div>
+        </div>
+
+        <div id="chat-body" #chatBody class="chat-scroll container" *ngIf="receiver">
+            <ng-container *ngIf="messages.length > 0">
+                <!-- LOOP -->
+
+                <div class="message px-3 row" *ngFor="let message of messages">
+                    <div class="col-12 col-lg-6">
+                        <div class="d-flex justify-content-start">
+                            <div class="message-right py-3 px-4"
+                                *ngIf="message.senderId === receiver.id?.toString() && message.senderId !== message.recipientId">
+                                <span>{{ message.content }}</span>
+                            </div>
+                        </div>
+                        <p class="message-time text-light" *ngIf="message.senderId === receiver.id?.toString()">
+                            {{ message.timestamp | date:'dd MMM'}}
+                        </p>
+                    </div>
+                    <div class="col-12 col-lg-6 d-flex justify-content-end">
+                        <div>
+                            <div class="message-left  py-3 px-4"
+                                *ngIf="message.senderId === currentUser.id?.toString()">
+                                <span>{{ message.content }}</span>
+                            </div>
+                            <p class="d-flex justify-content-end message-time text-light"
+                                *ngIf="message.senderId === currentUser.id?.toString()">
+                                {{ message.timestamp | date:'dd MMM'}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- LOOP ENDS -->
+
+            </ng-container>
+            <ng-container *ngIf="messages.length === 0">
+                <div id="no-message">
+                    <div class="h3 p-3 rounded-5">
+                        Start a new Conversation
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+
+        <div id="chat-input-outer" *ngIf="receiver">
+            <div id="chat-input" class="rounded-5 d-flex justify-content-between">
+                <input type="text" *ngIf="!recording && !isAudioReadyToSent" class="rounded-5" id="message-input"
+                    name="message" placeholder="Type here..." [(ngModel)]="newMessage">
+                <div *ngIf="recording" class="d-flex justify-content-center align-items-center ps-5">
+                    <h2 class="p-0 m-0">Recording...</h2>
+                </div>
+                <audio controls *ngIf="url">
+                    <source [src]="sanitize(url)" type="audio/wav">
+                </audio>
+
+                <div class="d-flex flex-row">
+                    <button class="btn btn-light rounded-5" id="sent-btn" (click)="startRecording()" *ngIf="!recording">
+                        <mat-icon style="color: #353535" fontIcon="mic"></mat-icon>
+                    </button>
+                    <button class="btn btn-light rounded-5" id="sent-btn" (click)="stopRecording()" *ngIf="recording">
+                        <mat-icon style="color: #353535" fontIcon="stop_circle"
+                            style="transform: scale(1.5); color: #353535;"></mat-icon>
+                    </button>
+                    <button class="btn btn-light px-4 rounded-5" id="sent-btn" (click)="sendMessage()">
+                        <mat-icon style="color: #353535" fontIcon="send"></mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</article>
