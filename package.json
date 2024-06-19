@@ -20,6 +20,8 @@
     "@angular/platform-browser": "^16.0.0",
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
+    "@cloudinary/ng": "^2.0.2",
+    "@cloudinary/url-gen": "^1.19.0",
     "@ngrx/effects": "^16.0.0",
     "@ngrx/store": "^16.0.0",
     "@stomp/stompjs": "^7.0.0",

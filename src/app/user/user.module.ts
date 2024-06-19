@@ -21,6 +21,7 @@ import { UserProfileComponent } from './page-user-profile/user-profile.component
 import { ChatComponent } from './page-chat/chat.component';
 import { SearchComponent } from './page-search/search.component';
 import { NotificationsComponent } from './page-notifications/notifications.component';
+import {CloudinaryModule} from '@cloudinary/ng';
 
 @NgModule({
     declarations: [
@@ -51,7 +52,8 @@ import { NotificationsComponent } from './page-notifications/notifications.compo
         FormsModule,
         ImageCropperComponent,
         MatDialogModule,
-        NgToastModule
+        NgToastModule,
+        CloudinaryModule
     ]
 })
 export class UserModule { }

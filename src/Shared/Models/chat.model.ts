@@ -16,5 +16,7 @@ export interface MessageDTO {
     content: string;
     timestamp: string;
     messageType: MessageType;
+    messageFileType: MessageFileType;
 }
 export enum MessageType { PRIVATE='PRIVATE', GROUP='GROUP' }
+export enum MessageFileType { TEXT_ONLY='TEXT_ONLY', IMAGE='IMAGE', VIDEO='VIDEO', AUDIO='AUDIO' }

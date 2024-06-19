@@ -6,7 +6,10 @@ import { Subscription } from "rxjs";
 import { DomSanitizer } from '@angular/platform-browser';
 import RecordRTC from 'recordrtc';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Group, MessageDTO, MessageType } from 'src/Shared/Models/chat.model';
+import { Group, MessageDTO, MessageFileType, MessageType } from 'src/Shared/Models/chat.model';
+import { CloudinaryModule } from '@cloudinary/ng';
+import { Cloudinary, CloudinaryImage } from '@cloudinary/url-gen';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'chat',
@@ -14,6 +17,7 @@ import { Group, MessageDTO, MessageType } from 'src/Shared/Models/chat.model';
     styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit, OnDestroy {
+
     searchText: string = '';
     newMessage: string = '';
     messages: MessageDTO[] = [];
@@ -24,6 +28,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     userProfileImageMap: Map<number, string> = new Map<number, string>();
     private getProfileSubs = new Map<number, Subscription>();
     pageNo: number = 0;
+    readonly MessageFileType = MessageFileType;
 
     @ViewChild('chatBody') private chatBody!: ElementRef;
     @ViewChild('NewGroup') newGroup!: TemplateRef<any>;
@@ -49,6 +54,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     showGroups: boolean = false;
     groups: Group[] = [];
     group!: Group | undefined;
+    recordedBlob!: Blob | undefined;
 
     constructor(private messageService: MessageService,
         private userService: UserService,
@@ -67,11 +73,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
             this.messageService.initConnectionSocket(user.id.toString());
 
-            this.getMessageSub = this.messageService.message$
-                .subscribe(message => {
-                    console.log(message)
-                    this.addMessage(JSON.parse(message));
-                });
+            this.getMessageSub = this.messageService.message$.subscribe(message => {
+                this.addMessage(JSON.parse(message));
+            });
+            const cld = new Cloudinary({ cloud: { cloudName: environment.CLOUD_NAME } });
         } else {
             //todo logout
         }
@@ -130,7 +135,7 @@ export class ChatComponent implements OnInit, OnDestroy {
                 this.pageNo++;
                 this.loadUserProfilePictures(res.contents).then();
             },
-            error: err => {}
+            error: err => { }
         })
     }
 
@@ -162,36 +167,43 @@ export class ChatComponent implements OnInit, OnDestroy {
                         this.scrollToBottom();
                     },
                     error: err => {
-                        console.log('Error while fetching old chat'+err)
+                        console.log('Error while fetching old chat' + err)
                     }
                 });
         }
     }
 
     sendMessage() {
-        let message: MessageDTO | null = this.getMessageObject();
-        console.log(message)
-        if (message !== null) {
-            this.messageService.sendMessage(message)
-                .subscribe({
-                    next: () => {
-                        console.log(message);
-                        this.newMessage = '';
-                        this.messages.push(message!)
-                        this.scrollToBottom();
-                    },
-                    error: err => {
-                        console.error('Error sending message', err);
-                    }
-                });
+        if (this.recordedBlob) {
+            this.uploadAudio();
+        }
+        else {
+            let message: MessageDTO | null = this.getMessageObject(MessageFileType.TEXT_ONLY);
+            if (message !== null) {
+                this.sendMessageHelper(message);
+            }
         }
     }
 
-    private getMessageObject(): MessageDTO | null {
+    sendMessageHelper(message: MessageDTO) {
+        this.messageService.sendMessage(message)
+            .subscribe({
+                next: () => {
+                    this.newMessage = '';
+                    this.messages.push(message!)
+                    this.scrollToBottom();
+                },
+                error: err => {
+                    console.error('Error sending message', err);
+                }
+            });
+    }
+
+    private getMessageObject(messageFileType: MessageFileType): MessageDTO | null {
         if (!(this.newMessage.trim() && this.currentUser && this.currentUser.id)) {
             return null;
         }
-        console.log(this.group)
+
         if (this.receiver && this.receiver.id) {
             return {
                 chatId: "",
@@ -200,7 +212,8 @@ export class ChatComponent implements OnInit, OnDestroy {
                 recipientId: this.receiver.id.toString(),
                 senderId: this.currentUser.id.toString(),
                 timestamp: (new Date()).toString(),
-                messageType: MessageType.PRIVATE
+                messageType: MessageType.PRIVATE,
+                messageFileType: messageFileType
             }
         }
         else if (this.group && this.group.id) {
@@ -211,7 +224,8 @@ export class ChatComponent implements OnInit, OnDestroy {
                 recipientId: this.group.id.toString(),
                 senderId: this.currentUser.id.toString(),
                 timestamp: (new Date()).toString(),
-                messageType: MessageType.GROUP
+                messageType: MessageType.GROUP,
+                messageFileType: messageFileType
             }
         }
         return null;
@@ -259,40 +273,93 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     startRecording() {
         this.recording = true;
-        let mediaConstraints = { video: false, audio: true }
-        navigator.mediaDevices.getUserMedia(mediaConstraints)
-            .then(
-                this.successCallback.bind(this),
-                this.errorCallback.bind(this)
-            )
+        this.clearRecording();
+        let mediaConstraints = { video: false, audio: true };
+        navigator.mediaDevices.getUserMedia(mediaConstraints).then(
+            this.successCallback.bind(this), this.errorCallback.bind(this)
+        );
     }
 
-    successCallback(stream: any) {
+    stopRecording() {
+        this.record.stop(this.processRecording.bind(this));
+        this.recording = false;
+        this.isAudioReadyToSent = true;
+    }
+
+    successCallback(stream: MediaStream) {
         let options = { mimeType: 'audio/wav' };
         let StereoAudioRecorder = RecordRTC.StereoAudioRecorder;
         this.record = new StereoAudioRecorder(stream, options);
         this.record.record();
     }
 
-    errorCallback(stream: any) {
+    errorCallback(error: any) {
         this.error = 'Something went wrong';
-        console.log(this.error);
+        console.log(this.error, error);
     }
 
-    stopRecording() {
-        this.recording = false;
-        this.record.stop(this.processRecording.bind(this));
-        this.isAudioReadyToSent = true;
-    }
-
-    processRecording(blob: any) {
+    processRecording(blob: Blob) {
         this.url = URL.createObjectURL(blob);
-        console.log(this.url);
+        this.recordedBlob = blob;
     }
 
     sanitize(url: string) {
-        return this.dom.bypassSecurityTrustUrl(url)
+        return this.dom.bypassSecurityTrustUrl(url);
     }
+
+    clearRecording(): void {
+        if (this.recordedBlob) this.recordedBlob = undefined;
+        if (this.url) this.url= undefined;
+        this.isAudioReadyToSent = false;
+    }
+
+    async uploadAudio(): Promise<void> {
+        if (!this.recordedBlob) {
+            return;
+        }        
+        const formData = new FormData();
+        formData.append('file', this.recordedBlob, 'recording.wav');
+        formData.append('upload_preset', environment.UPLOAD_PRESET);
+        formData.append('cloud_name', environment.CLOUD_NAME);
+
+        const url = `https://api.cloudinary.com/v1_1/${environment.CLOUD_NAME}/upload`;
+
+        try {
+            // const response = await fetch(url, { method: 'POST', body: formData });
+            // const data = await response.json();
+            // console.log('Uploaded audio:', data);
+            // this.newMessage = data.secure_url;
+            // let message: MessageDTO | null = this.getMessageObject(MessageFileType.AUDIO);
+            // if (message !== null) {
+            //     this.sendMessageHelper(message);
+            // }
+        } catch (error) {
+            console.error('Error uploading audio:', error);
+        }
+    }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            const file = input.files[0];
+            this.uploadImage(file);
+        }
+    }
+
+    uploadImage(mediaFile: File) {
+        const url = `https://api.cloudinary.com/v1_1/${environment.CLOUD_NAME}/upload`;
+        const formData = new FormData();
+        formData.append("file", mediaFile);
+        formData.append("upload_preset", environment.UPLOAD_PRESET);
+        formData.append("cloud_name", environment.CLOUD_NAME);
+        fetch(url, { method: 'POST', body: formData })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+
+    // Group
 
     createNewGroup() {
         if (this.groupName !== '' || this.groupName.trim() !== '') {
@@ -375,7 +442,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         }
         else if (this.group) {
             return (message.senderId !== this.currentUser.id?.toString() && message.recipientId === this.group.id);
-            
+
         }
         else {
             return false;
@@ -392,5 +459,12 @@ export class ChatComponent implements OnInit, OnDestroy {
         else {
             return false;
         }
+    }
+    isOnlyTextMsg(messageFileType: MessageFileType): boolean {
+        return ((MessageFileType.TEXT_ONLY === messageFileType) || (
+            !(MessageFileType.VIDEO === messageFileType) &&
+            !(MessageFileType.AUDIO === messageFileType) &&
+            !(MessageFileType.IMAGE === messageFileType))
+        )
     }
 }
