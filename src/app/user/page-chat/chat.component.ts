@@ -271,6 +271,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     // Audio Related
 
+    startStop() {
+        if (this.recording)
+            this.stopRecording();    
+        else
+            this.startRecording();    
+    }
+
     startRecording() {
         this.recording = true;
         this.clearRecording();

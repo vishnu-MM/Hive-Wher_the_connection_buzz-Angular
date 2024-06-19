@@ -97,6 +97,8 @@
         width: 90%;
         height: 90%;
         background-color: #353535;
+        display: flex;
+        justify-content: space-between;
     }
 }
 
@@ -190,11 +192,15 @@ p {
     font-weight: lighter;
 }
 
-#sent-btn {
+button {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 10px;
+}
+
+mat-icon {
+    color: #353535;
 }
 
 .user-profile-picture {
@@ -275,7 +281,7 @@ p {
 }
 
 .message-time {
-    color: black;
+    color: white;
     font-size: small;
     font-weight: lighter;
 }
@@ -300,4 +306,37 @@ p {
 }
 .active {
     color: greenyellow;
+}
+
+.flex-start {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+}
+#recording {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#recording h2 {
+    padding: 0;
+    margin: 0;
+}
+#audio-div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.scale-up {
+    transform: scale(1.5);
 }

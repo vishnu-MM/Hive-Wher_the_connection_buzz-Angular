@@ -120,51 +120,63 @@
         <!-- FOOTER -->
     </div>
 <!-- PEOPLE LISTING SECTION ENDS HERE -->
-
-    <div id="chat-section">
-        <div id="chat-header" *ngIf="receiver">
-            <img class="user-profile-picture" [src]="userProfileImageMap.get(receiver.id!)">
+<!-- CHAT SECTION -->
+    <div id="chat-section" *ngIf="(receiver || group)">
+        <!-- CHAT HEADER -->
+        <div id="chat-header">
+            <img class="user-profile-picture" 
+                [src]="receiver ? userProfileImageMap.get(receiver.id!) : 'assets/no-profile-image.jpg'"
+                *ngIf="receiver || group">
             <div class="ms-3">
-                <span class="h4 text-light"> {{ receiver.name ? receiver.name : receiver.username }} </span> <br>
-                <Span class="text-light">Online / Last Seen</Span>
+                <span class="h4 text-light">
+                    {{ receiver ? (receiver.name ? receiver.name : receiver.username) : group!.groupName }}
+                </span>
+                <br>
+                <span class="text-light">
+                    {{ receiver ? 'Online / Last Seen' : group!.membersId.length + ' Members' }}
+                </span>
             </div>
         </div>
-
-        <div id="chat-header" *ngIf="group">
-            <img class="user-profile-picture" src="assets/no-profile-image.jpg">
-            <div class="ms-3">
-                <span class="h4 text-light"> {{ group.groupName }} </span> <br>
-                <Span class="text-light">{{ group.membersId.length + ' Members'}}</Span>
-            </div>
-        </div>
-
-        <div id="chat-body" #chatBody class="chat-scroll container" *ngIf="receiver || group">
+        <!-- CHAT HEADER ENDS HERE -->
+        <!-- CHAT BODY -->
+        <div #chatBody id="chat-body" class="chat-scroll container">
+            <!-- IF NO PREVIOUS CHAT -->
+            <ng-container *ngIf="messages.length === 0">
+                <div id="no-message">
+                    <div class="h3 p-3 rounded-5">Start a new Conversation</div>
+                </div>
+            </ng-container>
+            <!-- IF PREVIOUS CHAT EXISTS -->
             <ng-container *ngIf="messages.length > 0">
                 <!-- LOOP -->
                 <div class="message px-3 row" *ngFor="let message of messages">
                     <div class="col-12 col-lg-6">
-                        <div class="d-flex justify-content-start" *ngIf="isMessageComming(message)">
+                        <div class="flex-start" *ngIf="isMessageComming(message)">
                             <div class="message-right py-3 px-4">
-                                <span *ngIf="isOnlyTextMsg(message.messageFileType)">{{ message.content}}</span>
+                                <span *ngIf="isOnlyTextMsg(message.messageFileType)">
+                                    {{ message.content}}
+                                </span>
                                 <audio controls *ngIf="message.messageFileType === MessageFileType.AUDIO">
                                     <source [src]="message.content" type="audio/wav">
                                 </audio>
                             </div>
                         </div>
-                        <p class="message-time text-light" *ngIf="isMessageComming(message)">
+                        <p class="message-time" *ngIf="isMessageComming(message)">
                             {{ message.timestamp | date:'hh:mm aa'}}
                         </p>
                     </div>
 
-                    <div class="col-12 col-lg-6 d-flex justify-content-end">
+                    <div class="col-12 col-lg-6 flex-end">
                         <div *ngIf="isMessageGoing(message)">
                             <div class="message-left py-3 px-4">
-                                <span *ngIf="isOnlyTextMsg(message.messageFileType)">{{ message.content}}</span>
+                                <span *ngIf="isOnlyTextMsg(message.messageFileType)">
+                                    {{ message.content}}
+                                </span>
                                 <audio controls *ngIf="message.messageFileType === MessageFileType.AUDIO">
                                     <source [src]="message.content" type="audio/wav">
                                 </audio>
                             </div>
-                            <p class="d-flex justify-content-end message-time text-light">
+                            <p class="flex-end message-time">
                                 {{ message.timestamp | date:'hh:mm aa'}}
                             </p>
                         </div>
@@ -172,45 +184,45 @@
                 </div>
                 <!-- LOOP ENDS -->
             </ng-container>
-            <ng-container *ngIf="messages.length === 0">
-                <div id="no-message">
-                    <div class="h3 p-3 rounded-5">Start a new Conversation</div>
-                </div>
-            </ng-container>
         </div>
+        <!-- CHAT BODY ENDS HERE -->
+        <!-- ACTION BAR -->
+        <div id="chat-input-outer">
+            <div id="chat-input" class="rounded-5">
+                <input type="text" 
+                       *ngIf="!recording && !isAudioReadyToSent" 
+                       class="rounded-5" 
+                       id="message-input"
+                       name="message" 
+                       placeholder="Type here..." 
+                       [(ngModel)]="newMessage">
 
-        <div id="chat-input-outer" *ngIf="receiver || group">
-            <div id="chat-input" class="rounded-5 d-flex justify-content-between">
-                <input type="text" *ngIf="!recording && !isAudioReadyToSent" class="rounded-5" id="message-input"
-                    name="message" placeholder="Type here..." [(ngModel)]="newMessage">
-                <div *ngIf="recording" class="d-flex justify-content-center align-items-center ps-5">
-                    <h2 class="p-0 m-0">Recording...</h2>
+                <div *ngIf="recording" id="recording" class="ps-5">
+                    <h2>Recording...</h2>
                 </div>
-                <div class="d-flex justify-content-start align-items-center">
+
+                <div id="audio-div">
                     <audio controls *ngIf="url">
                         <source [src]="sanitize(url)" type="audio/wav">
                     </audio>
-                    <button class="btn btn-light rounded-5" id="sent-btn"
-                        (click)="clearRecording()" *ngIf="url">
-                        <mat-icon style="color: #353535" class="m-1" fontIcon="close"></mat-icon>
+                    <button *ngIf="url" class="btn btn-light rounded-5" (click)="clearRecording()">
+                        <mat-icon class="m-1" fontIcon="close"></mat-icon>
                     </button>
                 </div>
 
                 <div class="d-flex flex-row">
                     <input type="file" (change)="onFileSelected($event)" accept="image/png, image/jpeg" hidden>
-                    <button class="btn btn-light rounded-5" id="sent-btn" (click)="startRecording()" *ngIf="!recording">
-                        <mat-icon style="color: #353535" fontIcon="mic"></mat-icon>
+                    <button class="btn btn-light rounded-5" (click)="startStop()">
+                        <mat-icon *ngIf="!recording" fontIcon="mic"></mat-icon>
+                        <mat-icon *ngIf="recording" fontIcon="stop_circle" class="scale-up"></mat-icon>
                     </button>
-                    <button class="btn btn-light rounded-5" id="sent-btn" (click)="stopRecording()" *ngIf="recording">
-                        <mat-icon style="color: #353535" fontIcon="stop_circle"
-                            style="transform: scale(1.5); color: #353535;"></mat-icon>
-                    </button>
-                    <button class="btn btn-light px-4 rounded-5" id="sent-btn" (click)="sendMessage()">
-                        <mat-icon style="color: #353535" fontIcon="send"></mat-icon>
+                    <button class="btn btn-light rounded-5 px-4" (click)="sendMessage()">
+                        <mat-icon fontIcon="send"></mat-icon>
                     </button>
                 </div>
             </div>
         </div>
-
+        <!-- ACTION BAR ENDS HERE -->
     </div>
+    <!-- CHAT SECTION ENDS HERE -->
 </article>
