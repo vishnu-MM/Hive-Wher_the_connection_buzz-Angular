@@ -35,23 +35,26 @@
         </div>
     </mat-dialog-content>
     <mat-dialog-actions>
-        <button (click)="createNewGroup()" type="button" class="btn btn-success form-control m-1">Create</button>
-        <button (click)="close()" type="button" class="btn btn-warning form-control m-1">Cancel</button>
+        <div class="flex-center">
+            <button (click)="createNewGroup()" type="button" class="btn btn-success form-control m-1">Create</button>
+            <button (click)="closeNewGroup()" type="button" class="btn btn-warning form-control m-1">Cancel</button>
+        </div>
     </mat-dialog-actions>
 </ng-template>
+
 <ng-template #NewChat>
     <div>
         <h2 mat-dialog-title class="m-0">New Chat</h2>
     </div>
     <mat-dialog-content class="py-0">
-        <div>
+        <div style="width: 500px;">
             <div id="peoples-section-body">
                 <div *ngFor="let user of allUsers">
-                    <div (click)="chatWithUser(user); close()" class="user-tile">
+                    <div (click)="chatWithUser(user); closeNewChat();" class="user-tile">
                         <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
                         <div class="ms-3">
-                            <p> {{ user.username }} </p>
-                            <Span>Online / Last Seen</Span>
+                            <p> {{ '@'+user.username }}</p>
+                            <Span>{{ user.name? user.name : 'User' }}</Span>
                         </div>
                     </div>
                 </div>
@@ -59,7 +62,7 @@
         </div>
     </mat-dialog-content>
     <mat-dialog-actions>
-        <button (click)="close()" type="button" class="btn btn-dark form-control m-1">Cancel</button>
+        <button (click)="closeNewChat()" type="button" class="btn btn-dark form-control m-1">Close</button>
     </mat-dialog-actions>
 </ng-template>
 
@@ -71,7 +74,10 @@
     <div id="peoples-section">
         <!-- TOP SECTION -->
         <div id="peoples-section-header">
-            <p> Chats </p>
+            <div class="flex-between-center mb-2">
+                <p> Chats </p>
+                <img  [src]="userProfileImageMap.get(currentUser.id!)" id="current-user" alt="User Profile">
+            </div>
             <input type="text" 
                     class="form-control rounded-5" 
                     id="search" 
@@ -106,7 +112,7 @@
                     <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
                     <div class="ms-3">
                         <p> {{ user.username }} </p>
-                        <Span>Online / Last Seen</Span>
+                        <Span>{{ (currentUser.id === user.id)? 'Me': 'Online / Last Seen'}}</Span>
                     </div>
                 </div>
             </div>
@@ -139,7 +145,7 @@
         </div>
         <!-- CHAT HEADER ENDS HERE -->
         <!-- CHAT BODY -->
-        <div #chatBody id="chat-body" class="chat-scroll container">
+        <div #chatBody id="chat-body" class="chat-scroll container p-0">
             <!-- IF NO PREVIOUS CHAT -->
             <ng-container *ngIf="messages.length === 0">
                 <div id="no-message">
@@ -151,24 +157,33 @@
                 <!-- LOOP -->
                 <div class="message px-3 row" *ngFor="let message of messages">
                     <div class="col-12 col-lg-6">
-                        <div class="flex-start" *ngIf="isMessageComming(message)">
-                            <div class="message-right py-3 px-4">
-                                <span *ngIf="isOnlyTextMsg(message.messageFileType)">
-                                    {{ message.content}}
-                                </span>
-                                <audio controls *ngIf="message.messageFileType === MessageFileType.AUDIO">
-                                    <source [src]="message.content" type="audio/wav">
-                                </audio>
+                        <div class="d-flex flex-row align-items-end"  *ngIf="isMessageComming(message)">
+                            <div class="image-div-chat">
+                                <img  [src]="userProfileImageMap.get(Number(message.senderId))" id="current-user" alt="User Profile">
+                            </div>
+                            <div>
+                                <div class="flex-start">
+                                    <div class="message-right p-1" 
+                                        [class]="{'py-3': isOnlyTextMsg(message.messageFileType), 'px-4': isOnlyTextMsg(message.messageFileType)}">
+                                        <span *ngIf="isOnlyTextMsg(message.messageFileType)">
+                                            {{ message.content}}
+                                        </span>
+                                        <audio controls *ngIf="message.messageFileType === MessageFileType.AUDIO">
+                                            <source [src]="message.content" type="audio/wav">
+                                        </audio>
+                                    </div>
+                                </div>
+                                <p class="message-time">
+                                    {{ message.timestamp | date:'hh:mm aa'}}
+                                </p>
                             </div>
                         </div>
-                        <p class="message-time" *ngIf="isMessageComming(message)">
-                            {{ message.timestamp | date:'hh:mm aa'}}
-                        </p>
                     </div>
 
-                    <div class="col-12 col-lg-6 flex-end">
+                    <div class="col-12 col-lg-6 flex-end pe-0">
                         <div *ngIf="isMessageGoing(message)">
-                            <div class="message-left py-3 px-4">
+                            <div class="message-left p-1" 
+                                [class]="{'py-3': isOnlyTextMsg(message.messageFileType), 'px-4': isOnlyTextMsg(message.messageFileType)}">
                                 <span *ngIf="isOnlyTextMsg(message.messageFileType)">
                                     {{ message.content}}
                                 </span>
@@ -212,12 +227,13 @@
 
                 <div class="d-flex flex-row">
                     <input type="file" (change)="onFileSelected($event)" accept="image/png, image/jpeg" hidden>
-                    <button class="btn btn-light rounded-5" (click)="startStop()">
+                    <button class="btn btn-light rounded-5" (click)="toggleStartStopRecording()">
                         <mat-icon *ngIf="!recording" fontIcon="mic"></mat-icon>
                         <mat-icon *ngIf="recording" fontIcon="stop_circle" class="scale-up"></mat-icon>
                     </button>
-                    <button class="btn btn-light rounded-5 px-4" (click)="sendMessage()">
-                        <mat-icon fontIcon="send"></mat-icon>
+                    <button class="btn btn-light rounded-5 px-4" (click)="sendMessage()" [disabled]="sendingSpinner">
+                        <mat-icon *ngIf="!sendingSpinner" fontIcon="send"></mat-icon>
+                        <div class="loader" style="width: 30px;" *ngIf="sendingSpinner"></div>
                     </button>
                 </div>
             </div>

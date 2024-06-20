@@ -103,7 +103,7 @@
 }
 
 #peoples-section-header {
-    height: 18vh;
+    height: 20vh;
     width: 100%;
     padding-right: 5%;
     padding-left: 5%;
@@ -117,7 +117,7 @@
 }
 
 .peoples-scroll {
-    height: 78vh;
+    height: 76vh;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -175,6 +175,7 @@ p {
     color: white;
     font-weight: lighter;
     font-size: xx-large;
+    margin: 0;
 }
 
 #message-input,
@@ -247,7 +248,6 @@ mat-icon {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    /*margin: 5%;*/
     padding: 2% 5%;
     border-top: #404040 solid 1px;
     border-bottom: #404040 solid 1px;
@@ -285,6 +285,7 @@ mat-icon {
     font-size: small;
     font-weight: lighter;
 }
+
 #peoples-section-footer {
     display: flex;
     justify-content: space-evenly;
@@ -293,17 +294,21 @@ mat-icon {
     font-size: large;
     font-weight: lighter;
 }
+
 #peoples-section-footer div {
     cursor: pointer;
 }
+
 #peoples-section-footer div:hover {
     color: greenyellow;
 }
+
 .inGroupUsers {
     display: flex;
     justify-content: space-between;
     align-items: center
 }
+
 .active {
     color: greenyellow;
 }
@@ -317,10 +322,28 @@ mat-icon {
     display: flex;
     justify-content: flex-end;
 }
+
 .flex-between {
     display: flex;
     justify-content: space-between;
 }
+.flex-between-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.flex-center-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #recording {
     display: flex;
     justify-content: center;
@@ -332,11 +355,27 @@ mat-icon {
     padding: 0;
     margin: 0;
 }
+
 #audio-div {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
+
 .scale-up {
     transform: scale(1.5);
+}
+#current-user {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    width: 40px;
+    border: 1px solid white;
+}
+.image-div-chat {
+    margin: 0;
+    margin-bottom: 5%;
+    margin-right: 2%;
+}
+audio {
+    margin: 0;
 }
