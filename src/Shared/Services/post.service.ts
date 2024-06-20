@@ -102,6 +102,10 @@ export class PostService {
 		else
 			return 'aspect-ratio-1-1';
     }
+
+    public search( searchQuery: string): Observable<Post[]> {
+        return this.http.get<Post[]>(`${this.BASE_URL}/search`,{ params: { searchQuery: searchQuery } });
+    }
     
     //? POST END-POINTS ENDED
     //* COMMENT END-POINTS STARTS HERE

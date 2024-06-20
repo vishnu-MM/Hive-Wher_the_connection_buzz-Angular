@@ -18,6 +18,7 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
     isSearchResultShowing: boolean = false;
     postFiles: Map<number, string> = new Map<number, string>();
     private loadPostListSub!: Subscription;
+    private searchSub!: Subscription;
 
     constructor(private postService: PostService, private router: Router) {}
 
@@ -27,6 +28,7 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         if (this.loadPostListSub) this.loadPostListSub.unsubscribe();
+        if (this.searchSub) this.searchSub.unsubscribe();
     }
 
     async loadPostList(): Promise<void> {
@@ -51,8 +53,18 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
         return this.postService.getAspectRatio(aspectRatio);
     }
 
-    search($event: string) {
-        throw new Error('Method not implemented.');
+    search(searchQuery: string) {
+        if (this.searchSub) this.searchSub.unsubscribe();
+        this.searchSub = this.postService.search(searchQuery).subscribe({
+            next: res => {
+                this.isSearchResultShowing = true;
+                this.postList = res;
+                this.isLast = true;
+                this.totalPages = 1;
+                this.loadPostFiles(res).then();
+            },
+            error: err => {}
+        })
     }
 
     getPostDate(createdOn: Timestamp<string>) : Date {
