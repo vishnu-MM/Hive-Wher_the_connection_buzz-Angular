@@ -230,6 +230,7 @@ mat-icon {
     margin-top: 1%;
     font-weight: normal;
     font-size: larger;
+    word-wrap: break-word; 
 }
 
 #no-message {
@@ -379,3 +380,42 @@ mat-icon {
 audio {
     margin: 0;
 }
+
+.list-container {
+    position: absolute;
+    bottom: 8%; 
+    right: 15%; 
+    background: #353535;
+    border: 1px solid #404040;
+    border-radius: 5px;
+    padding: 10px;
+    color: #ffffff;
+    z-index: 1000; /* Ensure it appears on top */
+}
+
+.list-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-container ul li {
+    padding: 5px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.list-container ul li:hover {
+    background-color: #404040;
+}
+
+.image-basics {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+.image-basics-chat{
+    width: 50%;
+    object-fit: contain;
+} 

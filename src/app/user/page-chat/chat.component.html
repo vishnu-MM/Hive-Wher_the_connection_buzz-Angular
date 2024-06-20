@@ -156,7 +156,7 @@
             <ng-container *ngIf="messages.length > 0">
                 <!-- LOOP -->
                 <div class="message px-3 row" *ngFor="let message of messages">
-                    <div class="col-12 col-lg-6">
+                    <div class="col-12 col-md-6">
                         <div class="d-flex flex-row align-items-end"  *ngIf="isMessageComming(message)">
                             <div class="image-div-chat">
                                 <img  [src]="userProfileImageMap.get(Number(message.senderId))" id="current-user" alt="User Profile">
@@ -171,6 +171,15 @@
                                         <audio controls *ngIf="message.messageFileType === MessageFileType.AUDIO">
                                             <source [src]="message.content" type="audio/wav">
                                         </audio>
+                                        <img [src]="message.content" 
+                                             *ngIf="message.messageFileType === MessageFileType.IMAGE"
+                                             class="image-basics-chat rounded-4" 
+                                             alt="Image preview">
+                                        <video [src]="message.content" 
+                                               controls  
+                                               *ngIf="message.messageFileType === MessageFileType.VIDEO"
+                                               class="image-basics-chat border border-dark rounded">
+                                        </video>
                                     </div>
                                 </div>
                                 <p class="message-time">
@@ -185,11 +194,19 @@
                             <div class="message-left p-1" 
                                 [class]="{'py-3': isOnlyTextMsg(message.messageFileType), 'px-4': isOnlyTextMsg(message.messageFileType)}">
                                 <span *ngIf="isOnlyTextMsg(message.messageFileType)">
-                                    {{ message.content}}
+                                    {{ message.content }}
                                 </span>
                                 <audio controls *ngIf="message.messageFileType === MessageFileType.AUDIO">
                                     <source [src]="message.content" type="audio/wav">
                                 </audio>
+                                <img [src]="message.content" 
+                                     *ngIf="message.messageFileType === MessageFileType.IMAGE"
+                                     class="image-basics-chat rounded-4" 
+                                     alt="Image preview">
+                                <video [src]="message.content" 
+                                       controls  
+                                       *ngIf="message.messageFileType === MessageFileType.VIDEO"
+                                       class="image-basics-chat border border-dark rounded"></video>
                             </div>
                             <p class="flex-end message-time">
                                 {{ message.timestamp | date:'hh:mm aa'}}
@@ -202,6 +219,16 @@
         </div>
         <!-- CHAT BODY ENDS HERE -->
         <!-- ACTION BAR -->
+        <div *ngIf="isListVisible" class="list-container">
+            <ul>
+                <li (click)="triggerImageInput()"> 
+                    <mat-icon style="color: white" class="me-1" fontIcon="crop_original"></mat-icon> Images
+                </li>
+                <li (click)="triggerVideoInput()"> 
+                    <mat-icon style="color: white" class="me-1" fontIcon="smart_display"></mat-icon> Videos
+                </li>
+            </ul>
+        </div>
         <div id="chat-input-outer">
             <div id="chat-input" class="rounded-5">
                 <input type="text" 
@@ -210,6 +237,7 @@
                        id="message-input"
                        name="message" 
                        placeholder="Type here..." 
+                       (keydown.enter)="sendMessage()"
                        [(ngModel)]="newMessage">
 
                 <div *ngIf="recording" id="recording" class="ps-5">
@@ -226,7 +254,9 @@
                 </div>
 
                 <div class="d-flex flex-row">
-                    <input type="file" (change)="onFileSelected($event)" accept="image/png, image/jpeg" hidden>
+                    <button class="btn btn-light rounded-5" *ngIf="!recording"  (click)="toggleListVisibility()">
+                        <mat-icon fontIcon="add"></mat-icon>
+                    </button>
                     <button class="btn btn-light rounded-5" (click)="toggleStartStopRecording()">
                         <mat-icon *ngIf="!recording" fontIcon="mic"></mat-icon>
                         <mat-icon *ngIf="recording" fontIcon="stop_circle" class="scale-up"></mat-icon>
@@ -242,3 +272,29 @@
     </div>
     <!-- CHAT SECTION ENDS HERE -->
 </article>
+
+<input type="file" (change)="onFileSelected($event, MessageFileType.IMAGE)" accept="image/png, image/jpeg" hidden #imageInput>
+<input type="file" (change)="onFileSelected($event, MessageFileType.VIDEO)" accept="video/mp4, video/webm" hidden #videoInput>
+
+
+<ng-template #UploadMedia>
+    <div>
+        <h2 mat-dialog-title class="m-0">{{ selectedFileType | titlecase }}</h2>
+    </div>
+    <mat-dialog-content class="py-0">
+        <div style="width: 500px;">
+            <div *ngIf="selectedFileType === MessageFileType.IMAGE">
+                <img [src]="previewUrl" class="image-basics" alt="Image preview rounded">
+            </div>
+            <div *ngIf="selectedFileType === MessageFileType.VIDEO">
+                <video [src]="previewUrl" controls  class="image-basics border border-dark rounded"></video>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <div class="flex-center">
+            <button (click)="closeDialog()" type="button" class="btn btn-dark form-control m-1">Close</button>
+            <button (click)="uploadMedia()" type="button" class="btn btn-dark form-control m-1">Send</button>
+        </div>
+    </mat-dialog-actions>
+</ng-template>

@@ -424,25 +424,68 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.loadPreviousChats(group.id!);
     }
 
-    protected onFileSelected(event: Event): void {
+    // MEDIA-MESSAGE RELATED
+    selectedFile: File | null = null;
+    previewUrl: SafeUrl | null = null;
+    selectedFileType: MessageFileType | null = null;
+    @ViewChild('UploadMedia') uploadMediaTemplate!: TemplateRef<any>;
+    @ViewChild('imageInput') imageInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('videoInput') videoInput!: ElementRef<HTMLInputElement>;
+
+    triggerImageInput(): void {
+        this.imageInput.nativeElement.click();  
+    }
+    
+    triggerVideoInput(): void {
+        this.videoInput.nativeElement.click();
+    }
+
+    protected onFileSelected(event: Event, messageFileType: MessageFileType): void {
         const input = event.target as HTMLInputElement;
         if (input.files && input.files.length > 0) {
             const file = input.files[0];
-            this.uploadImage(file);
+            this.selectedFile = file;
+            this.selectedFileType = messageFileType;
+            this.previewUrl = this.dom.bypassSecurityTrustUrl(URL.createObjectURL(file));
+            this.openDialog();
         }
     }
 
-    protected uploadImage(mediaFile: File): void {
-        const formData = new FormData();
-        formData.append("file", mediaFile);
-        formData.append("upload_preset", environment.UPLOAD_PRESET);
-        formData.append("cloud_name", environment.CLOUD_NAME);
-
-        fetch(this.cloudinaryUrl, { method: 'POST', body: formData })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
+    openDialog(): void {
+        this.dialog.open(this.uploadMediaTemplate);
     }
+
+    closeDialog(): void {
+        this.selectedFile = null;
+        this.previewUrl = null;
+        this.selectedFileType = null;
+        this.dialog.closeAll();
+    }
+
+    async uploadMedia(): Promise<void> {
+        if (this.selectedFile && this.selectedFileType && 
+            ( this.selectedFileType === MessageFileType.IMAGE || this.selectedFileType === MessageFileType.VIDEO))
+        {
+            this.sendingSpinner= true;
+            const formData = new FormData();
+            formData.append("file", this.selectedFile);
+            formData.append("upload_preset", environment.UPLOAD_PRESET);
+            formData.append("cloud_name", environment.CLOUD_NAME);
+    
+            try {
+                const response = await fetch(this.cloudinaryUrl, { method: 'POST', body: formData });
+                const data = await response.json();
+                this.newMessage = data.secure_url;
+                let message: MessageDTO | null = this.getMessageObject(this.selectedFileType);
+                if (message !== null) {
+                    this.sendMessageHelper(message);
+                }
+                this.closeDialog();
+            } catch (error) {
+                console.error('Error uploading audio:', error);
+            }
+        }
+      }
 
     //OTHER-OR-GENARAL
 
@@ -504,5 +547,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     Number(senderId: string): number {
         return Number(senderId);
+    }
+
+    isListVisible: boolean = false;
+    toggleListVisibility(): void {
+      this.isListVisible = !this.isListVisible;
     }
 }
