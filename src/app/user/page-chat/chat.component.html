@@ -145,7 +145,7 @@
         </div>
         <!-- CHAT HEADER ENDS HERE -->
         <!-- CHAT BODY -->
-        <div #chatBody id="chat-body" class="chat-scroll container p-0">
+        <div #chatBody id="chat-body" class="chat-scroll container">
             <!-- IF NO PREVIOUS CHAT -->
             <ng-container *ngIf="messages.length === 0">
                 <div id="no-message">
@@ -155,63 +155,59 @@
             <!-- IF PREVIOUS CHAT EXISTS -->
             <ng-container *ngIf="messages.length > 0">
                 <!-- LOOP -->
-                <div class="message px-3 row" *ngFor="let message of messages">
-                    <div class="col-12 col-md-6">
-                        <div class="d-flex flex-row align-items-end"  *ngIf="isMessageComming(message)">
-                            <div class="image-div-chat">
-                                <img  [src]="userProfileImageMap.get(Number(message.senderId))" id="current-user" alt="User Profile">
-                            </div>
-                            <div>
-                                <div class="flex-start">
-                                    <div class="message-right p-1" 
-                                        [class]="{'py-3': isOnlyTextMsg(message.messageFileType), 'px-4': isOnlyTextMsg(message.messageFileType)}">
-                                        <span *ngIf="isOnlyTextMsg(message.messageFileType)">
-                                            {{ message.content}}
-                                        </span>
-                                        <audio controls *ngIf="message.messageFileType === MessageFileType.AUDIO">
-                                            <source [src]="message.content" type="audio/wav">
-                                        </audio>
-                                        <img [src]="message.content" 
-                                             *ngIf="message.messageFileType === MessageFileType.IMAGE"
-                                             class="image-basics-chat rounded-4" 
-                                             alt="Image preview">
-                                        <video [src]="message.content" 
-                                               controls  
-                                               *ngIf="message.messageFileType === MessageFileType.VIDEO"
-                                               class="image-basics-chat border border-dark rounded">
-                                        </video>
-                                    </div>
+                <div class="message row" *ngFor="let message of messages">
+                    <div class="col-12 col-md-6 my-1">
+                        <ng-container  *ngIf="isMessageComming(message)">
+                            <div class="flex-start">
+                                <img [src]="getProfileImage(message.senderId)" 
+                                    id="current-user" 
+                                    class="me-1" 
+                                    alt="User">
+                                <div class="message-content bg-blue" *ngIf="isOnlyTextMsg(message.messageFileType)">
+                                    {{ message.content}}
                                 </div>
-                                <p class="message-time">
-                                    {{ message.timestamp | date:'hh:mm aa'}}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-lg-6 flex-end pe-0">
-                        <div *ngIf="isMessageGoing(message)">
-                            <div class="message-left p-1" 
-                                [class]="{'py-3': isOnlyTextMsg(message.messageFileType), 'px-4': isOnlyTextMsg(message.messageFileType)}">
-                                <span *ngIf="isOnlyTextMsg(message.messageFileType)">
-                                    {{ message.content }}
-                                </span>
-                                <audio controls *ngIf="message.messageFileType === MessageFileType.AUDIO">
+                                <img [src]="message.content" 
+                                    *ngIf="message.messageFileType === MessageFileType.IMAGE"
+                                    class="message-media border-blue rounded-4" 
+                                    alt="Image preview">
+                                <video [src]="message.content" 
+                                        controls  
+                                        *ngIf="message.messageFileType === MessageFileType.VIDEO"
+                                        class="message-media border-blue rounded">
+                                </video>
+                                <audio controls class="border-blue rounded-5" *ngIf="message.messageFileType === MessageFileType.AUDIO">
                                     <source [src]="message.content" type="audio/wav">
                                 </audio>
-                                <img [src]="message.content" 
-                                     *ngIf="message.messageFileType === MessageFileType.IMAGE"
-                                     class="image-basics-chat rounded-4" 
-                                     alt="Image preview">
-                                <video [src]="message.content" 
-                                       controls  
-                                       *ngIf="message.messageFileType === MessageFileType.VIDEO"
-                                       class="image-basics-chat border border-dark rounded"></video>
                             </div>
-                            <p class="flex-end message-time">
-                                {{ message.timestamp | date:'hh:mm aa'}}
-                            </p>
-                        </div>
+                            <span class="message-time">{{ message.timestamp | date:'hh:mm aa' }}</span>
+                        </ng-container>
+                    </div>
+                    
+                    <div class="col-12 col-md-6 my-1">
+                        <ng-container  *ngIf="isMessageGoing(message)">
+                            <div class="flex-end">
+                                <div class="message-content bg-white" *ngIf="isOnlyTextMsg(message.messageFileType)">
+                                    {{ message.content}}
+                                </div>
+                                <img [src]="message.content" 
+                                    *ngIf="message.messageFileType === MessageFileType.IMAGE"
+                                    class="message-media border-white rounded" 
+                                    alt="Image preview">
+                                <video [src]="message.content" 
+                                        controls  
+                                        *ngIf="message.messageFileType === MessageFileType.VIDEO"
+                                        class="message-media border-white rounded">
+                                </video>
+                                <audio controls class="border-white rounded-5" *ngIf="message.messageFileType === MessageFileType.AUDIO">
+                                    <source [src]="message.content" type="audio/wav">
+                                </audio>
+                                <img [src]="getProfileImage(currentUser.id!.toString())"
+                                    id="current-user" 
+                                    class="ms-1"
+                                    alt="You">
+                            </div>
+                            <div class="message-time flex-end">{{ message.timestamp | date:'hh:mm aa' }}</div>
+                        </ng-container>
                     </div>
                 </div>
                 <!-- LOOP ENDS -->

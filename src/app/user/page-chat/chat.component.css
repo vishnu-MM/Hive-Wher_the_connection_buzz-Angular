@@ -110,11 +110,7 @@
     padding-top: 5%;
 }
 
-.chat-scroll {
-    height: 84vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
+
 
 .peoples-scroll {
     height: 76vh;
@@ -211,9 +207,6 @@ mat-icon {
     border: black solid 1px;
 }
 
-.message {
-    width: 100%;
-}
 
 .message-right {
     background-color: orange;
@@ -233,17 +226,6 @@ mat-icon {
     word-wrap: break-word; 
 }
 
-#no-message {
-    height: 84vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#no-message div {
-    background-color: rgba(225, 225, 225, 0.2);
-}
 
 .user-tile {
     display: flex;
@@ -281,11 +263,7 @@ mat-icon {
     margin: 2px;
 }
 
-.message-time {
-    color: white;
-    font-size: small;
-    font-weight: lighter;
-}
+
 
 #peoples-section-footer {
     display: flex;
@@ -367,10 +345,12 @@ mat-icon {
     transform: scale(1.5);
 }
 #current-user {
-    aspect-ratio: 1;
-    border-radius: 50%;
-    width: 40px;
-    border: 1px solid white;
+    border-radius: 50% !important;
+    aspect-ratio: 1 !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 1px solid white !important;
+    align-self: flex-end;
 }
 .image-div-chat {
     margin: 0;
@@ -415,7 +395,58 @@ audio {
     aspect-ratio: 1;
     object-fit: contain;
 }
-.image-basics-chat{
+
+
+/* Chat Related */
+#chat-body {
+    padding: 0;
+}
+.chat-scroll {
+    height: 84vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#no-message {
+    height: 84vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#no-message div {
+    background-color: rgba(225, 225, 225, 0.2);
+}
+.message {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+.message-content {
+    word-wrap: break-word;
+    border-radius: 20px; 
+    padding: 10px; 
+    max-width: 90%; 
+}
+.bg-blue {
+    background-color: #10d5f8; 
+}
+.bg-white {
+    background-color: white; 
+}
+.border-blue {
+    border: 2px solid #10d5f8; 
+}
+.border-white {
+    border: 2px solid white;
+}
+.message-media {
     width: 50%;
     object-fit: contain;
 } 
+.message-time {
+    color: white;
+    font-size: small;
+    font-weight: lighter;
+    margin-left: 45px;
+    margin-right: 45px;
+}

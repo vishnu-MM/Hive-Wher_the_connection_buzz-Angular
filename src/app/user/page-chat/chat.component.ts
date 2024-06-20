@@ -7,8 +7,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import RecordRTC from 'recordrtc';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Group, MessageDTO, MessageFileType, MessageType } from 'src/Shared/Models/chat.model';
-import { CloudinaryModule } from '@cloudinary/ng';
-import { Cloudinary, CloudinaryImage } from '@cloudinary/url-gen';
+import { Cloudinary } from '@cloudinary/url-gen';
 import { environment } from 'src/environments/environment';
 import { AppService } from 'src/Shared/Services/app.service';
 
@@ -545,8 +544,10 @@ export class ChatComponent implements OnInit, OnDestroy {
         )
     }
 
-    Number(senderId: string): number {
-        return Number(senderId);
+    protected getProfileImage(senderId: string): string {
+        return this.userProfileImageMap.has(Number(senderId)) ?
+               this.userProfileImageMap.get(Number(senderId))! :
+               'assets/no-profile-image.jpg'
     }
 
     isListVisible: boolean = false;
