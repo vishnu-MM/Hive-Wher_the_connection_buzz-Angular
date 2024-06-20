@@ -2,14 +2,14 @@
     <div>
         <h2 mat-dialog-title class="m-0">New Group</h2>
     </div>
-    <mat-dialog-content class="py-0">
-        <div style="width: 767px;">
+    <mat-dialog-content style="overflow-x: hidden;">
+        <div style="width: 500px;">
             <input type="text" name="group-name" id="group-name-input" placeholder="Name of Group"
-                class="form-control mb-2" [(ngModel)]="groupName">
+                class="form-control" [(ngModel)]="groupName">
             <h2>Group Members</h2>
             <div id="peoples-section-body">
                 <div *ngFor="let userId of inGroupUsers.keys()" class="inGroupUsers">
-                    <div (click)="addToGroup(userId)" class="user-tile">
+                    <div (click)="addToGroup(userId)" class="user-tile  d-flex justify-content-start">
                         <img [src]="userProfileImageMap.get(userId)" alt="User Profile">
                         <div class="ms-3">
                             <p> {{ '@'+inGroupUsers.get(userId)!.username }} </p>
@@ -23,7 +23,7 @@
             <h2>Add Members From</h2>
             <div id="peoples-section-body">
                 <div *ngFor="let userId of notInGroupUsers.keys()">
-                    <div (click)="addToGroup(userId)" class="user-tile">
+                    <div (click)="addToGroup(userId)" class="user-tile  d-flex justify-content-start">
                         <img [src]="userProfileImageMap.get(userId)" alt="User Profile">
                         <div class="ms-3">
                             <p> {{ '@'+notInGroupUsers.get(userId)!.username }} </p>
@@ -46,11 +46,11 @@
     <div>
         <h2 mat-dialog-title class="m-0">New Chat</h2>
     </div>
-    <mat-dialog-content class="py-0">
+    <mat-dialog-content class="py-0" style="overflow-x: hidden;">
         <div style="width: 500px;">
             <div id="peoples-section-body">
                 <div *ngFor="let user of allUsers">
-                    <div (click)="chatWithUser(user); closeNewChat();" class="user-tile">
+                    <div (click)="chatWithUser(user); closeNewChat();" class="user-tile d-flex justify-content-start">
                         <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
                         <div class="ms-3">
                             <p> {{ '@'+user.username }}</p>
@@ -71,7 +71,7 @@
         <side-nav-bar></side-nav-bar>
     </div>
 <!-- PEOPLE LISTING SECTION STARTS HERE -->
-    <div id="peoples-section">
+    <div id="peoples-section" [class]="{'toggle-chat': (receiver || group)}">
         <!-- TOP SECTION -->
         <div id="peoples-section-header">
             <div class="flex-between-center mb-2">
@@ -98,22 +98,32 @@
         <div id="peoples-section-body" class="peoples-scroll" *ngIf="showGroups">
             <div *ngFor="let group of groups">
                 <div (click)="chatInGroup(group)" class="user-tile">
-                    <img src="assets/no-profile-image.jpg" alt="User Profile">
-                    <div class="ms-3">
-                        <p> {{ group.groupName }} </p>
-                        <Span>{{ group.membersId.length +' Members'}}</Span>
+                    <div class="flex-start">
+                        <img src="assets/no-profile-image.jpg" alt="User Profile">
+                        <div class="ms-3">
+                            <p> {{ group.groupName }} </p>
+                            <Span>{{ group.membersId.length +' Members'}}</Span>
+                        </div>
                     </div>
+                    <ng-container *ngIf="senderIdNewMessageCountMap.has(group.id!.toString())">
+                        <div class="new-msg-count">{{ senderIdNewMessageCountMap.get(group.id!.toString())}}</div>
+                    </ng-container>
                 </div>
             </div>
         </div>
         <div id="peoples-section-body" class="peoples-scroll" *ngIf="!showGroups">
             <div *ngFor="let user of friendsList">
                 <div (click)="chatWithUser(user)" class="user-tile">
-                    <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
-                    <div class="ms-3">
-                        <p> {{ user.username }} </p>
-                        <Span>{{ (currentUser.id === user.id)? 'Me': 'Online / Last Seen'}}</Span>
+                    <div class="flex-start">
+                        <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
+                        <div class="ms-3">
+                            <p> {{ user.username }} </p>
+                            <Span>{{ (currentUser.id === user.id)? 'Me': 'Online / Last Seen'}}</Span>
+                        </div>
                     </div>
+                    <ng-container *ngIf="senderIdNewMessageCountMap.has(user.id!.toString())">
+                        <div class="new-msg-count">{{ senderIdNewMessageCountMap.get(user.id!.toString())}}</div>
+                    </ng-container>
                 </div>
             </div>
         </div>
@@ -130,6 +140,9 @@
     <div id="chat-section" *ngIf="(receiver || group)">
         <!-- CHAT HEADER -->
         <div id="chat-header">
+            <button class="btn" (click)="goBack()">
+                <mat-icon style="color: white;" fontIcon="arrow_back_ios_new"></mat-icon>
+            </button>
             <img class="user-profile-picture" 
                 [src]="receiver ? userProfileImageMap.get(receiver.id!) : 'assets/no-profile-image.jpg'"
                 *ngIf="receiver || group">
@@ -145,7 +158,7 @@
         </div>
         <!-- CHAT HEADER ENDS HERE -->
         <!-- CHAT BODY -->
-        <div #chatBody id="chat-body" class="chat-scroll container">
+        <div #chatBody id="chat-body" class="chat-scroll">
             <!-- IF NO PREVIOUS CHAT -->
             <ng-container *ngIf="messages.length === 0">
                 <div id="no-message">
@@ -257,7 +270,7 @@
                         <mat-icon *ngIf="!recording" fontIcon="mic"></mat-icon>
                         <mat-icon *ngIf="recording" fontIcon="stop_circle" class="scale-up"></mat-icon>
                     </button>
-                    <button class="btn btn-light rounded-5 px-4" (click)="sendMessage()" [disabled]="sendingSpinner">
+                    <button id="sent-btn" class="btn btn-light rounded-5 px-4" (click)="sendMessage()" [disabled]="sendingSpinner">
                         <mat-icon *ngIf="!sendingSpinner" fontIcon="send"></mat-icon>
                         <div class="loader" style="width: 30px;" *ngIf="sendingSpinner"></div>
                     </button>

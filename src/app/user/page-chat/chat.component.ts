@@ -95,7 +95,7 @@ export class ChatComponent implements OnInit, OnDestroy {
                         this.loadUserProfilePictures([value]).then();
                     }              
                     else {
-                        this.friendsList.push(value);                
+                        this.friendsList.unshift(value);                
                         this.loadUserProfilePictures(this.friendsList).then();
                     }
                 },
@@ -159,6 +159,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     
     protected chatWithUser(user: User): void {
+        this.removeNewMessageCount(user.id!.toString()).then()
         this.group = undefined;
         this.receiver = user;
         this.loadPreviousChats(user.id!.toString());
@@ -175,10 +176,45 @@ export class ChatComponent implements OnInit, OnDestroy {
     private dialogRefNewGroup!: MatDialogRef<any>;
     private dialogRefNewChat!: MatDialogRef<any>;
     protected readonly MessageFileType = MessageFileType;
+    protected senderIdNewMessageCountMap: Map<string, number> = new Map<string, number>();
 
     private addNewMessage(message: MessageDTO): void {
         this.messages.push(message);
         this.scrollToBottom();
+        if (this.receiver!.id?.toString() !== message.senderId || this.group!.id?.toString() !== message.senderId) {
+            this.addNewMessageCount(message.senderId);
+        }
+        const userId: number = Number(message.senderId);
+        this.sortUser(userId).then();
+    }
+
+    private async addNewMessageCount(senderId: string): Promise<void> {
+        if (this.senderIdNewMessageCountMap.has(senderId)) {
+            const count: number = this.senderIdNewMessageCountMap.get(senderId)!;
+            this.senderIdNewMessageCountMap.set(senderId, (count + 1));
+        }
+        this.senderIdNewMessageCountMap.set(senderId, 1);
+    }
+
+    private async removeNewMessageCount(senderId: string): Promise<void> {
+        if (this.senderIdNewMessageCountMap.has(senderId)) {
+            this.senderIdNewMessageCountMap.delete(senderId)!;
+        }
+    }
+
+    private async sortUser(userId: number): Promise<void> {
+        for(let i = 0; i < this.friendsList.length; i++) {
+            if (this.friendsList[i].id === userId) {
+                const [user] = this.friendsList.splice(i, 1);
+                this.friendsList.unshift(user);
+                break;
+            }
+        } 
+        if (this.friendsList[0].id != userId) {
+            this.loadUser(userId, false).then(() => { 
+                this.loadUserProfilePictures([this.friendsList[0]]).then() 
+            })
+        }
     }
 
     private async loadPreviousChats(receiverId: string): Promise<void> {
@@ -553,5 +589,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     isListVisible: boolean = false;
     toggleListVisibility(): void {
       this.isListVisible = !this.isListVisible;
+    }
+
+    goBack() {
+        if (this.receiver) this.receiver = undefined;
+        if (this.group) this.group = undefined;
     }
 }
