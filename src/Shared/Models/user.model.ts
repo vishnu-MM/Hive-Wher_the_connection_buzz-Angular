@@ -11,6 +11,7 @@ export interface User {
   joinDate : Date;
   isBlocked : boolean;
   isVerified: boolean;
+  blockReason: string;
 }
 export interface UserPage{
   contents : User[];

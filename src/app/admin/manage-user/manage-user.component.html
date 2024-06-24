@@ -75,6 +75,7 @@
                                         Block
                                 </button>
                                 <button type="button"
+                                        (click)="confirmUnblockUser(user)"
                                         *ngIf="user.isBlocked" class="btn btn-success text-black">
                                         Un Block
                                 </button>

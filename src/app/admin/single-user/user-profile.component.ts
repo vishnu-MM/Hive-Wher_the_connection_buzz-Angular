@@ -1,11 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, Timestamp } from 'rxjs';
 import { Post } from 'src/Shared/Models/post.model';
 import { User } from 'src/Shared/Models/user.model';
+import { AdminService } from 'src/Shared/Services/admin.service';
 import { PostFile, PostService } from 'src/Shared/Services/post.service';
 import { ImageType, UserService } from 'src/Shared/Services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'user-profile',
@@ -14,25 +16,31 @@ import { ImageType, UserService } from 'src/Shared/Services/user.service';
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
     //USER
-    user!: User;
-    friendsCount: number | null = 0;
-    coverPicture: string = '';
-    profilePicture: string = '';
+    protected user!: User;
+    protected friendsCount: number | null = 0;
+    protected coverPicture: string = '';
+    protected profilePicture: string = '';
+    protected blockReason: string = '';
+    protected clicked: boolean = false;
     //POSTS
-    posts: Post[] = [];
-    postFiles: Map<number, string> = new Map<number, string>();
-    isPostCountZero : boolean = false;
+    protected posts: Post[] = [];
+    protected postFiles: Map<number, string> = new Map<number, string>();
+    protected isPostCountZero : boolean = false;
 
     //Subscription
     private loadUserDetailsSub!: Subscription;
     private loadUserImagesSub!: Subscription;
     private loadUserPostsSub!: Subscription;
     private getPostFilesSub!: Subscription;
+    private unblockUserSub!: Subscription;
+    private blockUserSub!: Subscription;
 
     constructor(private userService: UserService,
-        private postService: PostService,
-        private router: Router,
-        private route: ActivatedRoute) { }
+                private adminService: AdminService,
+                private postService: PostService,
+                private router: Router,
+                private dialog: MatDialog,
+                private route: ActivatedRoute) { }
 
     ngOnInit(): void {
         const userId: number = parseInt(<string>this.route.snapshot.paramMap.get('id'));
@@ -51,6 +59,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         if (this.loadUserDetailsSub) this.loadUserDetailsSub.unsubscribe();
         if (this.loadUserImagesSub) this.loadUserDetailsSub.unsubscribe();
         if (this.loadUserPostsSub) this.loadUserDetailsSub.unsubscribe();
+        if (this.unblockUserSub) this.unblockUserSub.unsubscribe();
+        if (this.blockUserSub) this.blockUserSub.unsubscribe();
     }
 
     //* USER
@@ -84,7 +94,73 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.user.isBlocked = (!this.user.isBlocked)
     }
 
+    @ViewChild('BlockUser') private blockUserDialog!: TemplateRef<any>;
+    private blockUserDialogRef!: MatDialogRef<any>;
+    protected openBlockUser() {
+        this.blockUserDialogRef = this.dialog.open(this.blockUserDialog);
+    }
 
+    protected closeBlockUser() {
+        this.blockReason = '';
+        this.clicked = false;
+        this.blockUserDialogRef.close();
+    }
+
+
+    protected async blockUser(): Promise<void> {
+        if (this.blockUserSub) {
+            this.blockUserSub.unsubscribe();
+        }
+        
+        this.clicked = true;
+    
+        if (!this.blockReason || this.blockReason.trim() === '') {
+            console.error('Block reason is required');
+            return;
+        }
+        
+        const trimmedBlockReason = this.blockReason.trim();
+        
+        this.blockUserSub = this.adminService.blockUser(this.user.id!, trimmedBlockReason).subscribe({
+            next: () => {   
+                this.user.isBlocked = true; 
+                this.user.blockReason = trimmedBlockReason; 
+                this.closeBlockUser();
+            },
+            error: (err: any) => {
+                console.error('Failed to block user', err);
+                this.closeBlockUser();
+            }
+        });
+    }
+    
+    protected async confirmUnblockUser(): Promise<void> {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `User was Blocked Because ${this.user.blockReason? this.user.blockReason:'(Reason not specified)'}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unblock it!'
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.unblockUser();
+          }
+        });
+    }
+
+    private async unblockUser(): Promise<void> {
+        if (this.unblockUserSub) this.unblockUserSub.unsubscribe();
+        this.blockUserSub = this.adminService.unblockUser(this.user.id!).subscribe({
+            next: () => {
+                this.user.isBlocked = false;
+            },
+            error: () => { }
+        });        
+    }
+    
     //* POSTS
 
     async loadUserPosts(userId: number): Promise<void> {

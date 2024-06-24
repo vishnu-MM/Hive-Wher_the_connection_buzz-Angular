@@ -5,6 +5,7 @@ import { User, UserPage } from "../../../Shared/Models/user.model";
 import { AdminService } from "../../../Shared/Services/admin.service";
 import { Router } from "@angular/router";
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'manage-user.',
@@ -128,8 +129,24 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
         });
     }
     
+    protected async confirmUnblockUser(user: User): Promise<void> {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `User was Blocked Because ${user.blockReason? user.blockReason:'(Reason not specified)'}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unblock it!'
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.unblockUser(user.id);
+          }
+        });
+    }
 
-    protected async unblockUser(id: number | null): Promise<void> {
+    private async unblockUser(id: number | null): Promise<void> {
         if (id === null) {
             return;
         }

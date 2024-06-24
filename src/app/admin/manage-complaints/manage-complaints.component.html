@@ -4,7 +4,7 @@
 <article>
     <!--  TOP NAV BAR STARTS HERE -->
     <top-bar [isSearchResultShowing]="isSearchResultShowing"
-             (clear)="loadUserList()"
+             (clear)="loadNextpage()"
              (search)="search($event)">
     </top-bar>
     <!--  TOP NAV BAR ENDS HERE -->
@@ -13,7 +13,7 @@
     <section>
         <div id="content-div" class="me-4 card">
             <div class="content-body rounded border border-end-0 border-start-0 px-5"
-                [class]="{'scrollable': !(isSearchResultShowing && users.length === 0)}">
+                [class]="{'scrollable': !(isSearchResultShowing && userDetailsMap.keys.length === 0)}">
                 <table class="table">
                     <thead>
                         <tr>
@@ -47,21 +47,23 @@
                                 <h3 class="m-0">{{ complaint.description }}</h3>
                             </td>
                             <td>
-                                <button type="button" *ngIf="!userDetailsMap.get(complaint.reportedUser)?.isBlocked"
-                                    class="btn btn-warning"
-                                    (click)="blockUser(userDetailsMap.get(complaint.reportedUser)?.id!)">
-                                    Block
+                                <button type="button"
+                                        *ngIf="!userDetailsMap.get(complaint.reportedUser)?.isBlocked" 
+                                        class="btn btn-warning"
+                                        (click)="openBlockUser(userDetailsMap.get(complaint.reportedUser)!)">
+                                        Block
                                 </button>
-                                <button type="button" *ngIf="userDetailsMap.get(complaint.reportedUser)?.isBlocked"
-                                    class="btn btn-success text-black"
-                                    (click)="unblockUser(userDetailsMap.get(complaint.reportedUser)?.id!)">
-                                    Un Block
+                                <button type="button" 
+                                        *ngIf="userDetailsMap.get(complaint.reportedUser)?.isBlocked"
+                                        (click)="confirmUnblockUser(userDetailsMap.get(complaint.reportedUser)!)"
+                                        class="btn btn-success text-black">
+                                        Un Block
                                 </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div id="no-result" *ngIf="isSearchResultShowing && users.length === 0">
+                <div id="no-result" *ngIf="isSearchResultShowing && userDetailsMap.keys.length === 0">
                     <h2>No Result Found</h2>
                 </div>
             </div>
@@ -90,3 +92,43 @@
     </section>
     <!--  MAIN CONTENT SPACE ENDS HERE -->
 </article>
+
+<ng-template #BlockUser>
+    <div class="p-3">
+        <h2>Block User</h2>
+    </div>
+    <mat-dialog-content style="overflow-x: hidden;">
+        <div style="width: 500px;">
+            <label for="block-reason">
+                <span [class]="{
+                    'text-danger': ((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked)), 
+                    'text-dark': !((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked))
+                    }">
+                    Mention reason for blocking
+                </span>
+            </label>
+            <textarea class="form-control mt-1" 
+                      id="block-reason"  
+                      name="block-reason"  
+                      [(ngModel)]="blockReason"
+                      required 
+                      #BlockReason="ngModel" 
+                      [class]="{'is-invalid': ((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked))}"
+                      placeholder="Mention reason for blocking"
+                      style="height: 100px;"></textarea>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="d-flex justify-content-end">
+            <button type="button" 
+                    (click)="closeBlockUser()"
+                    class="btn btn-outline-warning me-2">
+                Cancel
+            </button>
+            <button type="button" 
+                    class="btn btn-outline-danger"
+                    [disabled]="!selectedUser" 
+                    (click)="blockUser()">
+                Block
+            </button>
+    </mat-dialog-actions>
+</ng-template>

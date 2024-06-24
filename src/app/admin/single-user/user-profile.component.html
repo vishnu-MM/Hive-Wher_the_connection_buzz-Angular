@@ -89,13 +89,25 @@
                                                 </h3>
                                             </td>
                                         </tr>
+                                        <tr *ngIf="user.isBlocked">
+                                            <td>
+                                                <h3 class="title">Reason For Block</h3>
+                                            </td>
+                                            <td>
+                                                <h3> {{ user.blockReason }} </h3>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td colspan="2" id="block-btn">
                                                 <button type="button"
-                                                        class="btn text-black h2 m-0"
-                                                        [class]="{'btn-danger': (!user.isBlocked), 'btn-success': (user.isBlocked)}"
-                                                        (click)="toggleBlockOrUnblock()">
-                                                    {{ user.isBlocked? 'Un Block' : 'Block' }}
+                                                        *ngIf="!user.isBlocked" class="btn btn-warning"
+                                                        (click)="openBlockUser()">
+                                                        Block
+                                                </button>
+                                                <button type="button"
+                                                        (click)="confirmUnblockUser()"
+                                                        *ngIf="user.isBlocked" class="btn btn-success text-black">
+                                                        Un Block
                                                 </button>
                                             </td>
                                         </tr>
@@ -140,3 +152,43 @@
         </div>
     </section>
 </article>
+
+<ng-template #BlockUser>
+    <div class="p-3 block-user-dialog">
+        <h2>Block User</h2>
+    </div>
+    <mat-dialog-content class="block-user-dialog" style="overflow-x: hidden;">
+        <div style="width: 500px;">
+            <label for="block-reason">
+                <span [class]="{
+                    'text-danger': ((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked)), 
+                    'text-dark': !((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked))
+                    }">
+                    Mention reason for blocking
+                </span>
+            </label>
+            <textarea class="form-control mt-1" 
+                      id="block-reason"  
+                      name="block-reason"  
+                      [(ngModel)]="blockReason"
+                      required 
+                      #BlockReason="ngModel" 
+                      [class]="{'is-invalid': ((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked))}"
+                      placeholder="Mention reason for blocking"
+                      style="height: 100px;"></textarea>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="d-flex justify-content-end block-user-dialog">
+            <button type="button" 
+                    (click)="closeBlockUser()"
+                    class="btn btn-outline-warning me-2">
+                Cancel
+            </button>
+            <button type="button" 
+                    class="btn btn-outline-danger"
+                    (click)="blockUser()">
+                Block
+            </button>
+    </mat-dialog-actions>
+  </ng-template>
+  
