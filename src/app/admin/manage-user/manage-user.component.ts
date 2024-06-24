@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ImageType, UserService } from "../../../Shared/Services/user.service";
 import { Subscription } from "rxjs";
 import { User, UserPage } from "../../../Shared/Models/user.model";
 import { AdminService } from "../../../Shared/Services/admin.service";
 import { Router } from "@angular/router";
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'manage-user.',
@@ -11,23 +12,27 @@ import { Router } from "@angular/router";
     styleUrls: ['./manage-user.component.css', '../shared-style.css']
 })
 export class ManageUsersComponent implements OnInit, OnDestroy {
-    users: User[] = [];
-    pageNo: number = 0;
-    totalPages: number = 0;
-    isLast: boolean = false;
-    userPage!: UserPage;
-    isSearchResultShowing: boolean = false;
-    profileMap: Map<number, string> = new Map<number, string>();
+    protected users: User[] = [];
+    protected pageNo: number = 0;
+    protected totalPages: number = 0;
+    protected isLast: boolean = false;
+    protected userPage!: UserPage;
+    protected isSearchResultShowing: boolean = false;
+    protected profileMap: Map<number, string> = new Map<number, string>();
+    protected selectedUser!:User | undefined;
     private getAllUserSUb!: Subscription;
     private blockUserSub!: Subscription;
     private unblockUserSub!: Subscription;
+    protected blockReason: string = '';
+    protected clicked: boolean = false;
 
     constructor(public userService: UserService,
                 private adminService: AdminService,
+                private dialog: MatDialog,
                 private router: Router) {}
 
     ngOnInit(): void {
-        this.loadUserList();
+        this.loadUserList().then();
     }
 
     ngOnDestroy(): void {
@@ -52,7 +57,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
             })
     }
 
-    loadUserList() {
+   protected async loadUserList(): Promise<void> {
         this.getAllUserSUb = this.userService
             .getAllUsers(this.pageNo, 10)
             .subscribe({
@@ -72,36 +77,71 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
         this.profileMap = await this.userService.loadProfilePiture(this.users, ImageType.PROFILE_IMAGE);
     }
 
-    blockUser(id: number | null) {
-        if (id) {
-            if (this.blockUserSub) this.blockUserSub.unsubscribe();
-            this.blockUserSub = this.adminService
-                .blockUser(id)
-                .subscribe({
-                    next: value => {
-                        for (let user of this.users) {
-                            if (user.id === id) { user.isBlocked = true; }
-                        }
-                    },
-                    error: err => { }
-                });
-        }
+    @ViewChild('BlockUser') private blockUserDialog!: TemplateRef<any>;
+    private blockUserDialogRef!: MatDialogRef<any>;
+    protected openBlockUser(user: User) {
+        this.selectedUser = user;
+        this.blockUserDialogRef = this.dialog.open(this.blockUserDialog);
     }
 
-    unblockUser(id: number | null) {
-        if (id) {
-            if (this.unblockUserSub) this.unblockUserSub.unsubscribe();
-            this.blockUserSub = this.adminService
-                .unblockUser(id)
-                .subscribe({
-                    next: value => {
-                        for (let user of this.users) {
-                            if (user.id === id) { user.isBlocked = false; }
-                        }
-                    },
-                    error: err => { }
-                });
+    protected closeBlockUser() {
+        this.blockReason = '';
+        this.selectedUser = undefined;
+        this.clicked = false;
+        this.blockUserDialogRef.close();
+    }
+
+
+    protected async blockUser(): Promise<void> {
+        if (this.blockUserSub) {
+            this.blockUserSub.unsubscribe();
         }
+        
+        this.clicked = true;
+        
+        if (!this.selectedUser) {
+            console.error('No user selected');
+            return;
+        }
+    
+        if (!this.blockReason || this.blockReason.trim() === '') {
+            console.error('Block reason is required');
+            return;
+        }
+        
+        const trimmedBlockReason = this.blockReason.trim();
+        
+        this.blockUserSub = this.adminService.blockUser(this.selectedUser.id!, trimmedBlockReason).subscribe({
+            next: value => {
+                for (let user of this.users) {
+                    if (user.id === this.selectedUser!.id) {
+                        user.isBlocked = true; 
+                        this.closeBlockUser();
+                        break;
+                    }
+                }
+            },
+            error: err => {
+                console.error('Failed to block user', err);
+                this.closeBlockUser();
+            }
+        });
+    }
+    
+
+    protected async unblockUser(id: number | null): Promise<void> {
+        if (id === null) {
+            return;
+        }
+        if (this.unblockUserSub) this.unblockUserSub.unsubscribe();
+        this.blockUserSub = this.adminService.unblockUser(id).subscribe({
+            next: value => {
+                for (let user of this.users) {
+                    if (user.id === id) { user.isBlocked = false; }
+                }
+            },
+            error: err => { }
+        });        
     }
 
     redireactTo(userId: number) {

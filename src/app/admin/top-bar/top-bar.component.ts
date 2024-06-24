@@ -20,7 +20,9 @@ export class TopBarComponent {
     }
 
     clearSearchResult() {
-        if (this.isSearchResultShowing)
+        if (this.isSearchResultShowing){
+            this.searchString = '';
             this.clearSearchResultEvent.emit();
+        }
     }
 }

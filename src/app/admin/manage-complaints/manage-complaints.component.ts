@@ -88,14 +88,14 @@ throw new Error('Method not implemented.');
 	blockUser(id: number | null) {
 		if (id) {
 			if (this.blockUserSub) this.blockUserSub.unsubscribe();
-			this.blockUserSub = this.adminService.blockUser(id)
-				.subscribe({
-					next: value => {
-						const user : User = this.userDetailsMap.get(id)!;
-						user.isBlocked = true;
-					},
-					error: err => { }
-				});
+			// this.blockUserSub = this.adminService.blockUser(id)
+			// 	.subscribe({
+			// 		next: value => {
+			// 			const user : User = this.userDetailsMap.get(id)!;
+			// 			user.isBlocked = true;
+			// 		},
+			// 		error: err => { }
+			// 	});
 		}
 	}
 	unblockUser(id: number | null) {

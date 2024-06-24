@@ -12,6 +12,7 @@ import { TopBarComponent } from './top-bar/top-bar.component';
 import { UserPillComponent } from './user-pill/user-pill.component';
 import { UserProfileComponent } from './single-user/user-profile.component';
 import { PostComponent } from './single-post/post.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
     declarations: [
@@ -29,7 +30,8 @@ import { PostComponent } from './single-post/post.component';
         CommonModule,
         AdminRoutingModule,
         MatIconModule,
-        FormsModule
+        FormsModule,
+        MatDialogModule
     ]
 })
 export class AdminModule { }

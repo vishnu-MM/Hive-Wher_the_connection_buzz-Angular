@@ -71,12 +71,11 @@
                             <td class="table-content">
                                 <button type="button"
                                         *ngIf="!user.isBlocked" class="btn btn-warning"
-                                        (click)="blockUser(user.id)">
+                                        (click)="openBlockUser(user)">
                                         Block
                                 </button>
                                 <button type="button"
-                                        *ngIf="user.isBlocked" class="btn btn-success text-black"
-                                        (click)="unblockUser(user.id)">
+                                        *ngIf="user.isBlocked" class="btn btn-success text-black">
                                         Un Block
                                 </button>
                             </td>
@@ -112,3 +111,43 @@
     </section>
     <!--  MAIN CONTENT SPACE ENDS HERE -->
 </article>
+
+<ng-template #BlockUser>
+    <div class="p-3">
+        <h2>Block User</h2>
+    </div>
+    <mat-dialog-content style="overflow-x: hidden;">
+        <div style="width: 500px;">
+            <label for="block-reason">
+                <span [class]="{
+                    'text-danger': ((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked)), 
+                    'text-dark': !((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked))
+                    }">
+                    Mention reason for blocking
+                </span>
+            </label>
+            <textarea class="form-control mt-1" 
+                      id="block-reason"  
+                      name="block-reason"  
+                      [(ngModel)]="blockReason"
+                      required 
+                      #BlockReason="ngModel" 
+                      [class]="{'is-invalid': ((BlockReason.invalid && BlockReason.touched) && (blockReason === '' && clicked))}"
+                      placeholder="Mention reason for blocking"
+                      style="height: 100px;"></textarea>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="d-flex justify-content-end">
+            <button type="button" 
+                    (click)="closeBlockUser()"
+                    class="btn btn-outline-warning me-2">
+                Cancel
+            </button>
+            <button type="button" 
+                    class="btn btn-outline-danger"
+                    [disabled]="!selectedUser" 
+                    (click)="blockUser()">
+                Block
+            </button>
+    </mat-dialog-actions>
+</ng-template>

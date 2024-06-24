@@ -15,14 +15,14 @@ export class AdminService {
     return new HttpHeaders().set('Authorization', `Bearer ${AuthToken}`);
   }
 
-  public blockUser(userid : number) : Observable<void> {
+  public blockUser(userId : number, reason: string) : Observable<void> {
     const headers = this.authHeader();
-    return this.http.put<void>(`${this.BASE_URL}/block-user?userId=${userid}`,null, { headers })
+    return this.http.put<void>(`${this.BASE_URL}/block-user?userId=${userId}&reason=${reason}`,null, { headers })
   }
 
-  public unblockUser(userid : number) : Observable<void> {
+  public unblockUser(userId : number) : Observable<void> {
     const headers = this.authHeader();
-    return this.http.put<void>(`${this.BASE_URL}/unblock-user?userId=${userid}`,null, { headers })
+    return this.http.put<void>(`${this.BASE_URL}/unblock-user?userId=${userId}`,null, { headers })
   }
 
   public getAllComplaints(pageNo : number, pageSize : number) : Observable<ComplaintsPage> {
