@@ -29,13 +29,16 @@ export class AppService {
 		throw new Error("Tocken is Empty");
 	}
 
-	public errorHandler(error: HttpErrorResponse): Observable<User> {
-		if (error.status === 0)
-			return throwError(() => new Error('Something happend! Network Error'));
-		if (error.status === 401)
-			return throwError(() => new Error('Invalid Credentials'));
-		return throwError(() => new Error('Something happend! Internal ServerError'));
-	}
+    public errorHandler(error: HttpErrorResponse): Observable<any> {
+        console.log(error);
+        if (error.status === 0) {
+            return throwError(() => new Error('Something happened! Network Error'));
+        }
+        if (error.error && error.error.message) {
+            return throwError(() => new Error(error.error.message));
+        }
+        return throwError(() => new Error('Something happened! Internal Server Error'));
+    }    
 
     logout() {
         localStorage.clear();

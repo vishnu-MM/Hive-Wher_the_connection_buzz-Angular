@@ -57,9 +57,11 @@ export class PostComponent implements OnInit, OnDestroy{
           next: value => {
             this.comments.unshift(value);
             this.tryingToPost = false;
+            this.commentTxt = '';
           },
           error: err => {
             this.tryingToPost = false;
+            this.commentTxt = '';
           }
         })
       }
