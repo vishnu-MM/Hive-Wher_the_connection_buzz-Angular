@@ -1,13 +1,14 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { User, UserResponse } from "../../../Shared/Models/user.model";
 import { Post, PostType } from "../../../Shared/Models/post.model";
-import { Subscription } from "rxjs";
+import { Subscription, Timestamp } from "rxjs";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ImageType, UserService } from "../../../Shared/Services/user.service";
 import { PostService } from "../../../Shared/Services/post.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ComplaintsDTO } from 'src/Shared/Models/complaints.model';
 import { AppService } from 'src/Shared/Services/app.service';
+import { formatDistanceToNow } from 'date-fns';
 
 @Component({
     selector: 'app-user-profile',
@@ -174,4 +175,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.closeModal();
         this.appService.logout();
     }
+
+    protected getRelativeTime(createdOn: Timestamp<string>): string {
+		const parsedDate = new Date(createdOn.toString());
+		return formatDistanceToNow(parsedDate, {addSuffix: true});
+	}
 }

@@ -55,7 +55,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         }
     }
 
-    post(): void {
+    protected async post(): Promise<void> {
         if (this.file) {
             if (this.file.type.startsWith('image/')) {
                 let postCreation: PostCreation = {
@@ -106,13 +106,24 @@ export class CreatePostComponent implements OnInit, OnDestroy {
                     });
             }
         }
-        else {
+        else if (this.description !== '') {
             let postCreation: PostCreation = {
                 description: this.description.trim(),
                 postType: PostType.TEXT_ONLY,
                 userId: this.currentUser.id!,
                 aspectRatio: 0
             }
+            this.postServiceSub = this.postService.createTextOnlyPost(postCreation)
+            .subscribe({
+                next: value => {
+                    this.description = '';
+                    this.showSuccess("Posted Successfully!");
+                },
+                error: error => { this.showError("Something Went wrong") }
+            });
+        }
+        else {
+            this.showWarn("Post Should have either a Media File or Text")
         }
     }
 
@@ -146,7 +157,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         }
     }
 
-    getVideoMetadata(file: File) {
+    private getVideoMetadata(file: File) {
         const video = document.createElement('video');
         video.preload = 'metadata';
         video.onloadedmetadata = async () => {
@@ -158,20 +169,20 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         video.src = URL.createObjectURL(file);
     }
 
-    showSuccess(summary: string) {
+    private showSuccess(summary: string) {
         this.toast.success({ detail: "SUCCESS", summary: summary, duration: 5000 });
     }
 
-    showError(summary: string) {
+    private showError(summary: string) {
         this.toast.error({ detail: "ERROR", summary: summary, duration: 5000 });
     }
 
-    showInfo(summary: string) {
+    private showInfo(summary: string) {
         // this.toast.info({detail:"INFO", summary: summary, sticky:true});
         this.toast.info({ detail: "INFO", summary: summary, duration: 5000 });
     }
 
-    showWarn(summary: string) {
+    private showWarn(summary: string) {
         this.toast.warning({ detail: "WARN", summary: summary, duration: 5000 });
     }
 }

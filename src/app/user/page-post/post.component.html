@@ -13,18 +13,27 @@
                          name="comment"
                          id="comment-text"
                          class="form-control"
-                         [class]="{ 'is-invalid' : commentTxt==='' && tryingToPost}"
+                         [class]="{ 'is-invalid' : commentTxt==='' && clicked}"
                          placeholder="Comment on this Post"
                          [(ngModel)]="commentTxt"></textarea>
-                <span *ngIf="commentTxt==='' && tryingToPost" class="text-danger">Comment Cannot Be Empty</span>
+                <span *ngIf="commentTxt==='' && clicked" class="text-danger">
+                    Comment Cannot Be Empty
+                </span>
               </div>
               <div class="p-0 col-md-3">
-                <button class="btn btn-dark form-control" (click)="postComment()">Post</button>
+                <button type="button" class="btn btn-dark form-control" (click)="postComment()">
+                    <span *ngIf="!tryingToPost">
+                        Post
+                    </span>
+                    <div class="loading-div p-3" *ngIf="tryingToPost">
+                        <div class="loader" ></div>
+                    </div>
+                </button>
               </div>
             </div>
           </div>
-          <hr>
-          <div *ngIf="comments.length > 0"  class="pb-5">
+          <hr class="mt-0">
+          <div *ngIf="comments.length > 0" class="pb-5">
               <div *ngFor="let comment of comments" class="px-3 my-2">
                  <single-comment [comment]="comment"></single-comment>
               </div>

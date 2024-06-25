@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { User, UserResponse } from "../../../Shared/Models/user.model";
-import { Subscription } from "rxjs";
+import { Subscription, Timestamp } from "rxjs";
 import { Store } from "@ngrx/store";
 import { ImageType, UserService } from "../../../Shared/Services/user.service";
 import { Router } from "@angular/router";
@@ -8,6 +8,7 @@ import { USER_LOGIN } from "../../../Shared/Store/user.action";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PostService } from "../../../Shared/Services/post.service";
 import { Post, PostType } from "../../../Shared/Models/post.model";
+import { formatDistanceToNow } from 'date-fns';
 
 @Component({
     selector: 'app-my-profile',
@@ -173,4 +174,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             })
         }
     }
+
+    protected getRelativeTime(createdOn: Timestamp<string>): string {
+		const parsedDate = new Date(createdOn.toString());
+		return formatDistanceToNow(parsedDate, {addSuffix: true});
+	}
 }

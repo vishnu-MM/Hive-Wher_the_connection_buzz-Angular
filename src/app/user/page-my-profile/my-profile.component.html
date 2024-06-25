@@ -135,7 +135,7 @@
                             class="rounded-5 border img-basics border-black d-inline-block">
                         <div class="ms-2">
                             <span class="h4 text-light">{{ currentUser.name }}</span> <br>
-                            <span class="text-light">@{{ currentUser.username +" | "+ post.createdOn }}</span>
+                            <span class="text-light">@{{ currentUser.username +" | "+ getRelativeTime(post.createdOn) }}</span>
                         </div>
                     </div>
                     <button type="button" class="btn" (click)="editDeleteModal(post)">

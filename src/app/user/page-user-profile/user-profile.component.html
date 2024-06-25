@@ -96,7 +96,7 @@
 					     class="rounded-5 border img-basics border-black d-inline-block">
 					<div class="ms-2">
 						<span class="h4 text-light">{{ user.name }}</span> <br>
-						<span class="text-light">@{{ user.username +" | "+ post.createdOn }}</span>
+						<span class="text-light">@{{ user.username +" | "+  getRelativeTime(post.createdOn) }}</span>
 					</div>
 				</div>
 

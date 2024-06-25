@@ -12,7 +12,7 @@ img{
 }
 
 /* For smartphones */
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
   /*ASPECT RATIO*/
   .aspect-ratio-16-9{
     width: 100%;

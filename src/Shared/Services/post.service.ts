@@ -28,6 +28,15 @@ export class PostService {
         return this.http.post<Post>(`${this.BASE_URL}/create`, formData);
     }
 
+    public createTextOnlyPost(postRequest: PostCreation): Observable<Post> {
+        const formData: FormData = new FormData();
+        formData.append('description', postRequest.description);
+        formData.append('postType', postRequest.postType.toString());
+        formData.append('aspectRatio', postRequest.aspectRatio.toString());
+        formData.append('userId', postRequest.userId.toString());
+        return this.http.post<Post>(`${this.BASE_URL}/create`, formData);
+    }
+
     public getRandomPosts(): Observable<Post[]> {
         return this.http.get<Post[]>(`${this.BASE_URL}/random?pageNo=0&pageSize=20`);
     }
@@ -111,7 +120,13 @@ export class PostService {
     //* COMMENT END-POINTS STARTS HERE
 
     public createComment(commentRequest: CommentRequestDTO): Observable<CommentDTO> {
-        return this.http.post<CommentDTO>(`${this.BASE_URL}/add-comment`, commentRequest);
+        const commentObservable: Observable<CommentDTO>  = this.http.post<CommentDTO>(`${this.BASE_URL}/add-comment`, commentRequest);
+        console.log(commentObservable);
+        return commentObservable;
+    }
+
+    public getCommentCount(postId: number): Observable<number> {
+        return this.http.get<number>(`${this.BASE_URL}/total-comment`, { params: { postId: postId.toString() } });
     }
 
     public getCommentsForPost(postId: number): Observable<CommentDTO[]> {

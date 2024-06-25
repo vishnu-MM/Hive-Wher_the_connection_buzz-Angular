@@ -5,20 +5,26 @@
                   fontIcon="favorite"
                   [class]="{'liked' : isLiked}">
         </mat-icon>
-        <span class="post-inte-txt" [class]="{'liked' : isLiked}">{{ likeCount }} Likes</span>
+        <span class="post-inte-txt" [class]="{'liked' : isLiked}">
+            {{ likeCount }} Likes
+        </span>
     </div>
-    <div class="me-3 d-flex align-items-center post-inte">
+    <div class="me-3 d-flex align-items-center post-inte" (click)="navigateTo()">
         <mat-icon aria-hidden="false"
                   aria-label="chat_bubble_outline"
                   fontIcon="chat_bubble_outline">
         </mat-icon>
-        <span class="post-inte-txt">{{ commentCount }} Comments</span>
+        <span class="post-inte-txt">{{ commentCount }} 
+            Comments
+        </span>
     </div>
     <div class="me-3 d-flex align-items-center post-inte">
         <mat-icon aria-hidden="false"
                   aria-label="share"
                   fontIcon="share">
         </mat-icon>
-        <span class="post-inte-txt">Share</span>
+        <span class="post-inte-txt">
+            Share
+        </span>
     </div>
 </div>

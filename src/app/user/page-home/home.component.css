@@ -1,12 +1,6 @@
 /* For tablets and smartphones */
-@media only screen  and (max-width: 1023px) {
+@media only screen  and (max-width: 1024px) {
   #side-nav { display: none; }
-
-  #posts {
-
-  }
-
-  #create-post {  }
 }
 
 /* For laptops and larger screens */

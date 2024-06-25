@@ -25,4 +25,23 @@
   color: black;
   margin-bottom: 3px;
 }
-.icon-panel:hover, .icon-panel:hover .mat-icon { color: white; }
+.icon-panel:hover, .icon-panel:hover .mat-icon { 
+    color: white;
+}
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; 
+    height: 100%;
+}
+#nav-div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+#top-nav {
+    width: 100%;
+}

@@ -14,16 +14,16 @@ import {Router} from "@angular/router";
 })
 export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 	@Input("post") post!: Post;
-	user!: User;
-	name: string = '';
-	username: string = '';
-	postFile: string = '';
-	profilePicture: string = '';
-	aspectRatioClass: string = '';
-	@ViewChild('postImageElement') postImageElement!: ElementRef<HTMLImageElement>;
-	@ViewChild('postVideoElement', {static: false}) postVideoElement!: ElementRef<HTMLVideoElement>;
-	getProfileSub!: Subscription;
-	postServiceSub!: Subscription;
+	protected user!: User;
+	protected name: string = '';
+	protected username: string = '';
+	protected postFile: string = '';
+	protected profilePicture: string = '';
+	protected aspectRatioClass: string = '';
+	@ViewChild('postImageElement') private postImageElement!: ElementRef<HTMLImageElement>;
+	@ViewChild('postVideoElement', {static: false}) private postVideoElement!: ElementRef<HTMLVideoElement>;
+	private getProfileSub!: Subscription;
+	private postServiceSub!: Subscription;
 	readonly PostType = PostType;
 
 	constructor(private postService: PostService, 
@@ -51,50 +51,48 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
 		}
 	}
 
-    async loadPostFile(post: Post): Promise<void> {
+    private async loadPostFile(post: Post): Promise<void> {
         this.postFile = await this.postService.getPostFile(post.id);
     }
 
-    getAspectRatio(aspectRatio : number): string {
+    protected getAspectRatio(aspectRatio : number): string {
         return this.postService.getAspectRatio(aspectRatio);
     }
 
-	async getUserByPost(): Promise<void> {
+	private async getUserByPost(): Promise<void> {
 		this.userService.getProfileById(this.post.userId).subscribe({
-				next: (response) => {
-					this.name = response.name;
-					this.username = response.username;
-					this.user = response;
-				},
-				error: (error) => {
-				}
-			})
+            next: (response) => {
+                this.name = response.name;
+                this.username = response.username;
+                this.user = response;
+            },
+            error: (error) => {
+            }
+        })
 		this.profilePicture = "assets/LoginSignUpBg.jpg"
-		this.getProfileSub = this.userService
-			.getProfileImage(this.post.userId, ImageType.PROFILE_IMAGE)
-			.subscribe({
-				next: (response) => this.profilePicture = 'data:image/png;base64,' + response.image,
-				error: (error) => {
-				}
-			})
+		this.getProfileSub = this.userService.getProfileImage(this.post.userId, ImageType.PROFILE_IMAGE).subscribe({
+            next: (response) => this.profilePicture = 'data:image/png;base64,' + response.image,
+            error: (error) => {
+            }
+        })
 	}
 
-	get getRelativeTime(): string {
+	protected get getRelativeTime(): string {
 		const parsedDate = new Date(this.post.createdOn.toString());
 		return formatDistanceToNow(parsedDate, {addSuffix: true});
 	}
 
-	playVideo(): void {
+	protected playVideo(): void {
 		if (this.postVideoElement && this.postVideoElement.nativeElement)
 			this.postVideoElement.nativeElement.play();
 	}
 
-	pauseVideo(): void {
+	protected pauseVideo(): void {
 		if (this.postVideoElement && this.postVideoElement.nativeElement)
 			this.postVideoElement.nativeElement.pause();
 	}
 
-	respondToVisibility(element: HTMLElement, callback: (isVisible: boolean) => void): void {
+	private respondToVisibility(element: HTMLElement, callback: (isVisible: boolean) => void): void {
 		const options = {root: document.documentElement};
 
 		const observer = new IntersectionObserver((entries, observer) => {

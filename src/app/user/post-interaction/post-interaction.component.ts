@@ -2,6 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {PostService} from "../../../Shared/Services/post.service";
 import {Subscription} from "rxjs";
 import {User} from "../../../Shared/Models/user.model";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'post-interaction',
@@ -19,7 +20,7 @@ export class PostInteractionComponent implements OnInit, OnDestroy {
     private isPostLikedByUserSub! : Subscription;
     private toggleLikeSub! : Subscription;
 
-    constructor(private postService : PostService) {}
+    constructor(private postService : PostService, private router: Router) {}
 
     ngOnInit(): void {
         if (this.id > 0) {
@@ -42,16 +43,17 @@ export class PostInteractionComponent implements OnInit, OnDestroy {
     }
 
     loadLikeCount() : void {
-        this.loadLikeCountSub = this.postService
-            .getLikeCount(this.id)
-            .subscribe({
-                next: value => this.likeCount = value,
+        this.loadLikeCountSub = this.postService.getLikeCount(this.id).subscribe({
+                next: value => { this.likeCount = value },
                 error: err => {}
             })
     }
 
     loadCommentCount() : void {
-
+        this.loadCommentCountSub = this.postService.getCommentCount(this.id).subscribe({
+            next: (res : number) => { this.commentCount = res },
+            error: (err: any) => {}
+        })
     }
 
     isPostLikedByUser() : void {
@@ -88,4 +90,8 @@ export class PostInteractionComponent implements OnInit, OnDestroy {
             this.isLiked = !this.isLiked;
         }
     }
+
+    navigateTo() {
+		this.router.navigate([`/u/post`, this.id]);
+	}
 }
