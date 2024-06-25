@@ -23,6 +23,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     currentUser!: User;
     postServiceSub!: Subscription;
     previewVideo: string | ArrayBuffer | null = null;
+    protected showCreateNewPostDivInSmallerDisplay: boolean = false;
 
     constructor(private userStore: Store<{ UserStore: User }>,
         private postService: PostService, private toast: NgToastService) { }
