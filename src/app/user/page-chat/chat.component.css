@@ -49,6 +49,13 @@
     #sent-btn {
         margin-right: 10px !important;
     }
+    #home-btn {
+        border: 1px solid white;
+    }
+    #home-btn mat-icon{
+        color: white;
+        background-color: #353535;
+    }
 }
 
 @media only screen and (min-width: 767px) and (max-width: 1023px) {
@@ -99,9 +106,19 @@
         display: flex;
         justify-content: space-between;
     }
+    #home-btn {
+        border: 1px solid white;
+        aspect-ratio: 1;
+    }
+    #home-btn mat-icon{
+        color: white;
+        background-color: #353535;
+        margin: 0;
+        padding: 0;
+    }
 }
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (min-width: 1023px) {
     article {
         width: 100%;
         height: 100%;
@@ -148,6 +165,9 @@
         background-color: #353535;
         display: flex;
         justify-content: space-between;
+    }
+    #home-btn {
+        display: none;
     }
 }
 

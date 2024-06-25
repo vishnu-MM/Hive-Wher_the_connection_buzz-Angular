@@ -23,7 +23,7 @@ const routes: Routes = [
       {path: '', component: MyProfileComponent, pathMatch: 'full'},
       { path: 'update', component: UpdateProfileComponent},
     ]
- },
+  },
 ];
 
 @NgModule({ imports: [RouterModule.forChild(routes)], exports: [RouterModule] })

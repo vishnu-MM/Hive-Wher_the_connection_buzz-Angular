@@ -1,20 +1,31 @@
 <div id="heading">
     <h1>H<span id="logo-i">i</span>ve</h1>
-    <button id="new-post-btn" 
-            type="button" 
-            class="btn rounded"
-            (click)="showCreateNewPostDivInSmallerDisplay = !showCreateNewPostDivInSmallerDisplay">
-        <mat-icon id="new-post-icon" 
-                  aria-hidden="false" 
-                  aria-label="add_circle_outline" 
-                  fontIcon="add_circle_outline"
-                  *ngIf="!showCreateNewPostDivInSmallerDisplay"></mat-icon>
-        <mat-icon id="new-post-icon" 
-                  aria-hidden="false" 
-                  aria-label="highlight_off" 
-                  fontIcon="highlight_off"
-                  *ngIf="showCreateNewPostDivInSmallerDisplay"></mat-icon>
-    </button>
+    <div id="btn-group">
+        <button id="new-post-btn" 
+                type="button" 
+                class="btn rounded"
+                (click)="showCreateNewPostDivInSmallerDisplay = !showCreateNewPostDivInSmallerDisplay">
+            <mat-icon id="new-post-icon" 
+                    aria-hidden="false" 
+                    aria-label="add_circle_outline" 
+                    fontIcon="add_circle_outline"
+                    *ngIf="!showCreateNewPostDivInSmallerDisplay"></mat-icon>
+            <mat-icon id="new-post-icon" 
+                    aria-hidden="false" 
+                    aria-label="highlight_off" 
+                    fontIcon="highlight_off"
+                    *ngIf="showCreateNewPostDivInSmallerDisplay"></mat-icon>
+        </button>
+        <button id="new-post-btn" 
+                type="button" 
+                routerLink="/u/profile"
+                class="btn rounded">
+                <mat-icon id="user-icon"
+                    aria-hidden="false" 
+                    aria-label="account_circle" 
+                    fontIcon="account_circle"></mat-icon>
+        </button>                       
+    </div>
 </div>
 
 <div id="create-post" [class]="{'active': !showCreateNewPostDivInSmallerDisplay}">

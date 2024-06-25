@@ -70,13 +70,26 @@
     <div id="side-nav"> 
         <side-nav-bar></side-nav-bar>
     </div>
+    <!-- <div id="bottom-nav">
+        <bottom-nav-bar></bottom-nav-bar>
+    </div> -->
 <!-- PEOPLE LISTING SECTION STARTS HERE -->
     <div id="peoples-section" [class]="{'toggle-chat': (receiver || group)}">
         <!-- TOP SECTION -->
         <div id="peoples-section-header">
             <div class="flex-between-center mb-2">
+                <button type="button" 
+                        id="home-btn" 
+                        routerLink="/u/home"
+                        class="btn rounded-5">
+                    <mat-icon aria-hidden="false" 
+                              aria-label="home" 
+                              fontIcon="home"></mat-icon>
+                </button>
                 <p> Chats </p>
-                <img  [src]="userProfileImageMap.get(currentUser.id!)" id="current-user" alt="User Profile">
+                <div>
+                    <img routerLink="/u/profile" [src]="userProfileImageMap.get(currentUser.id!)" id="current-user" alt="User Profile">
+                </div>
             </div>
             <input type="text" 
                     class="form-control rounded-5" 

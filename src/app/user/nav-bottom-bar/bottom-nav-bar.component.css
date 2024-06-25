@@ -1,0 +1,22 @@
+section {
+    width: 95%;
+    height: 7vh;
+    background-color: #353535;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+    margin: 1% 2%;
+    border: 1px solid #404040;
+}
+* {
+    color: white;
+}
+
+.current {
+    background-color: white;
+}
+.current mat-icon {
+    color: #353535;
+}

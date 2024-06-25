@@ -68,3 +68,51 @@ body {
     justify-content: center;
     align-items: center;
   }
+  
+.flex-start {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+}
+.flex-between-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.flex-center-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@media only screen and (max-width: 1023px) {
+    #side-nav {
+        display: none;
+    }
+
+    #bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+}
+@media only screen and (min-width: 1023px) {
+    #bottom-nav {
+        display: none;
+    }
+}

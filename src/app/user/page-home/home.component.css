@@ -4,6 +4,13 @@
         display: none;
     }
 
+    #bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+
     #main-div {
         display: flex;
         flex-direction: column-reverse;
@@ -12,15 +19,19 @@
 
 /* For laptops and larger screens */
 @media only screen and (min-width: 1023px) {
+    #bottom-nav {
+        display: none;
+    }
+    #side-nav {
+        position: fixed;
+        height: 100%;
+    }
     #create-post {
         width: 33%;
         margin-top: 0;
     }
 
-    #side-nav {
-        position: fixed;
-        height: 100%;
-    }
+
 
     #main-div {
         display: flex;

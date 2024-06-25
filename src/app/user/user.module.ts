@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {HomeComponent} from "./page-home/home.component";
-import {SideNavBarComponent} from "./side-nav-bar/side-nav-bar.component";
+import {SideNavBarComponent} from "./nav-side-bar/side-nav-bar.component";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {UserRoutingModule} from "./user-routing.module";
@@ -22,6 +22,7 @@ import { ChatComponent } from './page-chat/chat.component';
 import { SearchComponent } from './page-search/search.component';
 import { NotificationsComponent } from './page-notifications/notifications.component';
 import {CloudinaryModule} from '@cloudinary/ng';
+import { BottomNavBarComponent } from './nav-bottom-bar/bottom-nav-bar.component';
 
 @NgModule({
     declarations: [
@@ -39,6 +40,7 @@ import {CloudinaryModule} from '@cloudinary/ng';
         ChatComponent,
         SearchComponent,
         NotificationsComponent,
+        BottomNavBarComponent,
     ],
     exports: [
         PostsComponent
