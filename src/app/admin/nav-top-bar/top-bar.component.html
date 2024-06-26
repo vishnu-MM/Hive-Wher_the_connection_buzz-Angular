@@ -1,0 +1,41 @@
+<div id="top-nav-bar-aligner">
+    <nav id="top-nav-bar" class="px-5">
+        <span class="m-0 display-6">
+            Dashboard
+        </span>
+        <div class="d-flex flex-row" style="width: 35%;">
+            <div id="search"
+                [class]="{'is-invalid': !isValidSearch }"
+                class="form-control rounded-5 brand-color">
+                <input type="text"
+                    name="search"
+                    id="search-input"
+                    placeholder="Search here"
+                    [(ngModel)]="searchString"
+                    class="form-control rounded-5 brand-color">
+                <button type="button"
+                        id="search-btn"
+                        class="btn rounded-5 p-2 me-1"
+                        (click)="search()">
+                        <mat-icon id="search-btn-icon"
+                                aria-hidden="false"
+                                aria-label="search"
+                                fontIcon="search">
+                        </mat-icon>
+                </button>
+                <button type="button"
+                        class="btn btn-warning rounded-5 p-2 me-1"
+                        (click)="clearSearchResult()"
+                        *ngIf="isSearchResultShowing">
+                        <mat-icon aria-hidden="false"
+                                aria-label="close"
+                                fontIcon="close">
+                        </mat-icon>
+                </button>
+            </div>
+            <button type="button" class="outline-color btn" (click)="toggleFilter()">
+                <mat-icon fontIcon="arrow_back"></mat-icon> Filter
+            </button>
+        </div>
+    </nav>
+</div>

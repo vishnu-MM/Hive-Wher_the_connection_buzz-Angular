@@ -7,8 +7,8 @@ import { ManageUsersComponent } from './manage-user/manage-user.component';
 import { ManagePostsComponent } from './manage-posts/manage-posts.component';
 import { ManageComplaintsComponent } from './manage-complaints/manage-complaints.component';
 import { FormsModule } from '@angular/forms';
-import { SideBarComponent } from './side-bar/side-bar.component';
-import { TopBarComponent } from './top-bar/top-bar.component';
+import { SideBarComponent } from './nav-side-bar/side-bar.component';
+import { TopBarComponent } from './nav-top-bar/top-bar.component';
 import { UserPillComponent } from './user-pill/user-pill.component';
 import { UserProfileComponent } from './single-user/user-profile.component';
 import { PostComponent } from './single-post/post.component';
@@ -24,7 +24,7 @@ import { MatDialogModule } from '@angular/material/dialog';
         TopBarComponent,
         UserPillComponent,
         UserProfileComponent,
-        PostComponent
+        PostComponent,
     ],
     imports: [
         CommonModule,

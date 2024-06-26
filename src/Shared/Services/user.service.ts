@@ -4,6 +4,7 @@ import { Observable, Subscription } from "rxjs";
 import { User, UserPage } from "../Models/user.model";
 import { Image } from "../Models/image.model";
 import { ComplaintsDTO } from "../Models/complaints.model";
+import { UserFilter } from "../Models/filter.model";
 
 export enum ImageType { COVER_IMAGE, PROFILE_IMAGE }
 
@@ -91,4 +92,11 @@ export class UserService implements OnDestroy {
     fetchData(filter: string): Observable<Map<string, number>> {
         return this.http.get<Map<string, number>>(`${this.BASE_URL}/user-count-date?filterBy=${filter}`);
     }
+
+    filter(userFilter: UserFilter): Observable<UserPage> {
+        const url = `${this.BASE_URL}/filter`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post<UserPage>(url, userFilter, { headers });
+    }
+
 }

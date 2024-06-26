@@ -6,23 +6,29 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
     styleUrls: ['./top-bar.component.css']
 })
 export class TopBarComponent {
+    @Input('showSearchAndFilter') showSearchAndFilter: boolean = true;
     @Input('isSearchResultShowing') isSearchResultShowing: boolean = false;
     @Output('search') searchQuery = new EventEmitter<string>();
     @Output('clear') clearSearchResultEvent = new EventEmitter<void>();
+    @Output('toggleFilter') toggleFilterEvent = new EventEmitter<void>();
     searchString: string = '';
     isValidSearch: boolean = true;
 
-    search() {
+    protected search(): void {
         this.isValidSearch = (this.searchString !== '' && this.searchString.trim() !== '');
         if (this.isValidSearch) {
             this.searchQuery.emit(this.searchString);
         }
     }
 
-    clearSearchResult() {
+    protected clearSearchResult(): void {
         if (this.isSearchResultShowing){
             this.searchString = '';
             this.clearSearchResultEvent.emit();
         }
+    }
+
+    protected toggleFilter(): void {
+        this.toggleFilterEvent.emit();
     }
 }
