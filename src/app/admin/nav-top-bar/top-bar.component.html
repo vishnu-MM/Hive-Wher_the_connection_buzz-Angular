@@ -4,7 +4,7 @@
             Dashboard
         </span>
         <div class="d-flex flex-row" style="width: 35%;">
-            <div id="search"
+            <div id="search" *ngIf="showSearchOption"
                 [class]="{'is-invalid': !isValidSearch }"
                 class="form-control rounded-5 brand-color">
                 <input type="text"
@@ -33,7 +33,7 @@
                         </mat-icon>
                 </button>
             </div>
-            <button type="button" class="outline-color btn" (click)="toggleFilter()">
+            <button *ngIf="showFilterOption" type="button" class="outline-color btn" (click)="toggleFilter()">
                 <mat-icon fontIcon="arrow_back"></mat-icon> Filter
             </button>
         </div>

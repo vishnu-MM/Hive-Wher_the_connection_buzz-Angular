@@ -6,6 +6,8 @@ import { Component, Output, EventEmitter, Input } from '@angular/core';
     styleUrls: ['./top-bar.component.css']
 })
 export class TopBarComponent {
+    @Input('showSearchOption') showSearchOption: boolean = true;
+    @Input('showFilterOption') showFilterOption: boolean = true;
     @Input('showSearchAndFilter') showSearchAndFilter: boolean = true;
     @Input('isSearchResultShowing') isSearchResultShowing: boolean = false;
     @Output('search') searchQuery = new EventEmitter<string>();

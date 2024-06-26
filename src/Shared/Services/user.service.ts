@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, Subscription } from "rxjs";
 import { User, UserPage } from "../Models/user.model";
 import { Image } from "../Models/image.model";
-import { ComplaintsDTO } from "../Models/complaints.model";
+import { ComplaintsDTO, ComplaintsPage } from "../Models/complaints.model";
 import { UserFilter } from "../Models/filter.model";
 
 export enum ImageType { COVER_IMAGE, PROFILE_IMAGE }
@@ -65,11 +65,15 @@ export class UserService implements OnDestroy {
         return this.http.get<User[]>(`${this.BASE_URL}/search?searchQuery=${searchText}`);
     }
 
+    public complaintsSearch(searchText: string): Observable<ComplaintsDTO[]> {
+        return this.http.get<ComplaintsDTO[]>(`${this.BASE_URL}/complaints-search?searchQuery=${searchText}`);
+    }
+
     public reportAUser(complaintsDTO: ComplaintsDTO): Observable<void> {
         return this.http.post<void>(`${this.BASE_URL}/report-user`, complaintsDTO);
     }
 
-    async loadProfilePiture(userList: User[], imageType: ImageType): Promise<Map<number, string>> {
+    public async loadProfilePiture(userList: User[], imageType: ImageType): Promise<Map<number, string>> {
         for (let user of userList) {
             if (this.ProfileSubMap.has(user.id!)) {
                 this.ProfileSubMap.get(user.id!)!.unsubscribe();
@@ -89,14 +93,19 @@ export class UserService implements OnDestroy {
         return this.profilePictureMap;
     }
 
-    fetchData(filter: string): Observable<Map<string, number>> {
+    public fetchData(filter: string): Observable<Map<string, number>> {
         return this.http.get<Map<string, number>>(`${this.BASE_URL}/user-count-date?filterBy=${filter}`);
     }
 
-    filter(userFilter: UserFilter): Observable<UserPage> {
+    public filter(userFilter: UserFilter): Observable<UserPage> {
         const url = `${this.BASE_URL}/filter`;
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http.post<UserPage>(url, userFilter, { headers });
     }
 
+    public complaintFilter(filter: UserFilter): Observable<ComplaintsPage> {
+        const url = `${this.BASE_URL}/complaint-filter`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post<ComplaintsPage>(url, filter, { headers });
+    }
 }

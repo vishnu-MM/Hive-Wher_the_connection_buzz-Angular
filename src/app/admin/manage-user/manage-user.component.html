@@ -14,7 +14,7 @@
     <section>
         <div id="content-div" class="me-4 card">
             <div class="content-body rounded border border-end-0 border-start-0 px-5"
-                [class]="{'scrollable': !(isSearchResultShowing && users.length === 0)}">
+                [class]="{'scrollable': !(isSearchResultShowing || users.length === 0)}">
                 <table class="table my-2">
                     <thead>
                         <tr>

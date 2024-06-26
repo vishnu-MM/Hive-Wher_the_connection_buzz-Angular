@@ -3,8 +3,9 @@
 <!--  SIDE NAV BAR ENDS HERE -->
 <article>
     <!--  TOP NAV BAR STARTS HERE -->
-    <top-bar [isSearchResultShowing]="isSearchResultShowing"
-             (clear)="loadNextpage()"
+    <top-bar [isSearchResultShowing]="isSearchResultShowing" 
+             (toggleFilter)="showFilterDiv = !showFilterDiv"
+             (clear)="loadData()"
              (search)="search($event)">
     </top-bar>
     <!--  TOP NAV BAR ENDS HERE -->
@@ -13,7 +14,7 @@
     <section>
         <div id="content-div" class="me-4 card">
             <div class="content-body rounded border border-end-0 border-start-0 px-5"
-                [class]="{'scrollable': !(isSearchResultShowing && userDetailsMap.keys.length === 0)}">
+                [class]="{'scrollable': !(isSearchResultShowing || complaints.length === 0)}">
                 <table class="table">
                     <thead>
                         <tr>
@@ -63,25 +64,25 @@
                         </tr>
                     </tbody>
                 </table>
-                <div id="no-result" *ngIf="isSearchResultShowing && userDetailsMap.keys.length === 0">
+                <div id="no-result" *ngIf="isSearchResultShowing || complaints.length === 0">
                     <h2>No Result Found</h2>
                 </div>
             </div>
             <div class="content-footer rounded d-flex justify-content-between align-items-center px-5">
                 <div>
-                    <button type="button" [disabled]="pageNo <= 0"
+                    <button type="button" [disabled]="isFirst()"
                         class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
-                        (click)="pageNo = pageNo -1; loadNextpage()">
+                        (click)="decrPageNo()">
                         <mat-icon aria-hidden="false" aria-label="arrow_back_ios"
                             style="background: #023047; color: white" fontIcon="arrow_back_ios">
                         </mat-icon>
                     </button>
                 </div>
-                <div>{{pageNo+1}} out of {{totalPages}}</div>
+                <div>{{getPageNo}} out of {{totalPages}}</div>
                 <div>
                     <button type="button" [disabled]="isLast"
                         class="btn me-1 d-flex justify-content-center align-items-center p-2 fwd-bwd-btn"
-                        (click)="pageNo = pageNo +1; loadNextpage()">
+                        (click)="incrPageNo()">
                         <mat-icon aria-hidden="false" aria-label="arrow_forward_ios"
                             style="background: #023047; color: white" fontIcon="arrow_forward_ios">
                         </mat-icon>
@@ -89,6 +90,137 @@
                 </div>
             </div>
         </div>
+        <div id="filter-div" *ngIf="showFilterDiv">
+            <div id="filter-main">
+                <div class="filter-title">
+                    <h1>Apply Filters</h1>
+                </div>
+                <div>
+                    <h3 class="mb-2">Filter By Block</h3>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               name="block-filter" 
+                               id="flexSwitchCheckChecked1" 
+                               value="all"
+                               [checked]="BlockFilter.ALL === filter.block"
+                               (change)="onBlockFilterChange(BlockFilter.ALL)">
+                        <label class="form-check-label" for="flexSwitchCheckChecked1"><span>All Users</span></label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               name="block-filter" 
+                               id="flexSwitchCheckChecked2" 
+                               value="blocked" 
+                               [checked]="BlockFilter.BLOCKED === filter.block"
+                               (change)="onBlockFilterChange(BlockFilter.BLOCKED)">
+                        <label class="form-check-label" for="flexSwitchCheckChecked2"><span>Blocked Users</span></label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input 
+                            class="form-check-input" 
+                            type="radio" 
+                            name="block-filter" 
+                            id="flexSwitchCheckChecked3"
+                            value="non-blocked" 
+                            [checked]="BlockFilter.NON_BLOCKED === filter.block"
+                            (change)="onBlockFilterChange(BlockFilter.NON_BLOCKED)">
+                        <label class="form-check-label" for="flexSwitchCheckChecked3"><span>Non-Blocked Users</span></label>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="mb-2 mt-4">Filter By Joining Date</h3>
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               name="joining-date-filter" 
+                               id="flexRadioDefault1" 
+                               value="all" 
+                               [checked]="TimeFilter.ALL === filter.time"
+                               (change)="onDateFilterChange(TimeFilter.ALL)">
+                        <label class="form-check-label" for="flexRadioDefault1"><span>All Dates</span></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               name="joining-date-filter" 
+                               id="flexRadioDefault2" 
+                               value="today" 
+                               [checked]="TimeFilter.TODAY === filter.time"
+                               (change)="onDateFilterChange(TimeFilter.TODAY)">
+                        <label class="form-check-label" for="flexRadioDefault2"><span>Today</span></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               name="joining-date-filter" 
+                               id="flexRadioDefault3" 
+                               value="this-week" 
+                               [checked]="TimeFilter.THIS_WEEK === filter.time"
+                               (change)="onDateFilterChange(TimeFilter.THIS_WEEK)">
+                        <label class="form-check-label" for="flexRadioDefault3"><span>This Week</span></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               name="joining-date-filter" 
+                               id="flexRadioDefault4" 
+                               value="this-month" 
+                               [checked]="TimeFilter.THIS_MONTH === filter.time"
+                               (change)="onDateFilterChange(TimeFilter.THIS_MONTH)">
+                        <label class="form-check-label" for="flexRadioDefault4"><span>This Month</span></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               name="joining-date-filter" 
+                               id="flexRadioDefault5" 
+                               value="this-year" 
+                               [checked]="TimeFilter.THIS_YEAR === filter.time"
+                               (change)="onDateFilterChange(TimeFilter.THIS_YEAR)">
+                        <label class="form-check-label" for="flexRadioDefault5"><span>This Year</span></label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                               type="radio" 
+                               name="joining-date-filter"
+                                id="flexRadioDefault6" 
+                               value="custom" 
+                               [checked]="TimeFilter.CUSTOM_DATE === filter.time"
+                               (change)="onDateFilterChange(TimeFilter.CUSTOM_DATE)">
+                        <label class="form-check-label" for="flexRadioDefault6"><span>Custom Date</span></label>
+                    </div>
+                    <div *ngIf="isCustomDateSelected" @slideDownAnimation>
+                        <label for="start-date">
+                            <span>Start Date:</span>
+                          </label>
+                          <input type="date"
+                                 id="start-date"
+                                 name="start-date"
+                                 [(ngModel)]="startDate"
+                                 [max]="maxDate"
+                                 (change)="onDateChange()"
+                                 class="form-control">
+                          
+                          <label for="end-date" class="mt-2">
+                            <span>End Date:</span>
+                          </label>
+                          <input type="date"
+                                 id="end-date"
+                                 name="end-date"
+                                 [(ngModel)]="endDate"
+                                 [min]="startDate"
+                                 [max]="maxDate"
+                                 class="form-control">
+                          
+                    </div>
+                </div>
+            </div>
+            <div id="filter-footer">
+                <button type="button" class="btn form-control" (click)="loadData()"><span>Apply Filters</span></button>
+            </div>
+        </div>        
     </section>
     <!--  MAIN CONTENT SPACE ENDS HERE -->
 </article>

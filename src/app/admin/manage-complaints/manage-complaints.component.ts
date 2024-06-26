@@ -7,11 +7,27 @@ import { User } from 'src/Shared/Models/user.model';
 import { AdminService } from 'src/Shared/Services/admin.service';
 import { UserService } from 'src/Shared/Services/user.service';
 import Swal from 'sweetalert2';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { BlockFilter, TimeFilter, UserFilter } from 'src/Shared/Models/filter.model';
 
 @Component({
     selector: 'app-complaints',
     templateUrl: './manage-complaints.component.html',
-    styleUrls: ['./manage-complaints.component.css', '../shared-style.css']
+    styleUrls: ['./manage-complaints.component.css', '../shared-style.css'],
+    animations: [
+        trigger('slideDownAnimation', [
+            state('void', style({
+                height: '0',
+                opacity: 0,
+            })),
+            transition('void <=> *', [
+                animate('300ms ease-in-out', style({
+                    height: '*',
+                    opacity: 1,
+                }))
+            ])
+        ])
+    ]
 })
 export class ManageComplaintsComponent implements OnInit, OnDestroy {
     protected complaints: ComplaintsDTO[] = [];
@@ -34,15 +50,26 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
                 private userService: UserService) { }
 
     ngOnInit(): void {
-        this.loadNextpage().then();
+        this.resetFilter();
+        this.loadData().then();
     }
 
     ngOnDestroy(): void {
         if (this.loadNextpageSub) this.loadNextpageSub.unsubscribe();
+        if (this.filterSub) this.filterSub.unsubscribe();
     }
 
+    protected async loadData():Promise<void> {
+        if (this.filter.block === BlockFilter.ALL && this.filter.time === TimeFilter.ALL) {
+            this.loadNextpage();
+        }
+        else {
+            this.applyFilters().then();
+        }
+        if(this.isSearchResultShowing) this.isSearchResultShowing = false;
+    }
 
-    async loadNextpage(): Promise<void> {
+    private loadNextpage(): void {
         if (this.loadNextpageSub) this.loadNextpageSub.unsubscribe();
         this.loadNextpageSub = this.adminService.getAllComplaints(this.pageNo, this.pageSize)
             .subscribe({
@@ -57,8 +84,19 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
             })
     }
 
-    search(event: any) {
-        throw new Error('Method not implemented.');
+    search(searchQuery: string) {
+        this.userService.complaintsSearch(searchQuery).subscribe({
+            next: res => {
+                this.isSearchResultShowing = true;
+                this.complaints = res;
+                this.isLast = true;
+                this.totalPages = 1;
+                this.loadUserDetails().then();
+            },
+            error: err => {
+                console.log(err);
+            }
+        })
     }
 
     logout() {
@@ -166,5 +204,124 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
             },
             error: err => { }
         });        
+    }
+
+    // Pagination related
+
+    protected get getPageNo(): number {
+        if (this.filter.block === BlockFilter.ALL && this.filter.time === TimeFilter.ALL) {
+            return this.pageNo + 1;
+        }
+        else {
+            return this.filter.pageNo + 1;
+        }
+    }
+
+    protected isFirst(): boolean {
+        if (this.filter.block === BlockFilter.ALL && this.filter.time === TimeFilter.ALL) {
+            return this.pageNo <= 0;
+        }
+        else {
+            return this.filter.pageNo <= 0;
+        }
+    }
+
+    protected decrPageNo() :void {
+        if (this.filter.block === BlockFilter.ALL && this.filter.time === TimeFilter.ALL) {
+            this.pageNo = this.pageNo - 1;
+        }
+        else {
+            this.filter.pageNo = this.filter.pageNo -1;
+        }
+        this.loadData().then();
+    }
+
+    protected incrPageNo() :void {
+        if (this.filter.block === BlockFilter.ALL && this.filter.time === TimeFilter.ALL) {
+            this.pageNo = this.pageNo + 1;
+        }
+        else {
+            this.filter.pageNo = this.filter.pageNo +1;
+        }
+        this.loadData().then();
+    }
+
+    //Filter Related
+    protected showFilterDiv: boolean = false;
+    protected filter!: UserFilter;
+    protected readonly TimeFilter = TimeFilter;
+    protected readonly BlockFilter = BlockFilter;
+    protected isCustomDateSelected = false;
+    protected startDate: string = '';
+    protected endDate: string = '';
+    protected maxDate: string = '';
+    private filterSub!: Subscription;
+
+    protected resetFilter(): void {
+        this.filter = { block: BlockFilter.ALL, time: TimeFilter.ALL, pageNo: 0, pageSize: 10 };
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0]; // Get YYYY-MM-DD format
+        this.startDate = formattedDate;
+        this.endDate = formattedDate;
+        this.maxDate = formattedDate;
+        this.isCustomDateSelected = false;
+    }
+
+    protected onDateFilterChange(filterValue: TimeFilter): void {
+        this.filter.time = filterValue;
+        this.isCustomDateSelected = filterValue === TimeFilter.CUSTOM_DATE;
+    
+        const today = new Date();
+        if (filterValue === TimeFilter.TODAY) {
+            this.startDate = today.toISOString();
+            this.endDate = today.toISOString();
+        }
+        else if (filterValue === TimeFilter.THIS_WEEK) {
+            const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+            this.startDate = startOfWeek.toISOString();
+            this.endDate = new Date().toISOString();
+        }
+        else if (filterValue === TimeFilter.THIS_MONTH) {
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            this.startDate = startOfMonth.toISOString();
+            this.endDate = new Date().toISOString();
+        }
+        else if (filterValue === TimeFilter.THIS_YEAR) {
+            const startOfYear = new Date(today.getFullYear(), 0, 1);
+            this.startDate = startOfYear.toISOString();
+            this.endDate = new Date().toISOString();
+        }
+    }
+    
+
+    protected onBlockFilterChange(filterValue: BlockFilter): void {
+        this.filter.block = filterValue;
+    }
+
+    protected async applyFilters(): Promise<void> {
+        if (this.startDate && this.endDate) {
+            this.filter.startingDate = new Date(this.startDate);
+            this.filter.endingDate = new Date(this.endDate);
+        }
+        if (this.filterSub) this.filterSub.unsubscribe();
+        this.filterSub = this.userService.complaintFilter(this.filter).subscribe({
+            next: (res) => {
+                this.complaints = res.contents
+                this.complaintsPage = res
+                this.totalPages = res.totalPages;
+                this.isLast = res.isLast;
+                this.loadUserDetails().then() 
+                console.log(res)
+            },
+            error: (err) => {
+                console.log(err);
+            },
+        })
+    }
+
+    protected onDateChange(): void {
+        if (this.startDate > this.endDate) {
+          this.endDate = this.startDate;
+        }
     }
 }

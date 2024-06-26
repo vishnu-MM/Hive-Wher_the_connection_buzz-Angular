@@ -61,19 +61,18 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
     }
 
     search(searchQuery: string) {
-        this.userService.search(searchQuery)
-            .subscribe({
-                next: res => {
-                    this.isSearchResultShowing = true;
-                    this.users = res;
-                    this.isLast = true;
-                    this.totalPages = 1;
-                    this.loadProfilePiture().then();
-                },
-                error: err => {
-                    console.log(err);
-                }
-            })
+        this.userService.search(searchQuery).subscribe({
+            next: res => {
+                this.isSearchResultShowing = true;
+                this.users = res;
+                this.isLast = true;
+                this.totalPages = 1;
+                this.loadProfilePiture().then();
+            },
+            error: err => {
+                console.log(err);
+            }
+        })
     }
 
     protected async loadUserList(): Promise<void> {
