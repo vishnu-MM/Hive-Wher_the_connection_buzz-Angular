@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { CommentDTO, CommentRequestDTO, Like, LikeRequest, Post, PostCreation, PostPage, PostType } from "../Models/post.model";
 import { Injectable } from "@angular/core";
 import { Observable, Subscription } from "rxjs";
+import { PostFilter } from "../Models/filter.model";
 
 export interface PostFile {
     postId: number;
@@ -131,6 +132,12 @@ export class PostService {
 
     public getCommentsForPost(postId: number): Observable<CommentDTO[]> {
         return this.http.get<CommentDTO[]>(`${this.BASE_URL}/all-comments`, { params: { postId: postId.toString() } });
+    }
+
+    filter(filter: PostFilter): Observable<PostPage> {
+        const url = `${this.BASE_URL}/filter`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post<PostPage>(url, filter, { headers });
     }
 
     //? COMMENT END-POINTS ENDED

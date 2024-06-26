@@ -11,7 +11,7 @@ export interface UserFilter {
 }
 export interface PostFilter {
     // block: BlockFilter;
-    time: TimeFilter;
+    dateFilter: TimeFilter;
     postFile: PostTypeFilter;
     startingDate?: Date;
     endingDate?: Date;

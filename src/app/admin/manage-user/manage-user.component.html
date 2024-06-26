@@ -3,8 +3,10 @@
 <!--  SIDE NAV BAR ENDS HERE -->
 <article>
     <!--  TOP NAV BAR STARTS HERE -->
-    <top-bar [isSearchResultShowing]="isSearchResultShowing" (toggleFilter)="showFilterDiv = !showFilterDiv"
-        (clear)="loadUserList()" (search)="search($event)">
+    <top-bar [isSearchResultShowing]="isSearchResultShowing" 
+            (toggleFilter)="showFilterDiv = !showFilterDiv"
+            (clear)="loadUserList()" 
+            (search)="search($event)">
     </top-bar>
     <!--  TOP NAV BAR ENDS HERE -->
 

@@ -251,7 +251,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
         this.isCustomDateSelected = false;
     }
 
-    onDateFilterChange(filterValue: TimeFilter) {
+    protected onDateFilterChange(filterValue: TimeFilter): void {
         this.userFilter.time = filterValue;
         this.isCustomDateSelected = filterValue === TimeFilter.CUSTOM_DATE;
     
@@ -278,7 +278,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
     }
     
 
-    onBlockFilterChange(filterValue: BlockFilter) {
+    protected onBlockFilterChange(filterValue: BlockFilter): void {
         this.userFilter.block = filterValue;
     }
 
@@ -303,7 +303,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
         })
     }
 
-    onDateChange() {
+    protected onDateChange(): void {
         if (this.startDate > this.endDate) {
           this.endDate = this.startDate;
         }
