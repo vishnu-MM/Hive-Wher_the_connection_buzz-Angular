@@ -10,7 +10,7 @@ export interface UserFilter {
     pageSize: number;
 }
 export interface PostFilter {
-    block: BlockFilter;
+    // block: BlockFilter;
     time: TimeFilter;
     postFile: PostTypeFilter;
     startingDate?: Date;

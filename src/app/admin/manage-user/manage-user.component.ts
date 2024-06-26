@@ -85,44 +85,6 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
         }
     }
 
-    protected get getPageNo(): number {
-        if (this.userFilter.block === BlockFilter.ALL && this.userFilter.time === TimeFilter.ALL) {
-            return this.pageNo + 1;
-        }
-        else {
-            return this.userFilter.pageNo + 1;
-        }
-    }
-
-    protected isFirst(): boolean {
-        if (this.userFilter.block === BlockFilter.ALL && this.userFilter.time === TimeFilter.ALL) {
-            return this.pageNo <= 0;
-        }
-        else {
-            return this.userFilter.pageNo <= 0;
-        }
-    }
-
-    protected decrPageNo() :void {
-        if (this.userFilter.block === BlockFilter.ALL && this.userFilter.time === TimeFilter.ALL) {
-            this.pageNo = this.pageNo - 1;
-        }
-        else {
-            this.userFilter.pageNo = this.userFilter.pageNo -1;
-        }
-        this.loadUserList().then();
-    }
-
-    protected incrPageNo() :void {
-        if (this.userFilter.block === BlockFilter.ALL && this.userFilter.time === TimeFilter.ALL) {
-            this.pageNo = this.pageNo + 1;
-        }
-        else {
-            this.userFilter.pageNo = this.userFilter.pageNo +1;
-        }
-        this.loadUserList().then();
-    }
-
     private async loadAllUsers(): Promise<void> {
         this.getAllUserSUb = this.userService.getAllUsers(this.pageNo, 10).subscribe({
             next: value => {
@@ -226,6 +188,46 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
 
     redireactTo(userId: number) {
         this.router.navigate(['/a/users/user', userId])
+    }
+
+    // Pagination related
+
+    protected get getPageNo(): number {
+        if (this.userFilter.block === BlockFilter.ALL && this.userFilter.time === TimeFilter.ALL) {
+            return this.pageNo + 1;
+        }
+        else {
+            return this.userFilter.pageNo + 1;
+        }
+    }
+
+    protected isFirst(): boolean {
+        if (this.userFilter.block === BlockFilter.ALL && this.userFilter.time === TimeFilter.ALL) {
+            return this.pageNo <= 0;
+        }
+        else {
+            return this.userFilter.pageNo <= 0;
+        }
+    }
+
+    protected decrPageNo() :void {
+        if (this.userFilter.block === BlockFilter.ALL && this.userFilter.time === TimeFilter.ALL) {
+            this.pageNo = this.pageNo - 1;
+        }
+        else {
+            this.userFilter.pageNo = this.userFilter.pageNo -1;
+        }
+        this.loadUserList().then();
+    }
+
+    protected incrPageNo() :void {
+        if (this.userFilter.block === BlockFilter.ALL && this.userFilter.time === TimeFilter.ALL) {
+            this.pageNo = this.pageNo + 1;
+        }
+        else {
+            this.userFilter.pageNo = this.userFilter.pageNo +1;
+        }
+        this.loadUserList().then();
     }
 
     //Filter Related
