@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { formatDistanceToNow } from 'date-fns';
 import { Subscription, Timestamp } from 'rxjs';
 import { CommentDTO, Like, Post } from 'src/Shared/Models/post.model';
 import { PostFile, PostService } from 'src/Shared/Services/post.service';
@@ -18,6 +19,7 @@ export class PostComponent implements OnInit, OnDestroy {
     commentCount: number = 0;
     commentList: CommentDTO[] = [];
     likeList: Like[] = [];
+    showLike: boolean = false;
     protected readonly LodingData = LodingData;
     
     private postSub!: Subscription; 
@@ -111,5 +113,10 @@ export class PostComponent implements OnInit, OnDestroy {
 
     getPostDate(createdOn: Timestamp<string>) : Date {
         return new Date(createdOn.toString());
+    }
+
+    getRelativeTime(commentedDate: Timestamp<string>): string {
+        const parsedDate = new Date(commentedDate.toString());
+        return formatDistanceToNow(parsedDate, { addSuffix: true });
     }
 }

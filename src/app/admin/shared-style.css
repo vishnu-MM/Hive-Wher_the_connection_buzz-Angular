@@ -4,39 +4,31 @@
 
 .scrollable::-webkit-scrollbar {
     width: 12px;
-    border-radius: 10px;
-    border-radius: 50%;
 }
 
 .scrollable::-webkit-scrollbar-track {
     background: whitesmoke;
-    border-radius: 10px;
-    border-radius: 50%;
+
 }
 
 .scrollable::-webkit-scrollbar-thumb {
     background: #ffffff;
-    border-radius: 10px;
-    border-radius: 50%;
 }
 
 .scrollable::-webkit-scrollbar-thumb:hover {
     background: whitesmoke;
     transform: scale(2);
-    border-radius: 50%;
 }
 
 /* For Firefox */
 .scrollable {
     scrollbar-width: thin;
     scrollbar-color: #888 whitesmoke;
-    border-radius: 50%;
 }
 
 /* Hide top and bottom scroll arrows */
 .scrollable::-webkit-scrollbar-button {
     display: none;
-    border-radius: 50%;
 }
 
 /* FILTER DIV RELATED */

@@ -43,19 +43,38 @@
                     <div id="right" class="col-md-6 col-12 card rounded">
                         <div class="card-header container">
                             <div class="row">
-                                <div class="col-6 title">
-                                    <h2>Comments</h2>
+                                <div class="col-6 title" (click)="showLike = false">
+                                    <h2>{{ 'Comments (' + commentList.length + ')' }}</h2>
                                 </div>
-                                <div class="col-6 title">
-                                    <h2>Liked By</h2>
+                                <div class="col-6 title" (click)="showLike = true">
+                                    <h2>{{ 'Likes (' + likeList.length + ')' }}</h2>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.
-                            </p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                        <div class="card-body scrollable">
+                            <div id="comment-list" class="container" *ngIf="!showLike">
+                                <div *ngFor="let comment of commentList" class="row mb-1">
+                                    <div class="col-4">
+                                        <user-pill *ngIf="post" [UserID]="comment.userId"></user-pill>
+                                    </div>
+                                    <div class="col-5 flex-center">
+                                        <span>{{ comment.comment }}</span>
+                                    </div>
+                                    <div class="col-3 flex-center">
+                                        <span>{{ getRelativeTime(comment.commentedDate) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="like-list" class="container" *ngIf="showLike">
+                                <div *ngFor="let like of likeList" class="row mb-1">
+                                    <div class="col-6">
+                                        <user-pill *ngIf="post" [UserID]="like.userId"></user-pill>
+                                    </div>
+                                    <div class="col-6 flex-end-center">
+                                        <span>{{ like.likedDate | date:'dd MMM yyyy' }}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

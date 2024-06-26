@@ -79,6 +79,12 @@ body {
     justify-content: flex-end;
 }
 
+.flex-end-center {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .flex-between {
     display: flex;
     justify-content: space-between;
