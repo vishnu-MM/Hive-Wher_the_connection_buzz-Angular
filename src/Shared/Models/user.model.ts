@@ -25,4 +25,5 @@ export interface UserPage{
 export interface UserResponse {
     id : number;
     role : Role;
+    email?: string;
 }

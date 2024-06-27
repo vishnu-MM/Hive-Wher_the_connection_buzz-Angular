@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {User} from "../Models/user.model";
 
 @Injectable({ providedIn: 'root'})
 export class RegistrationService {
@@ -20,9 +19,10 @@ export class RegistrationService {
       return this.http.post<any>(`${this.BASE_URL}/register`,body);
   }
 
-  public sendOTP(email : string) : Observable<any> {
-    return this.http.post<any>(`${this.BASE_URL}/send-otp?email=${email}`,{});
-  }
+  public sendOTP(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.BASE_URL}/send-otp?email=${email}`, {});
+}
+
 
   public verifyOTP(email : string, otp : string) : Observable<any> {
     return this.http.get<any>(`${this.BASE_URL}/verify-otp?otp=${otp}&email=${email}`);

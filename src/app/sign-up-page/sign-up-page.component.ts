@@ -51,7 +51,7 @@ export class SignUpPageComponent implements OnDestroy{
             .subscribe({
                 next: (response) => {
                     localStorage.setItem("AUTH_TOKEN", response.token);
-                    localStorage.setItem("CURRENT_USER", JSON.stringify({role : response.role, id : response.userId}));
+                    localStorage.setItem("CURRENT_USER", JSON.stringify({role : response.role, id : response.userId, email: this.userSignUpReq.email}));
                     console.log("REGISTRATION SUCCESS");
                     this.sentOtp(this.userSignUpReq.email)
                     this.router.navigate(['/verify-otp'])
@@ -71,14 +71,13 @@ export class SignUpPageComponent implements OnDestroy{
     });
   }
 
-  sentOtp(email : string) : void {
-    this.signUpService
-      .sendOTP(email)
-      .subscribe({
-          next: (response)=> console.log(response),
-          error: (error) => console.error(error)
-      })
-  }
+  sentOtp(email: string): void {
+    this.signUpService.sendOTP(email).subscribe({
+        next: (response) => console.log(response.message),
+        error: (error) => console.error(error)
+    });
+}
+
 
 
   // VALIDATION LOGIC FOR EMAIL

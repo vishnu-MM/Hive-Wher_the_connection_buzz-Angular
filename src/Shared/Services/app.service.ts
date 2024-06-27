@@ -3,13 +3,14 @@ import {Injectable} from '@angular/core';
 import {Observable, catchError, throwError} from 'rxjs';
 import {User} from '../Models/user.model';
 import { Router } from '@angular/router';
+import { NgToastService } from 'ng-angular-popup';
 
 @Injectable({providedIn: 'root'})
 export class AppService {
 
 	public readonly BASE_URL: string = 'http://localhost:8000/api';
 
-	constructor(private http: HttpClient, private router: Router) {}
+	constructor(private http: HttpClient, private router: Router,private toast: NgToastService) {}
 
 	public login(username: string, password: string): Observable<any> {
 		const body = {username, password};
@@ -43,5 +44,23 @@ export class AppService {
     logout() {
         localStorage.clear();
         this.router.navigate(['/login'])
+    }
+
+    
+    private showSuccess(summary: string) {
+        this.toast.success({ detail: "SUCCESS", summary: summary, duration: 5000 });
+    }
+
+    private showError(summary: string) {
+        this.toast.error({ detail: "ERROR", summary: summary, duration: 5000 });
+    }
+
+    private showInfo(summary: string) {
+        // this.toast.info({detail:"INFO", summary: summary, sticky:true});
+        this.toast.info({ detail: "INFO", summary: summary, duration: 5000 });
+    }
+
+    private showWarn(summary: string) {
+        this.toast.warning({ detail: "WARN", summary: summary, duration: 5000 });
     }
 }
