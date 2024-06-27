@@ -76,7 +76,6 @@ export class VerifyOtpPageComponent implements OnInit, OnDestroy {
             this.otpVerifySub = this.signUpService.verifyOTP(this.email, this.otp).subscribe({
                     next: (response) => {
                         if (response === "SUCCESS") {
-                            localStorage.removeItem("USER_EMAIL");
                             this.userStore.dispatch(USER_LOGIN());
                             this.router.navigate(['/u/profile/update'])
                         } else if (response === "TIME_OUT") {

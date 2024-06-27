@@ -15,6 +15,7 @@ import { userReducer } from 'src/Shared/Store/user.reducer';
 import { UserEffects } from 'src/Shared/Store/user.effects';
 import { NgToastModule } from 'ng-angular-popup';
 import { HttpIntercepterProviders } from 'src/Shared/HTTP-Intercepters';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { HttpIntercepterProviders } from 'src/Shared/HTTP-Intercepters';
     LoginPageComponent,
     SignUpPageComponent,
     VerifyOtpPageComponent,
+    LoadingComponent,
   ],
   imports: [
     StoreModule.forRoot({ UserStore: userReducer }),

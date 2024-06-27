@@ -4,15 +4,17 @@ import {LoginPageComponent} from "./login-page/login-page.component";
 import { SignUpPageComponent } from './sign-up-page/sign-up-page.component';
 import { VerifyOtpPageComponent } from './otp-verify-page/verify-otp-page.component';
 import {adminGuard, authGuard, loginGuard} from "./auth.guard";
+import { LoadingComponent } from './loading/loading.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/u/home', pathMatch: 'full' },
-  { path : 'login',
-    canActivate: [loginGuard],
-    component : LoginPageComponent
-  },
-  { path : 'signup', component : SignUpPageComponent },
-  { path : 'verify-otp', component : VerifyOtpPageComponent },
+    { path : '', redirectTo: '/u/home', pathMatch: 'full' },
+    { path : 'login',
+        canActivate: [loginGuard],
+        component : LoginPageComponent
+    },
+    { path : 'signup', component : SignUpPageComponent },
+    { path : 'verify-otp', component : VerifyOtpPageComponent },
+    { path : 'OAuth',  component : LoadingComponent },
   {
     path: 'u',
     canActivate: [authGuard],
