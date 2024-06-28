@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -7,13 +7,14 @@ import { AppService } from 'src/Shared/Services/app.service';
 import { USER_LOGIN } from 'src/Shared/Store/user.action';
 import { Role } from '../../Shared/Models/role';
 import { WebSocketService } from '../../Shared/Services/web-socket.service';
+import { RegistrationService } from 'src/Shared/Services/registration.service';
 
 @Component({
   selector: 'login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.css']
 })
-export class LoginPageComponent implements OnDestroy {
+export class LoginPageComponent implements OnInit, OnDestroy {
     // DATA
     protected username: string = '';
     protected password: string = '';
@@ -24,23 +25,39 @@ export class LoginPageComponent implements OnDestroy {
     protected isLoginFailed: boolean = false;
     protected loginClicked: boolean = false;
     protected errorMessage: string = '';
+    protected googleAuthUrl: string = '';
 
     // SUBSCRIPTIONS
     private userStoreSub!: Subscription;
     private loginSub!: Subscription;
+    private loadOAuthUrlSub!: Subscription;
 
     // LIFE CYCLE AND CONSTRUCTOR
     constructor(private service: AppService,
                 private router: Router,
+                private signUpService: RegistrationService, 
                 private userStore: Store<{ UserStore: User }>,
                 private webSocketService: WebSocketService) {}
+
+    ngOnInit(): void {
+        this.loadOAuthUrl().then();
+    }
 
     ngOnDestroy(): void {
         if (this.loginSub !== undefined) this.loginSub.unsubscribe();
         if (this.userStoreSub !== undefined) this.userStoreSub.unsubscribe();
+        if (this.loadOAuthUrlSub !== undefined) this.loadOAuthUrlSub.unsubscribe();
     }
 
     // LOGIC
+
+    private async loadOAuthUrl(): Promise<void> {
+        this.loadOAuthUrlSub = this.signUpService.getGoogleAuthUrl().subscribe({
+            next: (res: { response: string; }) => { 
+                this.googleAuthUrl = res.response 
+            },
+        })
+    }
 
     private resetFields(): void {
         this.isLoginProcessing = true;

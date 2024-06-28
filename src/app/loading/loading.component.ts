@@ -28,9 +28,14 @@ export class LoadingComponent implements OnInit{
                 next: response => {
                     localStorage.setItem("AUTH_TOKEN", response.token);
                     localStorage.setItem("CURRENT_USER", JSON.stringify({ role: response.role, id: response.userId }));
-                    this.appService.showSuccess("Registration Successfully Completed");
                     this.userStore.dispatch(USER_LOGIN());
-                    this.router.navigate(['/u/profile/update']);
+                    if (response.message==="REGISTRATION_SUCCESS") {
+                        this.appService.showSuccess("Registration Successfully Completed");
+                        this.router.navigate(['/u/profile/update']);
+                    }
+                    else if (response.message==="LOGIN_SUCCESS") {
+                        this.router.navigate(['/u/home']);
+                    }
                 },
                 error: err => {
                     this.appService.showError(err.error.message || "An unexpected error occurred");
