@@ -9,6 +9,7 @@ import { UserService } from 'src/Shared/Services/user.service';
 import Swal from 'sweetalert2';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BlockFilter, TimeFilter, UserFilter } from 'src/Shared/Models/filter.model';
+import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
     selector: 'app-complaints',
@@ -47,6 +48,7 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
     constructor(private adminService: AdminService,
                 private dialog: MatDialog,
                 private router: Router,
+                private appService: AppService,
                 private userService: UserService) { }
 
     ngOnInit(): void {
@@ -100,8 +102,7 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
     }
 
     logout() {
-        localStorage.clear();
-        this.router.navigate(['/login'])
+        this.appService.logout();
     }
 
     async loadUserDetails(): Promise<void> {

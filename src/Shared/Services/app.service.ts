@@ -47,20 +47,20 @@ export class AppService {
     }
 
     
-    private showSuccess(summary: string) {
+    public showSuccess(summary: string) {
         this.toast.success({ detail: "SUCCESS", summary: summary, duration: 5000 });
     }
 
-    private showError(summary: string) {
+    public showError(summary: string) {
         this.toast.error({ detail: "ERROR", summary: summary, duration: 5000 });
     }
 
-    private showInfo(summary: string) {
+    public showInfo(summary: string) {
         // this.toast.info({detail:"INFO", summary: summary, sticky:true});
         this.toast.info({ detail: "INFO", summary: summary, duration: 5000 });
     }
 
-    private showWarn(summary: string) {
+    public showWarn(summary: string) {
         this.toast.warning({ detail: "WARN", summary: summary, duration: 5000 });
     }
 }

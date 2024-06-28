@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RegistrationService, UserSignUpReq } from "../../Shared/Services/registration.service";
 import { Subscription, zip } from "rxjs";
 import { Router } from '@angular/router';
+import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
     selector: 'app-sign-up-page',
@@ -22,7 +23,9 @@ export class SignUpPageComponent implements OnInit, OnDestroy {
     googleAuthUrl: string = '';
 
 
-    constructor(private signUpService: RegistrationService, private router: Router) { }
+    constructor(private signUpService: RegistrationService, 
+                private router: Router,
+                private appSerivce: AppService) { }
 
     ngOnInit(): void {
         this.loadOAuthUrl().then();
@@ -38,8 +41,9 @@ export class SignUpPageComponent implements OnInit, OnDestroy {
 
     private async loadOAuthUrl(): Promise<void> {
         this.loadOAuthUrlSub = this.signUpService.getGoogleAuthUrl().subscribe({
-            next: (res: { response: string; }) => { this.googleAuthUrl = res.response },
-            error: err => {}
+            next: (res: { response: string; }) => { 
+                this.googleAuthUrl = res.response 
+            },
         })
     }
 
@@ -66,12 +70,13 @@ export class SignUpPageComponent implements OnInit, OnDestroy {
                             next: (response) => {
                                 localStorage.setItem("AUTH_TOKEN", response.token);
                                 localStorage.setItem("CURRENT_USER", JSON.stringify({ role: response.role, id: response.userId, email: this.userSignUpReq.email }));
-                                console.log("REGISTRATION SUCCESS");
                                 this.sentOtp(this.userSignUpReq.email)
+                                this.appSerivce.showSuccess("Registration was success, Please verify")
                                 this.router.navigate(['/verify-otp'])
                             },
                             error: (error) => {
                                 console.error('Error while registering user:', error);
+                                this.appSerivce.showError("Error occures, Please try again after sometimes!")
                             }
                         });
                     if (localStorage.getItem("AUTH_TOKEN_TEMP")) {

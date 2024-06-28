@@ -36,8 +36,9 @@ export class RegistrationService {
       public ResponseEntity<Void> callback(@RequestParam("code") String code)
     */
     public googleAuthRegister(code: string): Observable<any> {
-        return this.http.get<any>(`${this.BASE_URL}/google-auth-register`, { params: { code: code } });
+        return this.http.post<any>(`${this.BASE_URL}/google-auth-register`, { code });
     }
+    
 }
 
 export interface UserSignUpReq {

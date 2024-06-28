@@ -10,6 +10,7 @@ import { Group, MessageDTO, MessageFileType, MessageType } from 'src/Shared/Mode
 import { Cloudinary } from '@cloudinary/url-gen';
 import { environment } from 'src/environments/environment';
 import { AppService } from 'src/Shared/Services/app.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'chat',
@@ -34,21 +35,26 @@ export class ChatComponent implements OnInit, OnDestroy {
                 private appService: AppService,
                 private userService: UserService,
                 private cdr: ChangeDetectorRef,
+                private route: ActivatedRoute,
                 private dialog: MatDialog,
                 private dom: DomSanitizer) {}
 
     ngOnInit(): void {
         const userStr = localStorage.getItem('CURRENT_USER');
-        if (userStr) {
-            this.configureCloudinary();
-            const user: UserResponse = JSON.parse(userStr);
-            this.initConnectionAndSubscibeToMessage(user.id.toString());
-            this.loadUser(user.id, true).then();
-            this.loadFriendsList(user.id).then();
-            this.loadGroupsList(user.id).then();
-        } 
-        else {
+        if (!userStr) {
             this.appService.logout()
+            return;
+        } 
+
+        this.configureCloudinary();
+        const user: UserResponse = JSON.parse(userStr);
+        this.initConnectionAndSubscibeToMessage(user.id.toString());
+        this.loadUser(user.id, true, false).then();
+        this.loadFriendsList(user.id).then();
+        this.loadGroupsList(user.id).then();
+        const receiverId = parseInt(<string>this.route.snapshot.paramMap.get('id'))          
+        if (receiverId) {
+            this.loadUser(Number(receiverId), false, true).then();
         }
     }
 
@@ -87,16 +93,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     protected pageSize: number = 20;
     protected hasNext: boolean = false;
     
-    private async loadUser(id: number, isCurrentUser: boolean): Promise<void> {
+    private async loadUser(id: number, isCurrentUser: boolean, chatWithUser: boolean): Promise<void> {
         this.getProfileById = this.userService.getProfileById(id).subscribe({
                 next: value => {
                     if (isCurrentUser) {
                         this.currentUser = value; 
                         this.loadUserProfilePictures([value]).then();
                     }              
-                    else {
-                        this.friendsList.unshift(value);                
+                    else if (!this.userExists(value.id!)){
+                        this.friendsList.unshift(value);                                        
                         this.loadUserProfilePictures(this.friendsList).then();
+                    }
+                    if (chatWithUser) {
+                        this.chatWithUser(value);
                     }
                 },
                 error: err => { 
@@ -105,10 +114,19 @@ export class ChatComponent implements OnInit, OnDestroy {
             });
     }
 
+    private userExists(userId: number): boolean {
+       for(const user of this.friendsList) {
+            if (userId === user.id) {
+                return true;
+            }
+       }
+       return false;
+    }
+
     private async loadFriendsList(id: number): Promise<void> {
         this.loadFriendsListSub = this.messageService.getusers(id).subscribe({
                 next: value => {
-                    for (let userId of value) { this.loadUser(userId, false).then(); }
+                    for (let userId of value) { this.loadUser(userId, false, false).then(); }
                 },
                 error: err => {
                 }
@@ -159,6 +177,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     
     protected chatWithUser(user: User): void {
+        console.log(user === this.friendsList[0]);
+        
         this.removeNewMessageCount(user.id!.toString()).then()
         this.group = undefined;
         this.receiver = user;
@@ -211,7 +231,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             }
         } 
         if (this.friendsList[0].id != userId) {
-            this.loadUser(userId, false).then(() => { 
+            this.loadUser(userId, false, false).then(() => { 
                 this.loadUserProfilePictures([this.friendsList[0]]).then() 
             })
         }

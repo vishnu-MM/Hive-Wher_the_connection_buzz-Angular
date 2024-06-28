@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { User, UserResponse } from "../../../Shared/Models/user.model";
+import { Connection, ConnectionStatus, User, UserResponse } from "../../../Shared/Models/user.model";
 import { Post, PostType } from "../../../Shared/Models/post.model";
 import { Subscription, Timestamp } from "rxjs";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
@@ -21,7 +21,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     coverPicture: string = '';
     profilePicture: string = '';
     friendsCount: number = 0;
-    isFriends: boolean = false;
     
     //POSTS
     posts: Post[] = [];
@@ -54,12 +53,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
                 private route: ActivatedRoute) {}
 
     ngOnInit(): void {
+        const currentUserStr = localStorage.getItem("CURRENT_USER")
         const userId: number = parseInt(<string>this.route.snapshot.paramMap.get('id'));
-        if (userId) {
+        if (userId && currentUserStr) {
+            const currentUser: UserResponse = JSON.parse(currentUserStr);
             this.loadUserDetails(userId).then()
+            this.currentRelation(currentUser.id, userId).then();
         }
         else {
-            this.router.navigate(['/u/home']).then();
+            this.userLoadError();
         }
     }
 
@@ -70,6 +72,13 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         if (this.getAllPostsSub != undefined) this.getAllPostsSub.unsubscribe()
         if (this.getPostFilesSub != undefined) this.getAllPostsSub.unsubscribe()
         if (this.ReportUserSub != undefined) this.ReportUserSub.unsubscribe()
+        if ( this.currentRelationSub != undefined)  this.currentRelationSub.unsubscribe()
+        if ( this.friendBtnOnClickSub != undefined)  this.friendBtnOnClickSub.unsubscribe()
+    }
+
+    private userLoadError(): void {
+        this.appService.showError("Could'nt retrieve the User details");
+        this.router.navigate(['/u/home']).then();
     }
 
     // LOGIC
@@ -84,7 +93,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
                     this.getAllPostsByUser(this.user.id!).then();
                 }
             },
-            error: err => { console.log(err) }
+            error: err => { this.userLoadError(); }
         })
     }
 
@@ -180,4 +189,58 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 		const parsedDate = new Date(createdOn.toString());
 		return formatDistanceToNow(parsedDate, {addSuffix: true});
 	}
+
+    protected redirectTO(): void {
+        this.router.navigate(['/u/chat', this.user.id])
+    }
+
+    //Friend Request
+    protected isFriends: boolean = false;
+    protected isRequested: boolean = false;
+    protected loading: boolean = false;
+    private currentRelationSub!: Subscription;
+    private friendBtnOnClickSub!: Subscription;
+
+    private async currentRelation(senderId: number, recipientId: number): Promise<void> {
+        this.currentRelationSub = this.userService.getConnection(senderId, recipientId).subscribe({
+            next: res => {
+                const connectionStatus: ConnectionStatus = res.status;
+                this.isFriends = (connectionStatus === ConnectionStatus.FRIENDS)
+                this.isRequested = (connectionStatus === ConnectionStatus.REQUESTED)
+            },
+            error: err => {
+                this.appService.showWarn("Could'nt retrive friends related data")
+            }
+        })
+    }
+
+    protected async friendBtnOnClick(): Promise<void> {
+        this.loading = true;
+        const currentUserStr = localStorage.getItem("CURRENT_USER")
+        const userId: number = parseInt(<string>this.route.snapshot.paramMap.get('id'));
+        
+        if (userId && currentUserStr) {
+            const currentUser: UserResponse = JSON.parse(currentUserStr);
+
+            const friendRequest: Connection = {
+                id: null, senderId: currentUser.id, recipientId: userId, date: new Date(),
+                status: (this.isFriends || this.isRequested) ? ConnectionStatus.REJECTED : ConnectionStatus.REQUESTED                
+            }  
+            this.friendBtnOnClickSub = this.userService.updateConnection(friendRequest).subscribe({
+                next: res => {
+                    const connectionStatus: ConnectionStatus = res.status;
+                    console.log(res);
+                    
+                    this.isFriends = (connectionStatus === ConnectionStatus.FRIENDS)
+                    this.isRequested = (connectionStatus === ConnectionStatus.REQUESTED)
+                    this.loading = false;
+                    console.log(this.isFriends,  this.isRequested);
+                    
+                },
+                error: err => {
+                    this.appService.showError("Couldn't make request, try again");
+                }
+            })
+        }
+    }
 }

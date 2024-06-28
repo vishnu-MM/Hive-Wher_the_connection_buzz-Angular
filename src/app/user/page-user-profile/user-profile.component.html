@@ -47,12 +47,13 @@
 				<button class="btn" (click)="openModal()">
 					<mat-icon fontIcon="more_vert" style="transform: scale(1.5); color: white;"></mat-icon>
 				</button>
-				<button class="btn rounded-5 px-5 my-1 ms-1"
-				        [class]="{'btn-dark' : isFriends, 'btn-light' : !isFriends}">
-						<span *ngIf="!isFriends">Add Friend</span>
-						<span *ngIf="isFriends">Remove</span>
+				<button class="btn rounded-5 px-5 my-1 ms-1" (click)="friendBtnOnClick()"
+				        [class]="{'btn-dark' : isFriends && !isRequested, 'btn-light' : !isFriends || isRequested}">
+						<span *ngIf="!isFriends && !isRequested">Add Friend</span>
+						<span *ngIf="isFriends && !isRequested">Remove</span>
+						<span *ngIf="!isFriends && isRequested">Requested</span>
 				</button>
-				<button class="btn btn-dark rounded-5 px-5 my-1">Message</button>
+				<button class="btn btn-dark rounded-5 px-5 my-1" (click)="redirectTO()">Message</button>
 			</div>
 			<div id="profile-details">
 				<p id="user-name">{{ user.name }}</p>

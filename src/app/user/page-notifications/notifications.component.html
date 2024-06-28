@@ -12,7 +12,7 @@
 		<div class="container">
 			<!-- LOOP STARTS -->
 			<div class="notification row rounded-4 mb-1" *ngFor="let notification of notifications">
-				<div class="col-1 ms-2 d-flex justify-content-center align-items-center">
+				<div class="col-1 ms-2 flex-center">
 					<img [src]="notificationIcon(notification.typeOfNotification)" alt="Notification Icon" height="50px"
 						width="50px">
 				</div>
@@ -20,12 +20,16 @@
 					<span>{{ usernameMap.get(notification.senderId) + " " + description(notification.typeOfNotification) }}</span>
 					<span>{{ notification.date | date:'dd MMM yy'  }}</span>
 				</div>
-				<div class="col-2 d-flex justify-content-center align-items-center">
+				<div class="col-2 flex-center">
+                    <ng-container *ngIf="notification.typeOfNotification === NType.FRIEND_REQUEST">                        
+                        <button type="button" class="btn btn-primary me-1" (click)="acceptRequest(notification.senderId, notification.recipientId )">Accept</button>
+                        <button type="button" class="btn btn-light" (click)="rejectRequest(notification.senderId, notification.recipientId )">Reject</button>
+                    </ng-container>
 				</div>
 			</div>
 			<!-- LOOP ENDS-->
 		</div>
-		<div class="d-flex justify-content-center align-items-center mt-2" *ngIf="hasNext">
+		<div class="flex-center mt-2" *ngIf="hasNext">
 			<button type="button" class="btn btn-dark" (click)="loadNotifications()">
 				Load More
 			</button>

@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, Subscription } from "rxjs";
-import { User, UserPage } from "../Models/user.model";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { Observable, Subscription, catchError, throwError } from "rxjs";
+import { Connection, User, UserPage } from "../Models/user.model";
 import { Image } from "../Models/image.model";
 import { ComplaintsDTO, ComplaintsPage } from "../Models/complaints.model";
 import { UserFilter } from "../Models/filter.model";
@@ -14,7 +14,7 @@ export class UserService implements OnDestroy {
     private profilePictureMap: Map<number, string> = new Map<number, string>();
     private ProfileSubMap = new Map<number, Subscription>();
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     ngOnDestroy(): void {
         for (const key of this.ProfileSubMap.keys()) {
@@ -107,5 +107,23 @@ export class UserService implements OnDestroy {
         const url = `${this.BASE_URL}/complaint-filter`;
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         return this.http.post<ComplaintsPage>(url, filter, { headers });
+    }
+
+    // Connection Related
+    public updateConnection(friendRequest: Connection): Observable<Connection> {
+        const url: string = `${this.BASE_URL}/friend-request`;
+        return this.http.put<Connection>(url, friendRequest);
+    }
+
+    public getUserFriendsList(userId: number): Observable<User[]> {
+        const url: string = `${this.BASE_URL}/friends`;
+        const params: HttpParams = new HttpParams().set('userId', userId.toString());
+        return this.http.get<User[]>(url, { params });
+    }
+
+    public getConnection(senderId: number, recipientId: number): Observable<Connection> {
+        const url: string = `${this.BASE_URL}/connection-status`;
+        const params: HttpParams = new HttpParams().set('senderId', senderId).set('recipientId', recipientId);
+        return this.http.get<Connection>(url, { params });
     }
 }

@@ -9,6 +9,7 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { PostService } from "../../../Shared/Services/post.service";
 import { Post, PostType } from "../../../Shared/Models/post.model";
 import { formatDistanceToNow } from 'date-fns';
+import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
     selector: 'app-my-profile',
@@ -44,6 +45,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     constructor(private userStore: Store<{ UserStore: User }>,
         private userService: UserService,
         private postService: PostService,
+        private appService: AppService,
         private dialog: MatDialog,
         private router: Router) { }
 
@@ -123,8 +125,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
 
     logout() {
         this.closeModal();
-        localStorage.clear();
-        this.router.navigate(['/login'])
+        this.appService.logout();
     }
 
     playVideo() {

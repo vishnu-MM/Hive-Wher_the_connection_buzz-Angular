@@ -27,3 +27,11 @@ export interface UserResponse {
     role : Role;
     email?: string;
 }
+export interface Connection {
+    id: number | null;
+    senderId: number;
+    recipientId: number;
+    status: ConnectionStatus;
+    date: Date;
+}
+export enum ConnectionStatus { FRIENDS='FRIENDS', REQUESTED='REQUESTED', REJECTED='REJECTED', ACCEPTED='ACCEPTED', NOT_FRIENDS='NOT_FRIENDS' }
