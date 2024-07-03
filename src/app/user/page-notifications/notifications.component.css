@@ -1,69 +1,10 @@
-/* For laptops and larger screens */
-@media only screen and (max-width: 767px) {
-    #side-nav {
-        display: none;
-    }
-    #bottom-nav {
-        width: 100%;
-        position: fixed;
-        bottom: 0;
-    }
-    section {
-        width: 100%;
-    }
-}
-@media only screen and (min-width: 768px) and (max-width: 1023px) {
-    #side-nav {
-        display: none;
-    }
-    #bottom-nav {
-        width: 100%;
-        position: fixed;
-        bottom: 0;
-    }
-    section {
-        width: 100%;
-    }
-}
-@media only screen and (min-width: 1024px) {
-    #side-nav {
-        position: fixed;
-        height: 100%;
-    }
-
-    article {
-        display: flex;
-        justify-content: center;
-    }
-
-    section {
-        width: 60%;
-    }
-}
-article {
-    height: 100%;
-    width: 100%;
-}
-section {
-    min-height: 100%;
-    background-color: #353535;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 0 5%;
-}
 #header {
-    color: white;
     font-weight: bold;
     font-size: xx-large;
     margin: 3% 0;
 }
-hr {
-    background-color: #626262;
-    color: #626262;
-    border: #626262 solid 1px;
-}
+
 .notification {
     background-color: #404040;
     padding: 2% 0;
 }
-span { color: white; }

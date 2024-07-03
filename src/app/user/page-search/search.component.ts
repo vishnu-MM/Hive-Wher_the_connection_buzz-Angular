@@ -8,7 +8,7 @@ import { AppService } from 'src/Shared/Services/app.service';
 @Component({
     selector: 'app-search',
     templateUrl: './search.component.html',
-    styleUrls: ['./search.component.css']
+    styleUrls: ['./search.component.css', '../shared-style.css']
 })
 export class SearchComponent implements OnDestroy {
     protected searchText: string = '';

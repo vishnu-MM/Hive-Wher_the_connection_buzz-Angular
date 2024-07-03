@@ -3,14 +3,13 @@ import { NotificationDTO, NotificationPage, NotificationType } from "../../../Sh
 import { WebSocketService } from 'src/Shared/Services/web-socket.service';
 import { Subscription } from 'rxjs';
 import { Connection, ConnectionStatus, UserResponse } from 'src/Shared/Models/user.model';
-import { Post } from 'src/Shared/Models/post.model';
 import { UserService } from 'src/Shared/Services/user.service';
 import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
     selector: 'app-notifications',
     templateUrl: './notifications.component.html',
-    styleUrls: ['./notifications.component.css']
+    styleUrls: ['./notifications.component.css', '../shared-style.css']
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
     protected hasNext: boolean = false;
