@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-export enum CurrentPage{ HOME, CHAT, SEARCH, NOTIFICATION, EXPLORER }
+export enum CurrentPage{ HOME, CHAT, SEARCH, NOTIFICATION, EXPLORER, PROFILE }
 
 @Component({
   selector: 'bottom-nav-bar',

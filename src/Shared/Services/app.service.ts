@@ -55,9 +55,11 @@ export class AppService {
         this.toast.error({ detail: "ERROR", summary: summary, duration: 5000 });
     }
 
-    public showInfo(summary: string) {
-        // this.toast.info({detail:"INFO", summary: summary, sticky:true});
-        this.toast.info({ detail: "INFO", summary: summary, duration: 5000 });
+    public showInfo(summary: string, sticky: boolean) {
+        if (sticky)
+            this.toast.info({detail:"INFO", summary: summary, sticky:true});
+        else
+            this.toast.info({ detail: "INFO", summary: summary, duration: 5000 });
     }
 
     public showWarn(summary: string) {

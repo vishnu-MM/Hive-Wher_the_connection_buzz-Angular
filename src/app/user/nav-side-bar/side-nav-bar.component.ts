@@ -21,6 +21,7 @@ export class SideNavBarComponent {
             else if ( urlPart === 'chat') this.currentPage = CurrentPage.CHAT;
             else if ( urlPart === 'search') this.currentPage = CurrentPage.SEARCH;
             else if ( urlPart === 'notifications') this.currentPage = CurrentPage.NOTIFICATION;
+            else if ( urlPart === 'profile') this.currentPage = CurrentPage.PROFILE;
             else if ( urlPart === '') this.currentPage = CurrentPage.EXPLORER;
         }
     }

@@ -18,7 +18,7 @@ export class SinglePostComponent implements AfterViewInit, OnInit, OnDestroy {
     protected name: string = '';
     protected username: string = '';
     protected postFile: string = '';
-    protected profilePicture: string = 'assets/no-profile-image.jpg';
+    protected profilePicture: string = 'assets/no-profile-image.png';
     protected aspectRatioClass: string = '';
     protected readonly PostType = PostType;
 

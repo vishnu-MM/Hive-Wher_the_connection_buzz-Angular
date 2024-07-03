@@ -39,7 +39,7 @@ export class SingleCommentComponent implements OnInit, OnDestroy{
               },
               error: (error) => {}
             })
-        this.profilePicture = "assets/LoginSignUpBg.jpg"
+        this.profilePicture = "assets/default-banner.png"
         this.getProfilePictureSub = this.userService.getProfileImage(this.comment.userId, ImageType.PROFILE_IMAGE)
             .subscribe({
               next: (response) => this.profilePicture = 'data:image/png;base64,' + response.image,

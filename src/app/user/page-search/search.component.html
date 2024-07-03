@@ -23,7 +23,7 @@
         <ng-container  *ngIf="!noResult">
             <div *ngFor="let user of result" id="user-tile">
                 <div class="user-tile" (click)="navigateToUser(user.id!)">
-                    <img [src]="userProfileImageMap.get(user.id!)? userProfileImageMap.get(user.id!) : 'assets/no-profile-image.jpg'" alt="User Profile">
+                    <img [src]="userProfileImageMap.get(user.id!)? userProfileImageMap.get(user.id!) : 'assets/no-profile-image.png'" alt="User Profile">
                     <div class="ms-3">
                         <p> {{ user.name? user.name : 'user' }} </p>
                         <p> {{ '@'+user.username }} </p>
