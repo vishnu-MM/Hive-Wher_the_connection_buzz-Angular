@@ -1,36 +1,47 @@
-<div id="side-nav"> 
-    <side-nav-bar></side-nav-bar> 
+<div id="side-nav">
+    <side-nav-bar></side-nav-bar>
 </div>
 <div id="bottom-nav">
     <bottom-nav-bar></bottom-nav-bar>
 </div>
 
-<article>
-	<section>
-    <div id="search-group" class="border rounded-5 py-1 px-2 my-3 row">
-      <div class="col-11">
-        <input type="text"
-              name="search"
-              id="search"
-              placeholder="Search Here..."
-              class="form-control"
-              [(ngModel)]="searchText">
-      </div>
-      <button type="button" (click)="search()"
-              class="btn btn-light rounded-5 d-flex justify-content-center align-items-center col-1">
-        <mat-icon fontIcon="search" class="p-0 m-0"></mat-icon>
-      </button>
-    </div>
-    <div>
-      <div *ngFor="let user of result" id="user-tile">
-        <div class="user-tile" (click)="navigateToUser(user.id!)">
-					<img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
-					<div class="ms-3">
-						<p> {{ user.name? user.name : 'user' }} </p>
-						<p> {{ '@'+user.username }} </p>
-					</div>
-				</div>
-      </div>
-    </div>
-	</section>
+<article class="color-body">
+    <section class="scollable">
+        <div id="search-group" class="rounded-5 row">
+            <div class="col-10">
+                <input type="text" 
+                       name="search"
+                       class="form-control"
+                       [(ngModel)]="searchText"
+                       placeholder="Search Here...">
+            </div>
+            <button type="button" (click)="search()" class="btn col-2">
+                <mat-icon fontIcon="search"></mat-icon>
+            </button>
+        </div>
+        
+        <ng-container  *ngIf="!noResult">
+            <div *ngFor="let user of result" id="user-tile">
+                <div class="user-tile" (click)="navigateToUser(user.id!)">
+                    <img [src]="userProfileImageMap.get(user.id!)? userProfileImageMap.get(user.id!) : 'assets/no-profile-image.jpg'" alt="User Profile">
+                    <div class="ms-3">
+                        <p> {{ user.name? user.name : 'user' }} </p>
+                        <p> {{ '@'+user.username }} </p>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        
+        <ng-container *ngIf="noResult">
+            <div id="no-result">
+                <h2>No Result</h2>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="loading">
+            <div id="no-result">
+                <div class="loader"></div>
+            </div>
+        </ng-container>
+    </section>
 </article>

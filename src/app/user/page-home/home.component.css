@@ -1,6 +1,6 @@
 /* Common Styles */
 .modal-content {
-    background-color: black;
+    background-color: #171B23;
     color: white;
 }
 
@@ -16,17 +16,6 @@ section {
 
 /* For tablets and smartphones */
 @media only screen and (max-width: 1023px) {
-    #side-nav {
-        display: none;
-    }
-
-    #bottom-nav {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        z-index: 1000;
-    }
-
     section {
         display: flex;
         flex-direction: column-reverse;
@@ -50,7 +39,7 @@ section {
     }
 
     #side-nav {
-        height: 100%;
+        padding: 0;
     }
 
     section {
@@ -71,28 +60,3 @@ section {
         width: 30%;
     }
 }
-
-/* For Others */
-article {
-    overflow-y: scroll;
-}
-article::-webkit-scrollbar {
-    width: 5px;
-    border-radius: 50%
-}
-
-article::-webkit-scrollbar-track {
-    margin: 12px 0;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-}
-
-article::-webkit-scrollbar-thumb {
-    background: rgba(236, 236, 236, 0.5);
-    border-radius: 10px;
-}
-
-article::-webkit-scrollbar-thumb:hover {
-    background: #0b132b;
-}
-

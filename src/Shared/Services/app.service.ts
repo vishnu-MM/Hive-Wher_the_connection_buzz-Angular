@@ -30,7 +30,7 @@ export class AppService {
 		throw new Error("Tocken is Empty");
 	}
 
-    public errorHandler(error: HttpErrorResponse): Observable<any> {
+    private errorHandler(error: HttpErrorResponse): Observable<any> {
         console.log(error);
         if (error.status === 0) {
             return throwError(() => new Error('Something happened! Network Error'));
@@ -41,7 +41,7 @@ export class AppService {
         return throwError(() => new Error('Something happened! Internal Server Error'));
     }    
 
-    logout() {
+    public logout(): void {
         localStorage.clear();
         this.router.navigate(['/login'])
     }

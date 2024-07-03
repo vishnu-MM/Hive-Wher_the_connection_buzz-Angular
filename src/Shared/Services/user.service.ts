@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Observable, Subscription } from "rxjs";
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
+import { Observable, Subscription, catchError, throwError } from "rxjs";
 import { Connection, User, UserPage } from "../Models/user.model";
 import { Image } from "../Models/image.model";
 import { ComplaintsDTO, ComplaintsPage } from "../Models/complaints.model";
@@ -33,11 +33,6 @@ export class UserService implements OnDestroy {
         }
     }
 
-
-    public getMyProfile(): Observable<User> {
-        return this.http.get<User>(`${this.BASE_URL}/profile`);
-    }
-
     public async getUserProfile(userId: number): Promise<UserData> {
         let user!: UserData;
         try {
@@ -51,63 +46,18 @@ export class UserService implements OnDestroy {
         try {
             const profileImageRes = await this.getProfileImage(userId, ImageType.PROFILE_IMAGE).toPromise();
             if (profileImageRes) { user.profileImg = 'data:image/png;base64,' + profileImageRes.image; }
-        } catch (error:any) {
+        } catch (error: any) {
             if (error.status === 400) { user.profileImg = 'assets/no-profile-image.jpg'; }
         }
-    
+
         try {
             const coverImgRes = await this.getProfileImage(userId, ImageType.COVER_IMAGE).toPromise();
             if (coverImgRes) { user.coverImg = 'data:image/png;base64,' + coverImgRes.image; }
-        } catch (error:any) {          
+        } catch (error: any) {
             if (error.status === 400) { user.coverImg = 'assets/LoginSignUpBg.jpg'; }
         }
 
         return user;
-    }
-
-
-    public getProfileById(id: number): Observable<User> {
-        return this.http.get<User>(`${this.BASE_URL}/profile/${id}`);
-    }
-
-    public updateProfile(user: User): Observable<User> {
-        return this.http.put<User>(`${this.BASE_URL}/update`, user);
-    }
-
-    public uploadProfileImage(file: File, imageType: ImageType): Observable<Image> {
-        const formData: FormData = new FormData();
-        formData.append('image', file, file.name);
-        formData.append('type', ImageType[imageType]);
-        return this.http.post<Image>(`${this.BASE_URL}/upload/image`, formData);
-    }
-
-    public getProfileImage(userId: number, type: ImageType): Observable<Image> {
-        return this.http.get<Image>(`${this.BASE_URL}/image?userID=${userId}&type=${ImageType[type]}`);
-    }
-
-    public isProfileExists(userId: number): Observable<Boolean> {
-        return this.http.get<Boolean>(`${this.BASE_URL}/exists-profile/${userId}`);
-    }
-
-    // /user-count Get Number
-    public getUserCount(): Observable<Number> {
-        return this.http.get<Number>(`${this.BASE_URL}/user-count`);
-    }
-
-    public getAllUsers(pageNo: number, pageSize: number): Observable<UserPage> {
-        return this.http.get<UserPage>(`${this.BASE_URL}/all-users?pageNo=${pageNo}&pageSize=${pageSize}`);
-    }
-
-    public search(searchText: string): Observable<User[]> {
-        return this.http.get<User[]>(`${this.BASE_URL}/search?searchQuery=${searchText}`);
-    }
-
-    public complaintsSearch(searchText: string): Observable<ComplaintsDTO[]> {
-        return this.http.get<ComplaintsDTO[]>(`${this.BASE_URL}/complaints-search?searchQuery=${searchText}`);
-    }
-
-    public reportAUser(complaintsDTO: ComplaintsDTO): Observable<void> {
-        return this.http.post<void>(`${this.BASE_URL}/report-user`, complaintsDTO);
     }
 
     public async loadProfilePiture(userList: User[], imageType: ImageType): Promise<Map<number, string>> {
@@ -130,8 +80,65 @@ export class UserService implements OnDestroy {
         return this.profilePictureMap;
     }
 
+    public getMyProfile(): Observable<User> {
+        return this.http.get<User>(`${this.BASE_URL}/profile`);
+    }
+
+    public getProfileById(id: number): Observable<User> {
+        return this.http.get<User>(`${this.BASE_URL}/profile/${id}`);
+    }
+
+    public updateProfile(user: User): Observable<User> {
+        return this.http.put<User>(`${this.BASE_URL}/update`, user);
+    }
+
+    public uploadProfileImage(file: File, imageType: ImageType): Observable<Image> {
+        const formData: FormData = new FormData();
+        formData.append('image', file, file.name);
+        formData.append('type', ImageType[imageType]);
+        return this.http.post<Image>(`${this.BASE_URL}/upload/image`, formData);
+    }
+
+    public getProfileImage(userId: number, type: ImageType): Observable<Image> {
+        const params = new HttpParams()
+            .set('userID', userId)
+            .set('type', ImageType[type]);
+        return this.http.get<Image>(`${this.BASE_URL}/image`, { params });
+    }
+
+    public isProfileExists(userId: number): Observable<Boolean> {
+        return this.http.get<Boolean>(`${this.BASE_URL}/exists-profile/${userId}`);
+    }
+
+    // /user-count Get Number
+    public getUserCount(): Observable<Number> {
+        return this.http.get<Number>(`${this.BASE_URL}/user-count`);
+    }
+
+    public getAllUsers(pageNo: number, pageSize: number): Observable<UserPage> {
+        const params = new HttpParams()
+            .set('pageNo', pageNo)
+            .set('pageSize', pageSize);
+        return this.http.get<UserPage>(`${this.BASE_URL}/all-users`, { params });
+    }
+
+    public search(searchText: string): Observable<any> {
+        const params = new HttpParams().set('searchQuery', searchText);
+        return this.http.get(`${this.BASE_URL}/search`, { params });
+    }
+
+    public complaintsSearch(searchText: string): Observable<ComplaintsDTO[]> {
+        const params = new HttpParams().set('searchQuery', searchText);
+        return this.http.get<ComplaintsDTO[]>(`${this.BASE_URL}/complaints-search`, { params });
+    }
+
+    public reportAUser(complaintsDTO: ComplaintsDTO): Observable<void> {
+        return this.http.post<void>(`${this.BASE_URL}/report-user`, complaintsDTO);
+    }
+
     public fetchData(filter: string): Observable<Map<string, number>> {
-        return this.http.get<Map<string, number>>(`${this.BASE_URL}/user-count-date?filterBy=${filter}`);
+        const params = new HttpParams().set('filterBy', filter);
+        return this.http.get<Map<string, number>>(`${this.BASE_URL}/user-count-date`, { params });
     }
 
     public filter(userFilter: UserFilter): Observable<UserPage> {
@@ -163,4 +170,5 @@ export class UserService implements OnDestroy {
         const params: HttpParams = new HttpParams().set('senderId', senderId).set('recipientId', recipientId);
         return this.http.get<Connection>(url, { params });
     }
+
 }

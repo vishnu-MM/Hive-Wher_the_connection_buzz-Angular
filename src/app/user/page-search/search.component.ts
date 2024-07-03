@@ -1,66 +1,69 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ImageType, UserService } from 'src/Shared/Services/user.service';
+import { Component, OnDestroy } from '@angular/core';
+import { User } from 'src/Shared/Models/user.model';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { User } from 'src/Shared/Models/user.model';
-import { ImageType, UserService } from 'src/Shared/Services/user.service';
+import { AppService } from 'src/Shared/Services/app.service';
 
-@Component({ selector: 'app-search', templateUrl: './search.component.html', styleUrls: ['./search.component.css']})
-export class SearchComponent implements OnInit, OnDestroy {
-	private getProfileById!: Subscription;
-	private getProfileSub!: Subscription;
-  searchText : string = '';
-  result : User[] = [];
-	userProfileImageMap : Map<number, string> = new Map<number, string>();
-  private getProfileSubs = new Map<number, Subscription>();
+@Component({
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.css']
+})
+export class SearchComponent implements OnDestroy {
+    protected searchText: string = '';
+    protected result: User[] = [];
+    protected noResult: boolean = false;
+    protected loading: boolean = false;
+    protected userProfileImageMap: Map<number, string> = new Map<number, string>();
+    private getProfileSub!: Subscription;
+    private searchSub!: Subscription;
 
-  constructor(private userService : UserService, private router : Router) {}
-  ngOnInit(): void {}
-  ngOnDestroy(): void {
-		if (this.getProfileById) this.getProfileById.unsubscribe();
-		if (this.getProfileSub) this.getProfileSub.unsubscribe();
-  }
+    constructor(private userService: UserService,
+                private appService: AppService,
+                private router: Router) { }
 
-  search() {
-    if(this.searchText.trim() !== '')
-    this.userService.search(this.searchText.trim())
-    .subscribe({
-      next: res => {
-        this.result = res;
-        this.loadUserProfilePictures(res).then();
-      },
-      error: err => {console.log(err);
-      }
-    })
-  }
-  private async loadUserProfilePictures(userList: User[]) {
-		for (let user of userList ) {
-			let userId : number  = user.id!;
-			this.userProfileImageMap.set(userId, await this.getUserProfilePicture(userId));
-		}
-	}
+    ngOnDestroy(): void {
+        if (this.getProfileSub) this.getProfileSub.unsubscribe();
+        if (this.searchSub) this.searchSub.unsubscribe();
+    }
 
-	getUserProfilePicture(userId: number): Promise<string> {
-		if (this.getProfileSubs.has(userId)) {
-			this.getProfileSubs.get(userId)!.unsubscribe();
-		}
+    protected search(): void {
+        if (this.searchText === '' || this.searchText.trim() === '') {
+            this.appService.showWarn("Search field can't be empty");
+            this.searchText = '';
+            return;
+        }
+        if (this.searchSub) this.searchSub.unsubscribe();
+        this.noResult = false;
+        this.loading = true;
+    
+        // Encode the search text
+        const encodedSearchText = encodeURIComponent(this.searchText.trim());
+    
+        this.searchSub = this.userService.search(encodedSearchText).subscribe({
+            next: res => {
+                if (res.length === 0) {
+                    this.noResult = true;
+                }
+                else {
+                    this.result = res;
+                    this.loadUserProfilePictures(res).then();
+                }
+                this.loading = false;
+            },
+            error: err => {
+                this.appService.showError(`Something went wrong, can't Search (${err.status})`);
+                this.loading = false;
+            }
+        })
+    }
 
-		return new Promise((resolve, reject) => {
-			 const subscription = this.getProfileSub = this.userService
-				.getProfileImage(userId, ImageType.PROFILE_IMAGE)
-				.subscribe({
-					next: (response) => {
-						const imageUrl = 'data:image/png;base64,' + response.image;
-						resolve(imageUrl);
-					},
-					error: (error) => {
-						resolve('assets/Screenshot%202024-04-29%20152644.png');
-					}
-				});
-			 this.getProfileSubs.set(userId, subscription);
-		});
-	}
+    private async loadUserProfilePictures(userList: User[]): Promise<void> {
+        this.userProfileImageMap = await this.userService.loadProfilePiture(userList, ImageType.PROFILE_IMAGE);
+    }
 
-  navigateToUser(id: number) {
-			this.router.navigate(['/u/user', id]);
-	}
+    protected navigateToUser(id: number): void {
+        this.router.navigate(['/u/user', id]);
+    }
 }
