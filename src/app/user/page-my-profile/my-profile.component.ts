@@ -71,9 +71,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     private async getCoverImage(): Promise<void> {
         this.getCoverSub = this.userService.getProfileImage(this.currentUser.id!, ImageType.COVER_IMAGE).subscribe({
             next: (response) => this.coverPicture = 'data:image/png;base64,' + response.image,
-            error: (error) => {
-                if (error.status !== 400) {
-                    this.appService.showError("Could'nt load Cover picture")
+            error: (err) => {
+                if (err.status !== 400) {
+                    this.appService.showError(`Could'nt load Cover picture (${err.status})`)
                 }
             }
         })
@@ -84,9 +84,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             next: (response) => {
                 this.profilePicture = 'data:image/png;base64,' + response.image
             },
-            error: (error) => { 
-                if (error.status !== 400) {
-                    this.appService.showError("Could'nt load Profile picture")
+            error: (err) => { 
+                if (err.status !== 400) {
+                    this.appService.showError(`Could'nt load Profile picture (${err.status})`)
                 }
             }
         })
@@ -172,7 +172,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             this.selectedPost.description = this.selectedPost.description.trim();
             this.postService.updatePost(this.selectedPost).subscribe({
                 next: res => { this.closeEditPostModal(); },
-                error: err => { console.log(err) }
+                error: err => { 
+                    this.appService.showError(`Could'nt update posts (${err.status})`)
+                 }
             })
         }
     }
