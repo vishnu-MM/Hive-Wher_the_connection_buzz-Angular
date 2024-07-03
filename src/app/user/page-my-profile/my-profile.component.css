@@ -2,10 +2,6 @@ section {
     padding: 0;
 }
 
-article {
-    overflow: hidden;
-}
-
 #profile {
     width: 100%;
     position: relative;

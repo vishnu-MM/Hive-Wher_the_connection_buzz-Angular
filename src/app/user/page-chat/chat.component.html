@@ -112,7 +112,7 @@
             <div *ngFor="let group of groups">
                 <div (click)="chatInGroup(group)" class="user-tile">
                     <div class="flex-start">
-                        <img src="assets/no-profile-image.jpg" alt="User Profile">
+                        <img src="assets/no-profile-image.png" alt="User Profile">
                         <div class="ms-3">
                             <p> {{ group.groupName }} </p>
                             <Span>{{ group.membersId.length +' Members'}}</Span>
@@ -157,7 +157,7 @@
                 <mat-icon style="color: white;" fontIcon="arrow_back_ios_new"></mat-icon>
             </button>
             <img class="user-profile-picture" 
-                [src]="receiver ? userProfileImageMap.get(receiver.id!) : 'assets/no-profile-image.jpg'"
+                [src]="receiver ? userProfileImageMap.get(receiver.id!) : 'assets/no-profile-image.png'"
                 *ngIf="receiver || group">
             <div class="ms-3">
                 <span class="h4 text-light">

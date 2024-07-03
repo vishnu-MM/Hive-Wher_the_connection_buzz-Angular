@@ -169,7 +169,7 @@ export class ChatComponent implements OnInit, OnDestroy {
                         resolve(imageUrl);
                     },
                     error: (error) => {
-                        resolve('assets/no-profile-image.jpg');
+                        resolve('assets/no-profile-image.png');
                     }
                 });
             this.getProfileSubs.set(userId, subscription);
@@ -603,7 +603,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     protected getProfileImage(senderId: string): string {
         return this.userProfileImageMap.has(Number(senderId)) ?
                this.userProfileImageMap.get(Number(senderId))! :
-               'assets/no-profile-image.jpg'
+               'assets/no-profile-image.png'
     }
 
     isListVisible: boolean = false;

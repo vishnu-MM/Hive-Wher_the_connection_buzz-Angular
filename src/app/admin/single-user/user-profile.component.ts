@@ -83,9 +83,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                     if (imageType === ImageType.PROFILE_IMAGE)
-                        this.profilePicture = 'assets/no-profile-image.jpg';
+                        this.profilePicture = 'assets/no-profile-image.png';
                     if (imageType === ImageType.COVER_IMAGE)
-                        this.coverPicture = 'assets/LoginSignUpBg.jpg';
+                        this.coverPicture = 'assets/default-banner.png';
                 }
             })
     }

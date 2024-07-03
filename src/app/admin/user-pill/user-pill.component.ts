@@ -45,7 +45,7 @@ export class UserPillComponent implements OnInit, OnDestroy {
             next: res => {
                 this.profilePicture = 'data:image/png;base64,' + res.image; 
             },
-            error: err => {  this.profilePicture = 'assets/no-profile-image.jpg'}
+            error: err => {  this.profilePicture = 'assets/no-profile-image.png'}
         });
     }
 

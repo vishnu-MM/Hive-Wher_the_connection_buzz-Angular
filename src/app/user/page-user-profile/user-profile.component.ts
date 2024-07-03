@@ -13,7 +13,7 @@ import { formatDistanceToNow } from 'date-fns';
 @Component({
     selector: 'app-user-profile',
     templateUrl: './user-profile.component.html',
-    styleUrls: ['./user-profile.component.css']
+    styleUrls: ['../shared-style.css', './user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
     //USER
@@ -98,7 +98,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
 
     async getCoverImage(userId: number): Promise<void> {
-        this.coverPicture = "assets/LoginSignUpBg.jpg"
+        this.coverPicture = "assets/default-banner.png"
         this.getCoverSub = this.userService
             .getProfileImage(userId, ImageType.COVER_IMAGE)
             .subscribe({
@@ -110,7 +110,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
 
     async getProfileImage(userId: number) {
-        this.profilePicture = "assets/LoginSignUpBg.jpg"
+        this.profilePicture = "assets/default-banner.png"
         this.getProfileSub = this.userService
             .getProfileImage(userId, ImageType.PROFILE_IMAGE)
             .subscribe({

@@ -35,95 +35,55 @@
     <bottom-nav-bar></bottom-nav-bar>
 </div>
 
-<article>
-	<section>
-		<div id="profile">
-			<div>
-				<div id="cover-pic" class="img-basics" [style.background-image]="'url(' + coverPicture + ')'">
-					<div id="profile-pic" class="img-basics" [style.background-image]="'url(' + profilePicture + ')'"></div>
-				</div>
+<article class="color-body">
+    <section class="scollable">
+        <div id="profile">
+            <div>
+                <div id="cover-pic" class="img-basics" [style.background-image]="'url(' + coverPicture + ')'">
+                    <div id="profile-pic" class="img-basics" [style.background-image]="'url(' + profilePicture + ')'">
+                    </div>
+                </div>
+            </div>
+			<div class="row px-3 py-2">
+                <div class="col-5"></div>
+                <div class="col-7 d-flex justify-content-end my-1">
+                    <button [class]="{'btn-dark' : isFriends && !isRequested, 'btn-light' : !isFriends || isRequested}"
+                            class="btn rounded-5 px-md-5 me-1" 
+                            (click)="friendBtnOnClick()">
+                        <span class="text-dark" *ngIf="!isFriends && !isRequested">
+                            Add Friend
+                        </span>
+                        <span *ngIf="isFriends && !isRequested">
+                            Remove
+                        </span>
+                        <span class="text-dark" *ngIf="!isFriends && isRequested">
+                            Requested
+                        </span>
+                    </button>
+                    <button class="btn btn-dark rounded-5 px-md-5" (click)="redirectTO()">
+                        Message
+                    </button>
+                    <button class="btn p-0" (click)="openModal()">
+                        <mat-icon fontIcon="more_vert" style="transform: scale(1.5); color: white;"></mat-icon>
+                    </button>
+                </div>
 			</div>
-			<div class="d-flex flex-row-reverse px-3 py-2">
-				<button class="btn" (click)="openModal()">
-					<mat-icon fontIcon="more_vert" style="transform: scale(1.5); color: white;"></mat-icon>
-				</button>
-				<button class="btn rounded-5 px-5 my-1 ms-1" (click)="friendBtnOnClick()"
-				        [class]="{'btn-dark' : isFriends && !isRequested, 'btn-light' : !isFriends || isRequested}">
-						<span *ngIf="!isFriends && !isRequested">Add Friend</span>
-						<span *ngIf="isFriends && !isRequested">Remove</span>
-						<span *ngIf="!isFriends && isRequested">Requested</span>
-				</button>
-				<button class="btn btn-dark rounded-5 px-5 my-1" (click)="redirectTO()">Message</button>
-			</div>
-			<div id="profile-details">
-				<p id="user-name">{{ user.name }}</p>
-				<p id="username"> @{{ user.username }}</p>
-				<p id="bio">{{ user.aboutMe}}</p>
-				<p id="joined-date">Since {{ user.joinDate | date: 'MMMM yyyy' }}</p>
-				<p id="phone">{{ user.phone }}</p>
-				<p id="friends-count"><span>{{ friendsCount }}</span> Friends</p>
-			</div>
-		</div>
-		<div id="my-post-label" class="row my-3">
-			<div class="col-4 d-flex justify-content-center align-items-center py-4">
-				<span>My Posts</span>
-			</div>
-			<div class="col-4 change-layout">
-				<button class="btn change-layout"
-				        (click)="showListView = false">
-					<mat-icon fontIcon="grid_view"></mat-icon>
-				</button>
-			</div>
-			<div class="col-4 change-layout">
-				<button class="btn change-layout" (click)="showListView = true">
-					<mat-icon fontIcon="view_agenda"></mat-icon>
-				</button>
-			</div>
-		</div>
-		<div id="posts">
-			<div class="row" [class]="{ 'd-none': showListView}">
-				<div *ngFor="let post of posts" class="post border col-4 col-lg-3">
-					<div *ngIf="post.postType === PostType.IMAGE"
-					     class="img-basics"
-					     [style.background-image]="'url('+postFiles.get(post.id)+')'">
-					</div>
-					<video *ngIf="post.postType === PostType.VIDEO"
-					       class="post-video img-basics" [src]="postFiles.get(post.id)">
-						Your browser does not support the video tag.
-					</video>
-				</div>
-			</div>
-
-            <div id="post-list-view" [class]="{ 'd-none': !showListView,}" *ngFor="let post of posts">
-				<div class="d-flex align-items-center">
-					<img [src]="profilePicture"
-					     alt="user profile picture"
-					     style="aspect-ratio: 1; width: 50px;"
-					     class="rounded-5 border img-basics border-black d-inline-block">
-					<div class="ms-2">
-						<span class="h4 text-light">{{ user.name }}</span> <br>
-						<span class="text-light">@{{ user.username +" | "+  getRelativeTime(post.createdOn) }}</span>
-					</div>
-				</div>
-
-				<div class="my-3 mx-md-5">
-					<span class="h6 text-light">{{post.description}}</span>
-				</div>
-                 
-				<div *ngIf="post.postType === PostType.IMAGE"
-				     class="rounded mx-md-5 img-basics"
-				     [class]="getAspectRatio(post.aspectRatio)"
-				     [style.background-image]="'url('+postFiles.get(post.id)+')'"></div>
-
-				<div *ngIf="post.postType === PostType.VIDEO">
-					<video [src]="postFiles.get(post.id)"					       
-					       [class]="getAspectRatio(post.aspectRatio)"
-					       class="rounded-3 mx-md-5 img-basics" 
-                           controls >Your browser does not support the video tag.</video>
-				</div>
-
-				<div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
-			</div>
-		</div>
-	</section>
+            <div id="profile-details">
+                <p id="user-name">{{ user.name }}</p>
+                <p id="username"> @{{ user.username }}</p>
+                <p id="bio">{{ user.aboutMe}}</p>
+                <p id="joined-date">Since {{ user.joinDate | date: 'MMMM yyyy' }}</p>
+                <p id="phone">{{ user.phone }}</p>
+                <p id="friends-count"><span>{{ friendsCount }}</span> Friends</p>
+            </div>
+        </div>
+        <div id="posts">
+            <div id="my-post-label">
+                <span>My Posts</span>
+            </div>
+            <div *ngFor="let post of posts">
+                <single-post [post]="post"></single-post>
+            </div>
+        </div>
+    </section>
 </article>

@@ -1,104 +1,19 @@
-/* For laptops and larger screens */
-@media only screen and (max-width: 767px) {
-    #side-nav {
-        display: none;
-    }
-    section {
-        width: 100%;
-    }
-
-    /*ASPECT RATIO*/
-    .aspect-ratio-16-9{
-        width: 100%;
-        aspect-ratio: 16/9;
-    }
-    .aspect-ratio-9-16{
-        width: 50%;
-        aspect-ratio: 9/16;
-    }
-    .aspect-ratio-4-5, .aspect-ratio-1-1{
-        width: 80%;
-        aspect-ratio: 1;
-    }
-}
-/* For tablets */
-@media only screen and (min-width: 768px) and (max-width: 1023px) {
-    #side-nav {
-        display: none;
-    }
-    section {
-        width: 100%;
-    }
-
-    /*ASPECT RATIO*/
-    .aspect-ratio-16-9{
-        width: 80%;
-        aspect-ratio: 16/9;
-    }
-    .aspect-ratio-9-16{
-        width: 35%;
-        aspect-ratio: 9/16;
-    }
-    .aspect-ratio-4-5, .aspect-ratio-1-1{
-        width: 50%;
-        aspect-ratio: 1;
-    }
-}
-@media only screen and (min-width: 1024px) {
-    #side-nav {
-        position: fixed;
-        height: 100%;
-    }
-    article {
-        display: flex;
-        justify-content: center;
-    }
-    section {
-        width: 60%;
-    }
-
-    /*ASPECT RATIO*/
-    .aspect-ratio-16-9{
-        width: 50%;
-        aspect-ratio: 16/9;
-    }
-    .aspect-ratio-9-16{
-        width: 30%;
-        aspect-ratio: 9/16;
-    }
-    .aspect-ratio-4-5{
-        width: 50%;
-        aspect-ratio: 4/5;
-    }
-    .aspect-ratio-1-1{
-        width: 50%;
-        aspect-ratio: 1;
-    }
-
-}
-
-
-/* Common for laptops, larger screens, tablets, and smartphones */
-article {
-    height: 100%;
-    width: 100%;
-}
 section {
-    min-height: 100%;
-    background-color: #353535;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    padding: 0;
 }
+
 #profile {
     width: 100%;
     position: relative;
 }
+
 #cover-pic {
     position: relative;
     width: 100%;
     aspect-ratio: 16/3;
     z-index: 0;
 }
+
 #profile-pic {
     width: 18%;
     aspect-ratio: 1;
@@ -107,102 +22,75 @@ section {
     top: 0;
     left: 15%;
     transform: translate(-50%, 50%);
-    border: #353535 solid 5px;
+    border: #171B23 solid 5px;
 }
+
 #profile-details {
     padding-top: 4%;
     padding-left: 10%;
 }
+
 #user-name {
     color: white;
     font-size: x-large;
     font-weight: bold;
 }
+
 #username {
     color: #c0c0c0;
     font-size: large;
     font-weight: lighter;
 }
+
 #bio {
     color: white;
     font-size: large;
     font-weight: normal;
 }
+
 #joined-date {
     color: #c0c0c0;
     font-size: large;
     font-weight: lighter;
 }
+
 #phone {
     color: #c0c0c0;
     font-size: large;
     font-weight: lighter;
 }
+
 #friends-count {
     color: #c0c0c0;
     font-size: large;
     font-weight: lighter;
 }
+
 #friends-count span {
     color: white;
     font-size: x-large;
     font-weight: lighter;
 }
+
 #posts {
-    padding-left: 4%;
-    padding-right: 4%;
-    margin-bottom: 5%;
+    padding: 0 4%;
+    margin-top: 2rem;
 }
+
 #my-post-label {
-    color: white;
-    font-size: x-large;
+    font-size: large;
     font-weight: lighter;
-    border-top: #404040 solid 2px;
-    border-bottom: #404040 solid 2px;
+    border-top: #5e548e solid 2px;
+    border-bottom: #5e548e solid 2px;
+    padding: 1rem;
 }
-#my-post-label div{
-    border-left: #404040 solid 1px;
-    border-right: #404040 solid 1px;
-}
-.post {
-    max-height: 20%;
-    aspect-ratio: 1 !important;
-    padding: 0;
-}
-.post div {
-    height: 100%;
-    width: 100%;
-    aspect-ratio: 1 !important;
-}
-.post-video {
-    height: 100%;
-    width: 100%;
-    aspect-ratio: 1 !important;
-}
-.change-layout {
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.change-layout mat-icon {
-    color: white;
-    transform: scale(1.3);
-}
-.change-layout mat-icon:hover {
-    transform: scale(1.6);
-    transition-duration: 0.1s;
-}
-.post {
-    background-color: black;
-    border: 1px solid black;
-}
+
 .img-basics {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
 }
-#post-list-view {
-    border-bottom: #404040 solid 2px;
-    margin-bottom: 2%;
+
+#settings-btn, #settings-btn:hover {
+    border: 1px solid white;
 }
