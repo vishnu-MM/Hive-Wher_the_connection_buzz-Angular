@@ -92,7 +92,7 @@
                 </div>
             </div>
             <div class="d-flex flex-row-reverse px-3 py-2">
-                <button class="btn btn-light d-flex justify-content-center p-3 rounded-5" (click)="openModal()">
+                <button id="settings-btn" class="btn flex-center p-2 rounded-5" (click)="openModal()">
                     <mat-icon fontIcon="settings"></mat-icon>
                 </button>
             </div>
@@ -105,67 +105,13 @@
                 <p id="friends-count"><span>{{ friendsCount }}</span> Friends</p>
             </div>
         </div>
-        <div id="my-post-label" class="row my-3">
-            <div class="col-4 d-flex justify-content-center align-items-center py-4">
+        <div id="posts">
+            <div id="my-post-label">
                 <span>My Posts</span>
             </div>
-            <div class="col-4 change-layout">
-                <button class="btn change-layout" (click)="showListView = false">
-                    <mat-icon fontIcon="grid_view"></mat-icon>
-                </button>
+            <div *ngFor="let post of posts">
+                <single-post [post]="post"></single-post>
             </div>
-            <div class="col-4 change-layout">
-                <button class="btn change-layout" (click)="showListView = true">
-                    <mat-icon fontIcon="view_agenda"></mat-icon>
-                </button>
-            </div>
-        </div>
-        <div id="posts">
-            <div class="row" [class]="{ 'd-none': showListView}">
-                <div *ngFor="let post of posts" class="post border col-4 col-lg-3">
-                    <div *ngIf="post.postType === PostType.IMAGE" class="img-basics"
-                        [style.background-image]="'url('+postFiles.get(post.id)+')'">
-                    </div>
-                    <video *ngIf="post.postType === PostType.VIDEO" class="post-video img-basics"
-                        [src]="postFiles.get(post.id)">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
-
-            <div id="post-list-view" [class]="{ 'd-none': !showListView,}" *ngFor="let post of posts">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <img [src]="profilePicture" alt="user profile picture" style="aspect-ratio: 1; width: 50px;"
-                            class="rounded-5 border img-basics border-black d-inline-block">
-                        <div class="ms-2">
-                            <span class="h4 text-light">{{ currentUser.name }}</span> <br>
-                            <span class="text-light">@{{ currentUser.username +" | "+ getRelativeTime(post.createdOn) }}</span>
-                        </div>
-                    </div>
-                    <button type="button" class="btn" (click)="editDeleteModal(post)">
-                        <mat-icon fontIcon="more_vert" style="color: white;"></mat-icon>
-                    </button>
-                </div>
-
-                <div class="my-3 mx-md-5">
-                    <span class="h6 text-light">{{post.description}}</span>
-                </div>
-                <div *ngIf="post.postType === PostType.IMAGE" class="rounded mx-md-5 img-basics"
-                    [class]="getAspectRatio(post.aspectRatio)"
-                    [style.background-image]="'url('+postFiles.get(post.id)+')'">
-                </div>
-
-                <div *ngIf="post.postType === PostType.VIDEO">
-                    <video (mouseenter)="playVideo()" [src]="postFiles.get(post.id)" controls
-                        [class]="getAspectRatio(post.aspectRatio)" class="rounded-3 mx-md-5 img-basics">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-
-                <div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
-            </div>
-
         </div>
     </section>
 </article>

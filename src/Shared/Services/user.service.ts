@@ -47,14 +47,14 @@ export class UserService implements OnDestroy {
             const profileImageRes = await this.getProfileImage(userId, ImageType.PROFILE_IMAGE).toPromise();
             if (profileImageRes) { user.profileImg = 'data:image/png;base64,' + profileImageRes.image; }
         } catch (error: any) {
-            if (error.status === 400) { user.profileImg = 'assets/no-profile-image.jpg'; }
+            if (error.status === 400) { user.profileImg = 'assets/no-profile-image.png'; }
         }
 
         try {
             const coverImgRes = await this.getProfileImage(userId, ImageType.COVER_IMAGE).toPromise();
             if (coverImgRes) { user.coverImg = 'data:image/png;base64,' + coverImgRes.image; }
         } catch (error: any) {
-            if (error.status === 400) { user.coverImg = 'assets/LoginSignUpBg.jpg'; }
+            if (error.status === 400) { user.coverImg = 'assets/default-banner.png'; }
         }
 
         return user;
@@ -72,7 +72,7 @@ export class UserService implements OnDestroy {
                         this.profilePictureMap.set(user.id!, imageUrl);
                     },
                     error: (error) => {
-                        const imageUrl = 'assets/no-profile-image.jpg';
+                        const imageUrl = 'assets/no-profile-image.png';
                         this.profilePictureMap.set(user.id!, imageUrl);
                     }
                 })

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { User, UserResponse } from "../../../Shared/Models/user.model";
 import { Subscription, Timestamp } from "rxjs";
 import { Store } from "@ngrx/store";
@@ -12,20 +12,18 @@ import { formatDistanceToNow } from 'date-fns';
 import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
-    selector: 'app-my-profile',
+    selector: 'my-profile',
     templateUrl: './my-profile.component.html',
-    styleUrls: ['./my-profile.component.css']
+    styleUrls: ['../shared-style.css', './my-profile.component.css']
 })
 export class MyProfileComponent implements OnInit, OnDestroy {
-    currentUser!: User;
-    coverPicture!: string;
-    profilePicture!: string;
-    friendsCount: number = 0;
-    posts: Post[] = [];
-    postFiles: Map<number, string> = new Map<number, string>();
-    showListView: boolean = true;
-    selectedPost: Post | null = null;
-    aspectRatio: number = 1;
+    protected currentUser!: User;
+    protected coverPicture: string = 'assets/default-banner.png';
+    protected profilePicture: string = 'assets/no-profile-image.png';
+    protected friendsCount: number = 0;
+    protected posts: Post[] = [];
+    protected postFiles: Map<number, string> = new Map<number, string>();
+    protected selectedPost: Post | null = null;
 
     //SUBSCRIPTION for CLOSING
     private userStoreSub!: Subscription;
@@ -51,14 +49,13 @@ export class MyProfileComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.userStore.dispatch(USER_LOGIN());
-        this.userStoreSub = this.userStore.select('UserStore')
-            .subscribe(data => {
-                this.currentUser = { ...data }
-                if (this.currentUser.id) {
-                    this.getProfileImage();
-                    this.getCoverImage();
-                }
-            });
+        this.userStoreSub = this.userStore.select('UserStore').subscribe(data => {
+            this.currentUser = { ...data }
+            if (this.currentUser.id) {
+                this.getProfileImage();
+                this.getCoverImage();
+            }
+        });
         this.getAllPostsByUser();
     }
 
@@ -71,26 +68,28 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     }
 
     // LOGIC
-    async getCoverImage() {
-        this.coverPicture = "assets/LoginSignUpBg.jpg"
-        this.getCoverSub = this.userService
-            .getProfileImage(this.currentUser.id!, ImageType.COVER_IMAGE)
-            .subscribe({
-                next: (response) => this.coverPicture = 'data:image/png;base64,' + response.image,
-                error: (error) => { }
-            })
+    private async getCoverImage(): Promise<void> {
+        this.getCoverSub = this.userService.getProfileImage(this.currentUser.id!, ImageType.COVER_IMAGE).subscribe({
+            next: (response) => this.coverPicture = 'data:image/png;base64,' + response.image,
+            error: (error) => {
+                if (error.status !== 400) {
+                    this.appService.showError("Could'nt load Cover picture")
+                }
+            }
+        })
     }
 
-    async getProfileImage() {
-        this.profilePicture = "assets/LoginSignUpBg.jpg"
-        this.getProfileSub = this.userService
-            .getProfileImage(this.currentUser.id!, ImageType.PROFILE_IMAGE)
-            .subscribe({
-                next: (response) => {
-                    this.profilePicture = 'data:image/png;base64,' + response.image
-                },
-                error: (error) => { }
-            })
+    private async getProfileImage(): Promise<void> {
+        this.getProfileSub = this.userService.getProfileImage(this.currentUser.id!, ImageType.PROFILE_IMAGE).subscribe({
+            next: (response) => {
+                this.profilePicture = 'data:image/png;base64,' + response.image
+            },
+            error: (error) => { 
+                if (error.status !== 400) {
+                    this.appService.showError("Could'nt load Profile picture")
+                }
+            }
+        })
     }
 
     async getAllPostsByUser() {
@@ -102,7 +101,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                     this.posts = posts;
                     this.loadPostFiles(posts);
                 },
-                error: err => { }
+                error: err => {
+                    this.appService.showError("Could'nt load posts")
+                 }
             })
         }
     }
@@ -134,9 +135,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
 
     getWidthClass(aspectRatio: number) {
         if (aspectRatio > 1.5) { return 'width-16-9' }
-		else if (aspectRatio < 0.6) { return 'width-9-16' }
-		else if (aspectRatio < 1 && aspectRatio >= 0.8) { return 'width-4-5' }
-		else return 'width-1-1';
+        else if (aspectRatio < 0.6) { return 'width-9-16' }
+        else if (aspectRatio < 1 && aspectRatio >= 0.8) { return 'width-4-5' }
+        else return 'width-1-1';
     }
 
     editDeleteModal(post: Post) {
@@ -177,7 +178,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     }
 
     protected getRelativeTime(createdOn: Timestamp<string>): string {
-		const parsedDate = new Date(createdOn.toString());
-		return formatDistanceToNow(parsedDate, {addSuffix: true});
-	}
+        const parsedDate = new Date(createdOn.toString());
+        return formatDistanceToNow(parsedDate, { addSuffix: true });
+    }
 }
