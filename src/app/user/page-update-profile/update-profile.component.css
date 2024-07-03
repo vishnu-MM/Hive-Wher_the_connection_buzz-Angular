@@ -1,105 +1,80 @@
-/* HOME */
-article {
-  height: 100%;
-  overflow-x: hidden;
+* {
+    color: black;
 }
-#container {
-  min-height: 100%;
-  background-color: #353535;
-}
-/* IMAGES*/
 
-.image-section{ height: 20%; }
+article {
+    display: flex;
+    justify-content: center;
+}
+
+section {
+    padding: 0;
+}
+
+.image-section {
+    height: 20%;
+}
+
 .CoverPic {
-  width: 100%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
 }
-.ProfilePic{
-  position: absolute;
-  top: 10%;
-  height: 20%;
-  width: auto;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+
+.ProfilePic {
+    position: absolute;
+    top: 10%;
+    height: 20%;
+    width: auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
 }
+
 #image-bg {
-  width: 100%;
-  height: 30%;
-  position: fixed;
-  top: 0;
-  background-color: #404040;
-  z-index: -1;
+    width: 100%;
+    height: 30%;
+    position: fixed;
+    top: 0;
+    background-color: #404040;
+    z-index: -1;
 }
+
 /* FORM DIV */
 .form-div {
-  position: relative;
-  top: 13%;
-  width: 100%;
+    position: relative;
+    top: 13%;
+    width: 100%;
 }
 
-/* Phones (up to 600px) */
-@media only screen and (max-width: 600px) {
-  #side-nav { display: none; }
-  #no-phone{ display: none; }
-  #phone { display: block; }
-  .CoverPic { position: fixed; }
-  .image-section { z-index: 2; }
-  .form-div { z-index: -2; }
-  .AddImgTxt {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    background-color: rgba(0, 0, 0, 0.5);
-    transition: opacity 0.3s;
-    pointer-events: auto;
-    opacity: 5;
-  }
+@media only screen and (max-width: 1023px) {
+    .AddImgTxt {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.5);
+        transition: opacity 0.3s;
+        pointer-events: auto;
+        opacity: 5;
+    }
 }
-/* Tablets (601px to 1024px) */
-@media only screen and (min-width: 601px) and (max-width: 1024px) {
-  #side-nav { display: none; }
-  #phone { display: none; }
-  article {
-    display: flex;
-    justify-content: center;
-  }
-  #container { width: 90%; }
-  .AddImgTxt {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    background-color: rgba(0, 0, 0, 0.5);
-    transition: opacity 0.3s;
-    pointer-events: auto;
-    opacity: 5;
-  }
-}
-/* Desktops and larger screens (1025px and up) */
-@media only screen and (min-width: 1025px) {
-  #phone { display: none; }
-  #side-nav {
-    position: fixed;
-    height: 100%;
-  }
-  article {
-    display: flex;
-    justify-content: center;
-  }
-  #container { width: 60%; }
-  .AddImgTxt {
-    top: 50%;
-    right: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: 2;
-  }
-  .CoverPic:hover .AddImgTxt,
-  .ProfilePic:hover .AddImgTxt {
-    opacity: 5;
-    pointer-events: auto;
-  }
+
+@media only screen and (min-width: 1023px) {
+    .AddImgTxt {
+        top: 50%;
+        right: 50%;
+        background-color: rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .CoverPic:hover .AddImgTxt,
+    .ProfilePic:hover .AddImgTxt {
+        opacity: 5;
+        pointer-events: auto;
+    }
 }
