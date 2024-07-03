@@ -1,26 +1,35 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Observable, Subscription, catchError, throwError } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { Connection, User, UserPage } from "../Models/user.model";
 import { Image } from "../Models/image.model";
 import { ComplaintsDTO, ComplaintsPage } from "../Models/complaints.model";
 import { UserFilter } from "../Models/filter.model";
+import { AppService } from "./app.service";
 
 export enum ImageType { COVER_IMAGE, PROFILE_IMAGE }
+
+export interface UserData {
+    user: User;
+    coverImg: string;
+    profileImg: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class UserService implements OnDestroy {
     public readonly BASE_URL: string = 'http://localhost:8000/api/user';
     private profilePictureMap: Map<number, string> = new Map<number, string>();
     private ProfileSubMap = new Map<number, Subscription>();
+    private getProfileByIdSub!: Subscription;
+    private getProfileImageSub!: Subscription;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private appService: AppService) { }
 
     ngOnDestroy(): void {
+        if (this.getProfileByIdSub) this.getProfileByIdSub.unsubscribe();
+        if (this.getProfileImageSub) this.getProfileImageSub.unsubscribe();
         for (const key of this.ProfileSubMap.keys()) {
-            if (this.ProfileSubMap.has(key)) {
-                this.ProfileSubMap.get(key)!.unsubscribe();
-            }
+            if (this.ProfileSubMap.has(key)) { this.ProfileSubMap.get(key)!.unsubscribe(); }
         }
     }
 
@@ -28,6 +37,34 @@ export class UserService implements OnDestroy {
     public getMyProfile(): Observable<User> {
         return this.http.get<User>(`${this.BASE_URL}/profile`);
     }
+
+    public async getUserProfile(userId: number): Promise<UserData> {
+        let user!: UserData;
+        try {
+            const userResponse = await this.getProfileById(userId).toPromise();
+            user = { user: userResponse!, coverImg: '', profileImg: '' };
+        } catch (err) {
+            this.appService.showError("Couldn't load user data");
+            throw new Error("Couldn't load user data");
+        }
+
+        try {
+            const profileImageRes = await this.getProfileImage(userId, ImageType.PROFILE_IMAGE).toPromise();
+            if (profileImageRes) { user.profileImg = 'data:image/png;base64,' + profileImageRes.image; }
+        } catch (error:any) {
+            if (error.status === 400) { user.profileImg = 'assets/no-profile-image.jpg'; }
+        }
+    
+        try {
+            const coverImgRes = await this.getProfileImage(userId, ImageType.COVER_IMAGE).toPromise();
+            if (coverImgRes) { user.coverImg = 'data:image/png;base64,' + coverImgRes.image; }
+        } catch (error:any) {          
+            if (error.status === 400) { user.coverImg = 'assets/LoginSignUpBg.jpg'; }
+        }
+
+        return user;
+    }
+
 
     public getProfileById(id: number): Observable<User> {
         return this.http.get<User>(`${this.BASE_URL}/profile/${id}`);

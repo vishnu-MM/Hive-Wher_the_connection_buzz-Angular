@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Modal } from "bootstrap";
 import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from "ngx-image-cropper";
-import { Post, PostType } from "../../../Shared/Models/post.model";
+import { PostType } from "../../../Shared/Models/post.model";
 import { USER_LOGIN } from "../../../Shared/Store/user.action";
 import { Store } from "@ngrx/store";
 import { User } from "../../../Shared/Models/user.model";
 import { Subscription } from "rxjs";
-import { PostService } from "../../../Shared/Services/post.service";
 
 @Component({
     selector: 'app-home',
@@ -53,7 +52,6 @@ export class HomeComponent implements OnInit {
             this.convertFileToBase64(this.file).then(base64 => {
                 this.previewImg = base64;
             });
-            console.log(this.aspectRatio)
         }
     }
 

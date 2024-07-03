@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Store } from "@ngrx/store";
 import { User } from "../../../Shared/Models/user.model";
 import { USER_LOGIN } from "../../../Shared/Store/user.action";
 import { Subscription } from "rxjs";
 import { PostCreation, PostType } from "../../../Shared/Models/post.model";
 import { PostService } from "../../../Shared/Services/post.service";
-import { NgToastService } from 'ng-angular-popup';
+import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
     selector: 'create-post',
@@ -13,26 +13,28 @@ import { NgToastService } from 'ng-angular-popup';
     styleUrls: ['./create-post.component.css']
 })
 export class CreatePostComponent implements OnInit, OnDestroy {
-    imageChangedEvent!: Event;
     @Output() showModal = new EventEmitter<Event>();
     @Input() file: File | undefined;
-    @Input() previewImg!: string;
+    @Input() previewImg: string| undefined;
     @Input() aspectRatio!: number;
-    description: string = '';
-    userStoreSub!: Subscription;
-    currentUser!: User;
-    postServiceSub!: Subscription;
-    previewVideo: string | ArrayBuffer | null = null;
+    protected previewVideo: string | ArrayBuffer | null = null;
     protected showCreateNewPostDivInSmallerDisplay: boolean = false;
+    protected description: string = '';
+    private imageChangedEvent!: Event | undefined;
+    private currentUser!: User;
+    private userStoreSub!: Subscription;
+    private postServiceSub!: Subscription;
 
-    constructor(private userStore: Store<{ UserStore: User }>,
-        private postService: PostService, private toast: NgToastService) { }
+    constructor(private postService: PostService,
+        private cdRef: ChangeDetectorRef,
+        private appService: AppService,
+        private userStore: Store<{ UserStore: User }>,) { }
 
     ngOnInit(): void {
         this.userStore.dispatch(USER_LOGIN());
-        this.userStoreSub = this.userStore
-            .select('UserStore')
-            .subscribe(data => this.currentUser = { ...data });
+        this.userStoreSub = this.userStore.select('UserStore').subscribe(
+            user => this.currentUser = { ...user }
+        );
     }
 
     ngOnDestroy() {
@@ -40,7 +42,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         if (this.postServiceSub) this.postServiceSub.unsubscribe();
     }
 
-    triggerImageUpload(): void {
+    protected triggerImageUpload(): void {
         this.file = undefined;
         this.previewVideo = '';
         this.previewImg = '';
@@ -48,7 +50,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         if (fileInput) { fileInput.click(); }
     }
 
-    onFileSelected(event: Event): void {
+    protected onImageSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         if (input.files && input.files.length > 0) {
             this.imageChangedEvent = event;
@@ -56,79 +58,7 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         }
     }
 
-    protected async post(): Promise<void> {
-        if (this.file) {
-            if (this.file.type.startsWith('image/')) {
-                let postCreation: PostCreation = {
-                    description: (this.description) ? this.description.trim() : '',
-                    postType: PostType.IMAGE,
-                    userId: this.currentUser.id!,
-                    aspectRatio: this.aspectRatio
-                }
-                this.postServiceSub = this.postService
-                    .createPost(this.file, postCreation)
-                    .subscribe({
-                        next: value => {
-                            this.file = undefined;
-                            this.description = '';
-                            this.previewImg = '';
-                            this.showSuccess("Posted Successfully!");
-                        },
-                        error: error => { this.showError("Something Went wrong") }
-                    });
-            }
-            else if (this.file.type.startsWith('video/')) {
-
-                const video = document.createElement('video');
-                video.preload = 'metadata';
-                video.onloadedmetadata = () => {
-                    video.onloadedmetadata = null;
-                    this.aspectRatio = video.videoWidth / video.videoHeight;            
-                    URL.revokeObjectURL(video.src);
-                };
-                video.src = URL.createObjectURL(this.file);
-
-                let postCreation: PostCreation = {
-                    description: this.description.trim(),
-                    postType: PostType.VIDEO,
-                    userId: this.currentUser.id!,
-                    aspectRatio: this.aspectRatio
-                }
-
-                this.postServiceSub = this.postService.createPost(this.file, postCreation)
-                    .subscribe({
-                        next: value => {
-                            this.file = undefined;
-                            this.description = '';
-                            this.previewVideo = '';
-                            this.showSuccess("Posted Successfully!");
-                        },
-                        error: error => { this.showError("Something Went wrong") }
-                    });
-            }
-        }
-        else if (this.description !== '') {
-            let postCreation: PostCreation = {
-                description: this.description.trim(),
-                postType: PostType.TEXT_ONLY,
-                userId: this.currentUser.id!,
-                aspectRatio: 0
-            }
-            this.postServiceSub = this.postService.createTextOnlyPost(postCreation)
-            .subscribe({
-                next: value => {
-                    this.description = '';
-                    this.showSuccess("Posted Successfully!");
-                },
-                error: error => { this.showError("Something Went wrong") }
-            });
-        }
-        else {
-            this.showWarn("Post Should have either a Media File or Text")
-        }
-    }
-
-    triggerVideoUpload() {
+    protected triggerVideoUpload() {
         this.file = undefined;
         this.previewVideo = '';
         this.previewImg = '';
@@ -136,13 +66,13 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         if (fileInput) { fileInput.click(); }
     }
 
-    onVideoSelected(event: Event) {
+    protected onVideoSelected(event: Event) {
         const input = event.target as HTMLInputElement;
         const file = input.files ? input.files[0] : null;
 
         if (file && file.type.startsWith('video/')) {
             if (file.size > 200 * 1024 * 1024) {
-                this.showError('File size exceeds the limit of 200MB.');
+                this.appService.showError('File size exceeds the limit of 200MB.');
                 return;
             }
             this.file = file;
@@ -170,20 +100,84 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         video.src = URL.createObjectURL(file);
     }
 
-    private showSuccess(summary: string) {
-        this.toast.success({ detail: "SUCCESS", summary: summary, duration: 5000 });
+
+
+    protected async post(): Promise<void> {
+        if (this.file)
+            this.postFileIncludedPost(this.file);
+        else  {
+            if (this.description === '') {
+                this.appService.showWarn("Post Should have either a Media File or Text")
+            }
+            else if (this.description !== '') {
+                this.postTextBasedPost();
+            }
+        }
     }
 
-    private showError(summary: string) {
-        this.toast.error({ detail: "ERROR", summary: summary, duration: 5000 });
+    private async postTextBasedPost(): Promise<void> {
+        let postCreation = this.getPostCreationObj(PostType.TEXT_ONLY, 0);
+        this.postServiceSub = this.postService.createTextOnlyPost(postCreation).subscribe({
+            next: () => { this.clear(true); },
+            error: error => { this.appService.showError("Something Went wrong") }
+        });
     }
 
-    private showInfo(summary: string) {
-        // this.toast.info({detail:"INFO", summary: summary, sticky:true});
-        this.toast.info({ detail: "INFO", summary: summary, duration: 5000 });
+    private async postFileIncludedPost(file: File): Promise<void> {
+        let postCreation!: PostCreation;
+        if (file.type.startsWith('image/')) {
+            postCreation = this.getPostCreationObj(PostType.IMAGE, this.aspectRatio);
+        }
+        else if (file.type.startsWith('video/')) {
+            const aspectRatio = await this.getVideoAspectRatio(file);
+            postCreation = this.getPostCreationObj(PostType.VIDEO, aspectRatio);
+        }
+        else {
+            this.appService.showError("Invalid File type")
+            this.clear(false);
+            return;
+        }
+
+        this.postServiceSub = this.postService.createPost(file, postCreation).subscribe({
+            next: () => { this.clear(true); },
+            error: error => { this.appService.showError("Something Went wrong") }
+        });
     }
 
-    private showWarn(summary: string) {
-        this.toast.warning({ detail: "WARN", summary: summary, duration: 5000 });
+    private getPostCreationObj(type: PostType, aspectRatio: number): PostCreation {
+        const description = (this.description) ? this.description.trim() : '';
+        const userid = this.currentUser.id!;
+        return {
+            userId: userid,
+            description: description,
+            postType: type,
+            aspectRatio: aspectRatio
+        }
+    }
+
+    private async getVideoAspectRatio(file: File): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.onloadedmetadata = () => {
+                video.onloadedmetadata = null;
+                const aspectRatio = video.videoWidth / video.videoHeight;
+                URL.revokeObjectURL(video.src);
+                resolve(aspectRatio); // Resolve the promise with aspectRatio
+            };
+            video.onerror = reject; // Handle errors if any
+            video.src = URL.createObjectURL(file);
+        });
+    }
+
+    protected clear(isPosted: boolean): void {
+        this.file = undefined;
+        this.description = '';
+        this.previewVideo = null;
+        this.previewImg = undefined;
+        this.aspectRatio = 0;
+        this.imageChangedEvent = undefined;
+        if (isPosted) { this.appService.showSuccess("Posted Successfully!"); }
+        this.cdRef.detectChanges();
     }
 }
