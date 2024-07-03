@@ -1,30 +1,24 @@
 <div class="my-4 py-1 d-flex flex-row">
-    <div class="me-3 m-0 d-flex align-items-center post-inte" (click)="toggleLike()">
+    <div class="me-3 m-0 d-flex align-items-center " (click)="toggleLike()">
         <mat-icon aria-hidden="false"
                   aria-label="favorite"
                   fontIcon="favorite"
                   [class]="{'liked' : isLiked}">
         </mat-icon>
-        <span class="post-inte-txt" [class]="{'liked' : isLiked}">
-            {{ likeCount }} Likes
-        </span>
+        <span [class]="{'liked' : isLiked}">{{ likeCount + 'Likes' }}</span>
     </div>
-    <div class="me-3 d-flex align-items-center post-inte" (click)="navigateTo()">
+    <div class="me-3 d-flex align-items-center " (click)="navigateTo()">
         <mat-icon aria-hidden="false"
                   aria-label="chat_bubble_outline"
                   fontIcon="chat_bubble_outline">
         </mat-icon>
-        <span class="post-inte-txt">{{ commentCount }} 
-            Comments
-        </span>
+        <span>{{ commentCount + 'Comments' }}</span>
     </div>
-    <div class="me-3 d-flex align-items-center post-inte">
+    <div class="me-3 d-flex align-items-center ">
         <mat-icon aria-hidden="false"
                   aria-label="share"
                   fontIcon="share">
         </mat-icon>
-        <span class="post-inte-txt">
-            Share
-        </span>
+        <span>Share</span>
     </div>
 </div>

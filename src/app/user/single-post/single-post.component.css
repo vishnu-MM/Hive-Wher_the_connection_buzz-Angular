@@ -1,66 +1,112 @@
-#post {
-  border-bottom: 3px solid #404040;
+* {
+    color: white;
 }
-img{
-  aspect-ratio: 1;
-  width: 50px;
+
+img {
+    aspect-ratio: 1;
+    width: 50px;
 }
+
 .post {
-  background-color: black;
-  border: 1px solid black;
-  object-fit: contain;
+    background-color: black;
+    object-fit: contain;
 }
 
-/* For smartphones */
-@media only screen and (max-width: 768px) {
-  /*ASPECT RATIO*/
-  .aspect-ratio-16-9{
+.date-time {
+    margin: 0 0.6rem;
+    color: rgb(135, 133, 133);
+}
+
+#loader {
     width: 100%;
-    aspect-ratio: 16/9;
-  }
-  .aspect-ratio-9-16{
-    width: 50%;
-    aspect-ratio: 9/16;
-  }
-  .aspect-ratio-4-5, .aspect-ratio-1-1{
-    width: 80%;
-    aspect-ratio: 1;
-  }
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* For tablets */
+/** For smartphones */
+@media only screen and (max-width: 768px) {
+    article {
+        border-bottom: 1px solid #404040;
+    }
+
+    .post {
+        border: 1px solid black;
+    }
+
+    /*ASPECT RATIO*/
+    .aspect-ratio-16-9 {
+        width: 100%;
+        aspect-ratio: 16/9;
+    }
+
+    .aspect-ratio-9-16 {
+        width: 50%;
+        aspect-ratio: 9/16;
+    }
+
+    .aspect-ratio-4-5,
+    .aspect-ratio-1-1 {
+        width: 80%;
+        aspect-ratio: 1;
+    }
+}
+
+/** For tablets */
 @media only screen and (min-width: 768px) and (max-width: 1023px) {
-  /*ASPECT RATIO*/
-  .aspect-ratio-16-9{
-    width: 80%;
-    aspect-ratio: 16/9;
-  }
-  .aspect-ratio-9-16{
-    width: 35%;
-    aspect-ratio: 9/16;
-  }
-  .aspect-ratio-4-5, .aspect-ratio-1-1{
-    width: 50%;
-    aspect-ratio: 1;
-  }
+    article {
+        border-bottom: 1px solid #404040;
+    }
+
+    .post {
+        border: 1px solid black;
+    }
+
+    /*ASPECT RATIO*/
+    .aspect-ratio-16-9 {
+        width: 80%;
+        aspect-ratio: 16/9;
+    }
+
+    .aspect-ratio-9-16 {
+        width: 35%;
+        aspect-ratio: 9/16;
+    }
+
+    .aspect-ratio-4-5,
+    .aspect-ratio-1-1 {
+        width: 50%;
+        aspect-ratio: 1;
+    }
 }
 
-/* For laptops and larger screens */
+/** For laptops and larger screens */
 @media only screen and (min-width: 1024px) {
-  .aspect-ratio-16-9{
-    width: 50%;
-    aspect-ratio: 16/9;
-  }
-  .aspect-ratio-9-16{
-    width: 30%;
-    aspect-ratio: 9/16;
-  }
-  .aspect-ratio-4-5{
-    width: 50%;
-    aspect-ratio: 4/5;
-  }
-  .aspect-ratio-1-1{
-    width: 50%;
-    aspect-ratio: 1;
-  }
+    article {
+        border-bottom: 1px solid #5e548e;
+    }
+
+    .post {
+        border: 1px solid #5e548e;
+    }
+
+    .aspect-ratio-16-9 {
+        width: 50%;
+        aspect-ratio: 16/9;
+    }
+
+    .aspect-ratio-9-16 {
+        width: 30%;
+        aspect-ratio: 9/16;
+    }
+
+    .aspect-ratio-4-5 {
+        width: 50%;
+        aspect-ratio: 4/5;
+    }
+
+    .aspect-ratio-1-1 {
+        width: 50%;
+        aspect-ratio: 1;
+    }
 }

@@ -1,25 +1,32 @@
-<div id="post" class="p-4 pb-1 pb-md-1 p-md-5">
+<article class="px-5 py-3">
     <div class="d-flex align-items-center">
         <img [src]="profilePicture"
              alt="user profile picture"
              (click)="navigateToUser()"
              class="rounded-5 border border-black d-inline-block">
         <div class="ms-2">
-            <span class="h4 text-light">{{ name }}</span> <br>
-            <span class="text-light">@{{ username }} | </span>
-            <span class="text-light">{{ getRelativeTime }}</span>
+            <span class="h5 text-light">{{ name }}</span>
+            <span class="date-time">{{ getRelativeTime }}</span> <br>
+            <span class="text-light">{{ username }}</span>
         </div>
     </div>
 
     <div class="my-3 mx-md-5"> <span class="h6 text-light">{{post.description}}</span> </div>
+    
+    <ng-container *ngIf="!postFile && post.postType !== PostType.TEXT_ONLY">
+        <div id="loader">
+            <div class="loader"></div>
+        </div>
+    </ng-container>
 
-    <img *ngIf="post.postType === PostType.IMAGE" 
+    <img *ngIf="postFile && post.postType === PostType.IMAGE" 
          #postImageElement
          [src]="postFile" 
          [class]="getAspectRatio(post.aspectRatio)"
          alt="post image" class="post rounded mx-md-5" (click)="navigateTo(post.id)">
 
-    <div *ngIf="post.postType === PostType.VIDEO" (click)="navigateTo(post.id)">
+    <div *ngIf="postFile && post.postType === PostType.VIDEO" 
+        (click)="navigateTo(post.id)">
         <video #postVideoElement
                (mouseenter)="playVideo()"
                [src]="postFile" 
@@ -31,4 +38,4 @@
     </div>
 
     <div class="mx-md-5"> <post-interaction [id]="post.id"></post-interaction> </div>
-</div>
+</article>

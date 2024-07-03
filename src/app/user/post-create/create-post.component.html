@@ -28,23 +28,20 @@
     </div>
 </div>
 
-<div id="create-post" [class]="{'active': !showCreateNewPostDivInSmallerDisplay}">
+<div id="create-post"  
+    [class]="{'active': !showCreateNewPostDivInSmallerDisplay, 'scroll': file}">
     <div class="d-lg-flex justify-content-center">
-        <span class="h2">
-            Create New Post
-        </span>
+        <span class="h2">Create New Post</span>
     </div>
     <div class="mt-3">
         <label for="post-text" [class]="{'text-danger': (description.length >= 255), 'text-white': (description.length < 255)}">
-            Share your thoughts here
+            <span>Share your thoughts here</span>
         </label>
         <textarea id="post-text" 
                   class="form-control" 
                   [class]="{'is-invalid': (description.length >= 255)}" rows="3"
                   [(ngModel)]="description" placeholder="Enter your message"></textarea>
-        <span *ngIf="description.length  >= 255" class="text-danger bold">
-            Description is too long
-        </span>
+        <span *ngIf="description.length  >= 255" class="text-danger bold">Description is too long</span>
     </div>
     <div class="mt-3">
         <button class="btn me-1" (click)="triggerImageUpload()">
@@ -60,7 +57,7 @@
                name="imageInput"
                accept="image/png, image/jpeg" 
                (click)="imageInputField.value = ''" 
-               (change)="onFileSelected($event)">
+               (change)="onImageSelected($event)">
         <input type="file" 
                #videoInputField 
                id="videoInput" 
@@ -78,9 +75,14 @@
             Your browser does not support the video tag.
         </video>
     </div>
-    <div class="mt-3">
-        <button class="form-control btn btn-success" (click)="post()" [disabled]="(description.length >= 255)">
+    <div class="mt-3 flex-center">
+        <button class="form-control btn post" (click)="post()" [disabled]="(description.length >= 255)">
             Post
+        </button>
+        <button class="form-control btn cancel ms-1" 
+                *ngIf="file || description"
+                (click)="clear(false)">
+            Cancel
         </button>
     </div>
 </div>

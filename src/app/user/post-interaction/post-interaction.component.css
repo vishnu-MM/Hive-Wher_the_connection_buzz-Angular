@@ -1,21 +1,31 @@
-/*mat-icon {*/
-/*  color: white;*/
-/*  transform: scale(1.2);*/
-/*}*/
-.liked { color: deeppink; }
-.post-inte-txt {
-  color: #6C757D;
-  font-weight: lighter;
-  font-size: larger;
-  margin-left: 5px;
-  margin-top: 2px;
-  cursor: pointer;
+.liked {
+    color: deeppink;
 }
-mat-icon {
-  color: #6C757D;
+
+span {
+    font-weight: lighter;
+    font-size: larger;
+    margin-left: 5px;
+    margin-top: 2px;
+    cursor: pointer;
 }
-.post-inte:hover{
-  color: white;
-  transform: scale(1);
-  transition-duration: 0.2s;
+
+@media only screen and (max-width: 1023px) {
+    mat-icon {
+        color: #6C757D;
+    }
+
+    span {
+        color: #6C757D;
+    }
+}
+
+@media only screen and (min-width: 1023px) {
+    mat-icon {
+        color: white;
+    }
+
+    span {
+        color: white;
+    }
 }

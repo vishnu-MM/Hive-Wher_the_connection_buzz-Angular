@@ -1,92 +1,69 @@
-<div id="side-nav" class="me-1">
-    <side-nav-bar></side-nav-bar>
-</div>
-<div id="bottom-nav">
-    <bottom-nav-bar></bottom-nav-bar>
-</div>
-
-<div id="main-div">
-    <div id="posts" class="posts-scroll"> 
-        <posts></posts> 
-    </div>
-    <div id="create-post">
-        <div>
-            <create-post
-              [file]="file"
-              [previewImg]="previewImg"
-              [aspectRatio]="aspectRatio"
-              (showModal)="showModal($event)">
-            </create-post>
+<!-- New Post Modal -->
+<div id="image-crop" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title m-0">Crop Image</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <image-cropper format="png" #imageCropper [aspectRatio]="aspectRatio" [maintainAspectRatio]="true"
+                    (cropperReady)="cropperReady()" (imageLoaded)="imageLoaded($event)"
+                    (imageCropped)="imageCropped($event)" (loadImageFailed)="loadImageFailed()"
+                    [imageChangedEvent]="imageChangedEvent">
+                </image-cropper>
+            </div>
+            <div class="d-flex flex-row border-top px-4">
+                <button class="btn btn-dark form-control m-1 aspect-ratio" (click)="aspectRatio = 1">
+                    <mat-icon aria-hidden="false" aria-label="aspect_ratio" fontIcon="aspect_ratio">
+                    </mat-icon> <br>
+                    <span>1:1</span>
+                </button>
+                <button class="btn btn-dark form-control m-1 aspect-ratio" (click)="aspectRatio = 16/9">
+                    <mat-icon aria-hidden="false" aria-label="aspect_ratio" fontIcon="aspect_ratio">
+                    </mat-icon> <br>
+                    <span>16:9</span>
+                </button>
+                <button class="btn btn-dark form-control m-1 aspect-ratio" (click)="aspectRatio = 9/16">
+                    <mat-icon aria-hidden="false" aria-label="aspect_ratio" fontIcon="aspect_ratio">
+                    </mat-icon> <br>
+                    <span>9:16</span>
+                </button>
+                <button class="btn btn-dark form-control m-1 aspect-ratio" (click)="aspectRatio = 4/5">
+                    <mat-icon aria-hidden="false" aria-label="aspect_ratio" fontIcon="aspect_ratio">
+                    </mat-icon> <br>
+                    <span>4:5</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="cropAndSave()">Crop &
+                    Save</button>
+            </div>
         </div>
+    </div>
+</div>
+<!-- New Post Modal Ends-->
+
+<!-- Main  -->
+<section>
+    <div id="side-nav">
+        <side-nav-bar></side-nav-bar>
+    </div>
+    <article>
+        <posts></posts>
+    </article>
+    <div id="action-bar">
+        <create-post [file]="file" [previewImg]="previewImg" [aspectRatio]="aspectRatio"
+            (showModal)="showModal($event)">
+        </create-post>
         <div id="people-online-line" class="mx-1">
 
         </div>
     </div>
-</div>
+</section>
+<!-- End Of Main -->
 
-
-<div id="image-crop" class="modal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-          <h5 class="modal-title">Modal title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-          <image-cropper
-              format="png"
-              #imageCropper
-              [aspectRatio]="aspectRatio"
-              [maintainAspectRatio]="true"
-              (cropperReady)="cropperReady()"
-              (imageLoaded)="imageLoaded($event)"
-              (imageCropped)="imageCropped($event)"
-              (loadImageFailed)="loadImageFailed()"
-              [imageChangedEvent]="imageChangedEvent">
-          </image-cropper>
-      </div>
-      <div class="d-flex flex-row border border-top px-4">
-          <button class="btn btn-dark form-control m-1 aspect-ratio"
-                  (click)="aspectRatio = 1">
-                  <mat-icon
-                      aria-hidden="false"
-                      aria-label="aspect_ratio"
-                      fontIcon="aspect_ratio">
-                  </mat-icon> <br>
-                  <span>1:1</span>
-          </button>
-          <button class="btn btn-dark form-control m-1 aspect-ratio"
-                  (click)="aspectRatio = 16/9">
-                  <mat-icon
-                      aria-hidden="false"
-                      aria-label="aspect_ratio"
-                      fontIcon="aspect_ratio">
-                  </mat-icon> <br>
-                  <span>16:9</span>
-          </button>
-          <button class="btn btn-dark form-control m-1 aspect-ratio"
-                  (click)="aspectRatio = 9/16">
-                  <mat-icon
-                      aria-hidden="false"
-                      aria-label="aspect_ratio"
-                      fontIcon="aspect_ratio">
-                  </mat-icon> <br>
-                  <span>9:16</span>
-          </button>
-          <button class="btn btn-dark form-control m-1 aspect-ratio"
-                  (click)="aspectRatio = 4/5">
-                  <mat-icon
-                      aria-hidden="false"
-                      aria-label="aspect_ratio"
-                      fontIcon="aspect_ratio">
-                  </mat-icon> <br>
-                  <span>4:5</span>
-          </button>
-      </div>
-      <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="cropAndSave()">Crop & Save</button>
-      </div>
-    </div>
-  </div>
+<div id="bottom-nav">
+    <bottom-nav-bar></bottom-nav-bar>
 </div>

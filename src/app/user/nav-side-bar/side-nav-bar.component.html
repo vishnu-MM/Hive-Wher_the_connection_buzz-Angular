@@ -1,40 +1,49 @@
-<nav class="sidebar px-1">
-    <div id="nav-div">
-        <div id="top-nav">
-            <div class="icon-panel m-1 rounded-5" routerLink="/u/home">
-                <div class="flex-center">
-                    <mat-icon aria-hidden="false" aria-label="home" fontIcon="home"></mat-icon>
-                </div>
-            </div>
-
-            <div class="icon-panel m-1 p-2 rounded-5" routerLink="/u/search">
-                <div class="flex-center">
-                    <mat-icon aria-hidden="false" aria-label="search" fontIcon="search"></mat-icon>
-                </div>
-            </div>
-
-            <div class="icon-panel m-1 p-2 rounded-5" routerLink="/u/chat/0">
-                <div class="flex-center">
-                    <mat-icon aria-hidden="false" aria-label="chat" fontIcon="forum"></mat-icon>
-                </div>
-            </div>
-
-            <div class="icon-panel m-1 p-2 rounded-5" routerLink="/u/notifications">
-                <div class="flex-center">
-                    <mat-icon aria-hidden="false" aria-label="notifications" fontIcon="notifications"></mat-icon>
-                </div>
-            </div>
-
-            <div class="icon-panel m-1 p-2 rounded-5">
-                <div class="flex-center">
-                    <mat-icon aria-hidden="false" aria-label="explore" fontIcon="explore"></mat-icon>
-                </div>
+<nav class="rounded-5">
+    <div id="upper-portion">
+        <img src="assets/logo.png" alt="Hive">
+    </div>
+    <div id="middle-portion">
+        <div class="list-items">
+            <div class="outline" 
+                 routerLink="/u/home" 
+                 [class]="{'active': currentPage === 0}">
+                <mat-icon class="icons" fontIcon="home"></mat-icon>
             </div>
         </div>
-
-        <div class="icon-panel mx-1 mb-2 rounded-5">
-            <div class="flex-center" routerLink="/u/profile">
-                <mat-icon aria-hidden="false" aria-label="profile" fontIcon="person"></mat-icon>
+        <div class="list-items">
+            <div class="outline" 
+                 routerLink="/u/search"
+                 [class]="{'active': currentPage === 2}">            
+                <mat-icon class="icons" fontIcon="search"></mat-icon>
+            </div>
+        </div>
+        <div class="list-items">
+            <div class="outline" 
+                 routerLink="/u/chat/0" 
+                 [class]="{'active': currentPage === 1}">
+                <mat-icon class="icons" fontIcon="sms"></mat-icon>
+            </div>
+        </div>
+        <div class="list-items">
+            <div class="outline" 
+                 routerLink="/u/notifications"
+                 [class]="{'active': currentPage === 3}">            
+                <mat-icon class="icons" fontIcon="notifications"></mat-icon>
+            </div>
+        </div>
+        <div class="list-items">
+            <div class="outline" 
+                 [class]="{'active': currentPage === 4}">            
+                <mat-icon class="icons" fontIcon="explore"></mat-icon>
+            </div>
+        </div>
+    </div>
+    <div id="lower-portion">
+        <div class="list-items">
+            <div class="outline" 
+                routerLink="/u/profile"
+                 [class]="{'active': currentPage === 5}">            
+                <mat-icon class="icons" fontIcon="account_circle"></mat-icon>
             </div>
         </div>
     </div>

@@ -1,3 +1,19 @@
+/* Common Styles */
+.modal-content {
+    background-color: black;
+    color: white;
+}
+
+.modal-body {
+    max-height: 60vh;
+    height: 60vh;
+}
+
+section {
+    height: 100vh;
+    width: 100vw;
+}
+
 /* For tablets and smartphones */
 @media only screen and (max-width: 1023px) {
     #side-nav {
@@ -11,9 +27,19 @@
         z-index: 1000;
     }
 
-    #main-div {
+    section {
         display: flex;
         flex-direction: column-reverse;
+    }
+
+    article {
+        margin-top: 2.2rem;
+    }
+
+    #action-bar {
+        width: 100%;
+        position: fixed;
+        top: 0;
     }
 }
 
@@ -22,75 +48,51 @@
     #bottom-nav {
         display: none;
     }
+
     #side-nav {
-        position: fixed;
         height: 100%;
     }
-    #create-post {
-        width: 33%;
-        margin-top: 0;
-    }
 
-
-
-    #main-div {
+    section {
+        padding: 0.5rem;
         display: flex;
-        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    #posts {
-        margin-left: 7%;
+    article {
+        border-radius: 1rem;
+        height: 100%;
         width: 60%;
-        min-height: 100vh;
     }
 
-    #people-online-line {
-        height: 60%;
-        width: 98.5%;
-        background-color: #353535;
-    }
-
-    .posts-scroll {
-        min-height: 100vh;
-        height: 100vh;
-        /* Adjust the height as needed */
-        overflow-y: scroll;
-    }
-
-    /* Custom scrollbar styles */
-    .posts-scroll::-webkit-scrollbar {
-        width: 12px;
-        border-radius: 10px;
-    }
-
-    .posts-scroll::-webkit-scrollbar-track {
-        background: #353535;
-        border-radius: 10px;
-    }
-
-    .posts-scroll::-webkit-scrollbar-thumb {
-        background: #ffffff;
-        border-radius: 10px;
-    }
-
-    .posts-scroll::-webkit-scrollbar-thumb:hover {
-        background: #555;
-        transform: scale(2);
-        border-radius: 10px;
-    }
-
-    /* For Firefox */
-    .posts-scroll {
-        scrollbar-width: thin;
-        scrollbar-color: #888 #353535;
-    }
-
-    /* Hide top and bottom scroll arrows */
-    .posts-scroll::-webkit-scrollbar-button {
-        display: none;
+    #action-bar {
+        height: 100%;
+        width: 30%;
     }
 }
 
-.aspect-ratio {
-    color: cadetblue;
+/* For Others */
+article {
+    overflow-y: scroll;
 }
+article::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 50%
+}
+
+article::-webkit-scrollbar-track {
+    margin: 12px 0;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+article::-webkit-scrollbar-thumb {
+    background: rgba(236, 236, 236, 0.5);
+    border-radius: 10px;
+}
+
+article::-webkit-scrollbar-thumb:hover {
+    background: #0b132b;
+}
+

@@ -1,80 +1,95 @@
+* {
+    color: #0b132b;
+}
+
 #create-post {
-  background-color: #353535;
+    background-color: #5e548e;
 }
-textarea{
-  background-color: #353535;
-  color: white;
-  box-shadow: none;
+
+textarea, 
+textarea::placeholder,
+textarea:focus {
+    background-color: #5e548e;
+    color: #0b132b;
+    box-shadow: none;
+    border-color: #0b132b;
+    outline-color: #0b132b;
 }
-textarea::placeholder {
-  color: darkgray;
+
+input,
+input:focus {
+    background-color: #5e548e;
+    color: #0b132b;
 }
-textarea:focus{
-  background-color: #353535;
-  color: white;
-  box-shadow: none;
+
+mat-icon {
+    transform: scale(2);
 }
-input{
-  background-color: #353535;
-  color: darkgray;
+
+mat-icon:hover {
+    transform: scale(2.5);
 }
-input:focus{
-  background-color: #353535;
-  color: white;
+
+.post {
+    color: #5e548e;
+    background-color: #0b132b;
+    font-weight: bold;
 }
-input::file-selector-button {
-  background-color:palegreen;
+
+.cancel {
+    color: #0b132b;
+    background-color: #5e548e;
+    font-weight: 500;
 }
-input::file-selector-button:hover {
-  background-color:hotpink;
+
+.post, .cancel {
+    font-size: large;
+    border: 1px solid #0b132b;
 }
-span {
-  color: darkgray;
+
+.aspect-ratio-9-16 {
+    width: 50%;
+    aspect-ratio: 9/16;
 }
-mat-icon{
-  transform: scale(2);
-  color: darkgray;
-}
-mat-icon:hover{
-  transform: scale(2.5);
-  color: white;
-}
-.aspect-ratio-9-16{
-  width: 50%;
-  aspect-ratio: 9/16;
-}
+
 .aspect-ratio {
-  width: 100%;
-  object-fit: contain;
+    width: 100%;
+    object-fit: contain;
 }
+
 @media only screen and (max-width: 1023px) {
     #heading {
-        background-color: #353535;
+        background-color: #5e548e;
         border-bottom: 1px solid #404040;
         padding: 2% 5%;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
+
     #heading h1 {
         margin: 0;
-        color: white;
+        color: #0b132b;
         font-size: xx-large;
         font-weight: lighter;
     }
+
     #heading span {
         margin: 0;
         color: greenyellow;
     }
+
     #create-post {
         margin: 0;
         margin-bottom: 5px;
         padding: 5%;
     }
+
     #btn-group {
         display: flex;
         flex-direction: row;
     }
+
     #new-post-btn {
         padding: 0;
         margin: 0;
@@ -83,18 +98,21 @@ mat-icon:hover{
         display: grid;
         place-content: center;
     }
+
     mat-icon {
         padding: 0;
         margin: 0;
         transform: scale(1.3);
-        color: white;
-        font-weight: lighter; 
+        color: #0b132b;
+        font-weight: lighter;
     }
+
     mat-icon:hover {
         transform: scale(1.4);
     }
+
     .active {
-        display:none;
+        display: none;
     }
 }
 
@@ -103,11 +121,52 @@ mat-icon:hover{
     #heading {
         display: none;
     }
+
     #create-post {
-        margin-top: 0;
-        margin-left: 5px;
-        margin-right: 5px;
-        margin-bottom: 5px;
         padding: 5%;
+        border-radius: 1rem ;
+    }
+
+}
+
+/* Big Screen Scroll Wheel */
+@media only screen and (min-width: 1023px) {
+    .scroll {
+        height: 100%;
+        /* Adjust the height as needed */
+        overflow-y: scroll;
+    }
+
+    /* Custom scrollbar styles */
+    .scroll::-webkit-scrollbar {
+        width: 12px;
+        border-radius: 10px;
+    }
+
+    .scroll::-webkit-scrollbar-track {
+        background: #353535;
+        border-radius: 10px;
+    }
+
+    .scroll::-webkit-scrollbar-thumb {
+        background: #ffffff;
+        border-radius: 10px;
+    }
+
+    .scroll::-webkit-scrollbar-thumb:hover {
+        background: #555;
+        transform: scale(2);
+        border-radius: 10px;
+    }
+
+    /* For Firefox */
+    .scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #0b132b #5e548e;
+    }
+
+    /* Hide top and bottom scroll arrows */
+    .scroll::-webkit-scrollbar-button {
+        display: none;
     }
 }

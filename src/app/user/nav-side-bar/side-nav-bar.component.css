@@ -1,47 +1,88 @@
-.sidebar {
-  /*position: fixed;*/
-  height: 100%;
-  width: 100px;
-  background-color: #353535;
+* {
+    padding: 0;
+    margin: 0;
 }
-.icon-panel {
-  width: 90%;
-  aspect-ratio: 1;
-  background-color: #6C757D;
-  border: 5px solid black;
-}
-.icon-panel:hover {
-  background-color: black;
-  border: 5px solid #6C757D;
-}
-.non-profile-sec{
-  position: absolute;
-  width: 100%;
-  height: 10%;
-  bottom: 0;
-}
-.mat-icon {
-  transform: scale(2);
-  color: black;
-  margin-bottom: 3px;
-}
-.icon-panel:hover, .icon-panel:hover .mat-icon { 
-    color: white;
-}
-.flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%; 
+
+nav {
     height: 100%;
-}
-#nav-div {
-    height: 100%;
+    width: 6rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+    background-color: #5e548e;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+}
+
+#upper-portion {
+    height: 15%;
+    aspect-ratio: 1;
+    width: 6rem;
+    display: grid;
+    place-items: center;
+}
+#middle-portion {
+    height: 65%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#lower-portion {
+    height: 20%;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 1rem;
+}
+
+#upper-portion img {
+    object-fit: contain;
+    aspect-ratio: 1;
+    width: 90%;
+}
+
+.icons {
+    transform: scale(1.5);
+    color: #0b132b;
+    margin: 0;
+    padding: 0;
+}
+
+.list-items {
+    width: 6rem;
+    height: 4.1rem;
+    margin: 2.5px 0;
+    display: grid;
+    place-items: center;
+}
+
+.outline {
+    border: #0b132b 2px solid;
+    border-radius: 50%;
+    height: 3.7rem;
+    width: 3.7rem;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
-#top-nav {
-    width: 100%;
+
+.outline,
+.icons {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.outline:hover {
+    background-color: #0b132b;
+    color: #5e548e;
+}
+
+.outline:hover mat-icon {
+    color: #5e548e;
+}
+
+.active {
+    background-color: #0b132b;
+    color: #5e548e;
+}
+
+.active mat-icon {
+    color: #5e548e;
 }

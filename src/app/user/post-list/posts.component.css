@@ -1,14 +1,12 @@
-article { background-color: #353535; }
-.loader {
-  border: 5px solid #87f7a9; /* Light grey */
-  border-top: 5px solid #404040; /* Blue */
-  border-radius: 50%;
-  width: 50px;
-  aspect-ratio: 1;
-  animation: spin 2s linear infinite;
+@media only screen and (max-width: 1023px) {
+    article { 
+        background-color: #353535;
+    }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@media only screen and (min-width: 1023px) { 
+    article { 
+        border-radius: 1rem;
+        background-color: rgb(0, 0, 0); 
+    }
 }
