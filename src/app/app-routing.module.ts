@@ -5,6 +5,7 @@ import { SignUpPageComponent } from './sign-up-page/sign-up-page.component';
 import { VerifyOtpPageComponent } from './otp-verify-page/verify-otp-page.component';
 import { adminGuard, authGuard, loginGuard } from "./auth.guard";
 import { LoadingComponent } from './loading/loading.component';
+import { ResetPasswordComponent } from './reset-password-page/reset-password.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/u/home', pathMatch: 'full' },
@@ -16,6 +17,7 @@ const routes: Routes = [
     { path: 'signup', component: SignUpPageComponent },
     { path: 'verify-otp', component: VerifyOtpPageComponent },
     { path: 'OAuth', component: LoadingComponent },
+    { path: 'reset-password', component: ResetPasswordComponent },
     {
         path: 'u',
         canActivate: [authGuard],

@@ -1,6 +1,6 @@
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, catchError, throwError} from 'rxjs';
+import {Observable, catchError, firstValueFrom, throwError} from 'rxjs';
 import {User} from '../Models/user.model';
 import { Router } from '@angular/router';
 import { NgToastService } from 'ng-angular-popup';
@@ -46,6 +46,51 @@ export class AppService {
         this.router.navigate(['/login'])
     }
 
+    public async resetPassword(email: string): Promise<void> {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email.trim())) {
+            throw Error('Invalid Email')
+        }
+
+        const isEmailExists: boolean | undefined = await firstValueFrom(this.isEmailExists(email));
+        if (isEmailExists === undefined ) {
+            throw new Error("Could'nt reach server");
+        }
+        if (!isEmailExists) {
+            throw new Error('Email does not exist');
+        }
+        this.sentOtpForPasswordRest(email).subscribe({
+            next: res => {
+                localStorage.setItem("EMAIL", email);
+                this.router.navigate(['reset-password']);
+            },
+            error: err => {
+                throw new Error(`Could'nt sent otp (${err.status})`)
+            }
+        });
+    }
+ 
+    public updatePassword(username: string, password: string): Observable<User> {
+		const body = {username, password};
+		return this.http.put<User>(`${this.BASE_URL}/auth/password-rest`, body);
+	}
+
+    public sentOtpForPasswordRest(email: string): Observable<string> {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email.trim())) {
+            throw Error('Invalid Email');
+        }
+        const url = `${this.BASE_URL}/auth/password-rest/send-otp`;
+        const params = new HttpParams().set('email', email);
+        return this.http.post<string>(url + '?' + params.toString(), {});
+    }
+    
+
+    public isEmailExists(email: string): Observable<boolean> {
+        const url = `${this.BASE_URL}/auth/check-email`;
+        const params = new HttpParams().set('email', email);
+        return this.http.get<boolean>(url, { params });
+    }
     
     public showSuccess(summary: string) {
         this.toast.success({ detail: "SUCCESS", summary: summary, duration: 5000 });

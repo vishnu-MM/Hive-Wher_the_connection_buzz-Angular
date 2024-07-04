@@ -26,6 +26,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     protected loginClicked: boolean = false;
     protected errorMessage: string = '';
     protected googleAuthUrl: string = '';
+    protected loading: boolean = false;
 
     // SUBSCRIPTIONS
     private userStoreSub!: Subscription;
@@ -40,6 +41,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
                 private webSocketService: WebSocketService) {}
 
     ngOnInit(): void {
+        this.loading = false;
         this.loadOAuthUrl().then();
     }
 
@@ -122,5 +124,15 @@ export class LoginPageComponent implements OnInit, OnDestroy {
         this.errorMessage = error.message;
         console.log("LOGIN FAILED\n" + error.message);
         console.log(error);
+    }
+
+    protected get isValidEmail(): boolean {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(this.username.trim());
+    }
+
+    protected resetPassword(): void {
+        this.loading = true;
+        this.service.resetPassword(this.username);
     }
 }

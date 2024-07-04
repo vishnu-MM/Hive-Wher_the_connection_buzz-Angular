@@ -21,14 +21,14 @@
                     <label for="exampleInputEmail1" 
                            class="form-label"
                            [class]="{'text-danger' : ((Email.invalid && Email.touched)  || (loginClicked && username === ''))}">
-                        Username or Email
+                        Email
                     </label>
                     <input type="email" 
                            name="email" 
                            id="exampleInputEmail1" 
                            class="form-control"
                            [class]="{'is-invalid' : ((Email.invalid && Email.touched)  || (loginClicked && username === ''))}"
-                           placeholder="Username or Email" 
+                           placeholder="Enter your Email" 
                            required 
                            #Email="ngModel" 
                            [(ngModel)]="username">
@@ -55,8 +55,8 @@
                         Password can't be empty
                     </span>
                 </div>
-                <span class="hover-effect h6">
-                    <u>forgot password?</u>
+                <span id="forget-password" class="hover-effect h6" *ngIf="isValidEmail" (click)="resetPassword()">
+                    <u class="me-3">forgot password?</u> <div *ngIf="loading" id="loader" class="loader"></div>
                 </span>
                 <button type="submit" class="btn btn-info form-control mt-3" [disabled]="isLoginProcessing">
                     <span class="h5 text-black" *ngIf="!isLoginProcessing">

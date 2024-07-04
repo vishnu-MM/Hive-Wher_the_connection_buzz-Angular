@@ -38,3 +38,9 @@ label, span {
 .loading-div {
     height: 10px;
 } 
+
+#forget-password{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
