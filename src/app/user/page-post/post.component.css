@@ -4,3 +4,6 @@ textarea::placeholder  {
   color: white;
   background: #ffffff00;
 }
+section {
+    padding: 0;
+}

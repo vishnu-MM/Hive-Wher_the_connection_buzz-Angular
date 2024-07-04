@@ -1,52 +1,48 @@
-<div id="side-nav"> 
+<div id="side-nav">
     <side-nav-bar></side-nav-bar>
- </div>
- <div id="bottom-nav">
+</div>
+<div id="bottom-nav">
     <bottom-nav-bar></bottom-nav-bar>
 </div>
 
 <article class="color-body">
     <section class="scollable">
-      <div *ngIf="post">
-        <single-post [post]="post"></single-post>
-      </div>
-      <div>
-          <div class="container py-4 px-sm-2 px-lg-5">
-            <div class="row">
-              <div class="p-0 pe-1 col-md-9">
-               <textarea type="text"
-                         name="comment"
-                         id="comment-text"
-                         class="form-control "
-                         [class]="{ 'is-invalid' : ( commentTxt==='' ||  commentTxt.length > 200) && clicked}"
-                         placeholder="Comment on this Post"
-                         [(ngModel)]="commentTxt"></textarea>
-                <span *ngIf="commentTxt==='' && clicked" class="text-danger">
-                    Comment Cannot Be Empty
-                </span>
-                <span *ngIf="commentTxt.length > 200 && clicked" class="text-danger">
-                    Comment is too long
-                </span>
-              </div>
-              <div class="p-0 col-md-3">
-                <button type="button" class="btn btn-dark form-control" (click)="postComment()">
-                    <span *ngIf="!tryingToPost">
-                        Post
-                    </span>
-                    <div class="loading-div p-3" *ngIf="tryingToPost">
-                        <div class="loader" ></div>
+        <div *ngIf="post">
+            <single-post [post]="post"></single-post>
+        </div>
+        <div>
+            <div class="container py-4 px-2 px-lg-5">
+                <div class="row mx-1">
+                    <div class="col-md-9">
+                        <textarea type="text" name="comment" id="comment-text" class="form-control "
+                            [class]="{ 'is-invalid' : ( commentTxt==='' ||  commentTxt.length > 200) && clicked}"
+                            placeholder="Comment on this Post" [(ngModel)]="commentTxt"></textarea>
+                        <span *ngIf="commentTxt==='' && clicked" class="text-danger">
+                            Comment Cannot Be Empty
+                        </span>
+                        <span *ngIf="commentTxt.length > 200 && clicked" class="text-danger">
+                            Comment is too long
+                        </span>
                     </div>
-                </button>
-              </div>
+                    <div class="p-0 col-md-3">
+                        <button type="button" class="btn btn-dark form-control m-sm-1 mb-sm-0" (click)="postComment()">
+                            <span *ngIf="!tryingToPost">
+                                Post
+                            </span>
+                            <div class="loading-div p-3" *ngIf="tryingToPost">
+                                <div class="loader"></div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
-          <hr class="mt-0">
-          <div *ngIf="comments.length > 0" class="pb-5">
-              <div *ngFor="let comment of comments" class="px-3 my-2">
-                 <single-comment [comment]="comment"></single-comment>
-              </div>
-            <hr>
-          </div>
-      </div>
-  </section>
+            <hr class="mt-0">
+            <div *ngIf="comments.length > 0" class="pb-5">
+                <div *ngFor="let comment of comments" class="px-3 my-2">
+                    <single-comment [comment]="comment"></single-comment>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </section>
 </article>
