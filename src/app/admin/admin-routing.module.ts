@@ -6,11 +6,13 @@ import { ManagePostsComponent } from "./manage-posts/manage-posts.component";
 import { ManageComplaintsComponent } from './manage-complaints/manage-complaints.component';
 import { UserProfileComponent } from './single-user/user-profile.component';
 import { PostComponent } from './single-post/post.component';
+import { ProfilePageComponent } from './profile-page/profile-page.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     { path: 'dashboard', component: DashboardComponent },
     { path: 'complaints', component: ManageComplaintsComponent },
+    { path: 'profile', component: ProfilePageComponent },
     {
         path: 'posts',
         children: [

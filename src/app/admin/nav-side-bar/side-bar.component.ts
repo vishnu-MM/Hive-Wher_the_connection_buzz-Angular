@@ -33,6 +33,7 @@ export class SideBarComponent {
             else if ( urlPart === 'complaints') this.currentPage = CurrentPage.COMPLAINT_MANAGEMENT;
             else if ( urlPart === 'posts') this.currentPage = CurrentPage.POST_MANAGEMENT;
             else if ( urlPart === 'users') this.currentPage = CurrentPage.USER_MANAGEMENT;
+            else if ( urlPart === 'profile') this.currentPage = CurrentPage.PROFILE;
         }
         console.log(this.currentPage);
 

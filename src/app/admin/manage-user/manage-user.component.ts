@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { BlockFilter, TimeFilter, UserFilter } from 'src/Shared/Models/filter.model';
+import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
     selector: 'manage-user.',
@@ -44,6 +45,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
     protected clicked: boolean = false;
 
     constructor(public userService: UserService,
+        private appService: AppService,
         private adminService: AdminService,
         private dialog: MatDialog,
         private router: Router) { }
@@ -70,7 +72,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
                 this.loadProfilePiture().then();
             },
             error: err => {
-                console.log(err);
+                this.appService.showError(`Failed to Perform Search (${err.status})`);
             }
         })
     }
@@ -94,7 +96,9 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
                 if (this.isSearchResultShowing) this.isSearchResultShowing = false;            
                 this.loadProfilePiture().then()    
             },
-            error: err => { console.log("Some thing went wrong while fetching user details") }
+            error: err => { 
+                this.appService.showError(`Some thing went wrong while fetching user details (${err.status})`);
+            }
         })
     }
 
@@ -141,13 +145,14 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
                 for (let user of this.users) {
                     if (user.id === this.selectedUser!.id) {
                         user.isBlocked = true;
+                        user.blockReason = trimmedBlockReason;
                         this.closeBlockUser();
                         break;
                     }
                 }
             },
             error: err => {
-                console.error('Failed to block user', err);
+                this.appService.showError(`Failed to Block User (${err.status})`);
                 this.closeBlockUser();
             }
         });
@@ -181,7 +186,9 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
                     if (user.id === id) { user.isBlocked = false; }
                 }
             },
-            error: err => { }
+            error: err => { 
+                this.appService.showError(`Failed to Un Block User (${err.status})`);
+            }
         });
     }
 
@@ -297,7 +304,7 @@ export class ManageUsersComponent implements OnInit, OnDestroy {
                 this.loadProfilePiture().then()
             },
             error: (err) => {
-                console.log(err);
+                this.appService.showError(`Failed to apply filter (${err.status})`);
             },
         })
     }

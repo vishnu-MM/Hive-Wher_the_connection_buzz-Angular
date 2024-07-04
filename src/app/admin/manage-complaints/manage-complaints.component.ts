@@ -82,7 +82,9 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
                     this.isLast = res.isLast;
                     this.loadUserDetails().then()
                 },
-                error: err => { }
+                error: err => { 
+                    this.appService.showError(`Could'nt load next page (${err.status})`);
+                }
             })
     }
 
@@ -96,7 +98,7 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
                 this.loadUserDetails().then();
             },
             error: err => {
-                console.log(err);
+                this.appService.showError(`Could'nt search (${err.status})`);
             }
         })
     }
@@ -120,7 +122,9 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
                         if (!this.userDetailsMap.has(userID))
                             this.userDetailsMap.set(userID, res);
                     },
-                    error: err => { console.log(err); }
+                    error: err => { 
+                        this.appService.showError(`Could'nt load user details (${err.status})`);
+                     }
                 });
 
         }
@@ -169,7 +173,7 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
                 this.closeBlockUser();
             },
             error: (err: any) => {
-                console.error('Failed to block user', err);
+                this.appService.showError(`Failed to Block User (${err.status})`);
                 this.closeBlockUser();
             }
         });
@@ -203,7 +207,9 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
                 user.isBlocked = false; 
                 this.userDetailsMap.set(id, user);
             },
-            error: err => { }
+            error: err => { 
+                this.appService.showError(`Could'nt Un Block User (${err.status})`);
+            }
         });        
     }
 
@@ -315,7 +321,7 @@ export class ManageComplaintsComponent implements OnInit, OnDestroy {
                 console.log(res)
             },
             error: (err) => {
-                console.log(err);
+                this.appService.showError(`Could'nt filter data (${err.status})`);
             },
         })
     }

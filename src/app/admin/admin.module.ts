@@ -13,6 +13,7 @@ import { UserPillComponent } from './user-pill/user-pill.component';
 import { UserProfileComponent } from './single-user/user-profile.component';
 import { PostComponent } from './single-post/post.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ProfilePageComponent } from './profile-page/profile-page.component';
 
 @NgModule({
     declarations: [
@@ -25,6 +26,7 @@ import { MatDialogModule } from '@angular/material/dialog';
         UserPillComponent,
         UserProfileComponent,
         PostComponent,
+        ProfilePageComponent,
     ],
     imports: [
         CommonModule,

@@ -1,0 +1,74 @@
+<side-bar></side-bar>
+
+<article>
+    <top-bar [showFilterOption]="false" [showSearchOption]="false"></top-bar>
+
+    <!--  MAIN CONTENT SPACE STARTS HERE -->
+    <section>
+        <div id="outer-div">
+            <div id="content-div" class="me-4 card">
+                <div class="flex-center">
+                    <h1>Admin Profile</h1>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h3 class="title">Username</h3>
+                            </td>
+                            <td>
+                                <h3> @{{ user.username }} </h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3 class="title">Name</h3>
+                            </td>
+                            <td>
+                                <h3 [class]="{'text-muted' : !user.name}">
+                                    {{ user.name? user.name : 'Not Provided' }}
+                                </h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3 class="title">Email</h3>
+                            </td>
+                            <td>
+                                <h3> {{ user.email }} </h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3 class="title">Joined On</h3>
+                            </td>
+                            <td>
+                                <h3> {{ user.joinDate | date:'dd MMMM yyyy' }} </h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3 class="title">Password</h3>
+                            </td>
+                            <td>
+                                <h3> 
+                                    <button type="button" class="btn btn-danger" (click)="changePassword()" [disabled]="loading">
+                                        <span *ngIf="!loading">Change Password</span>
+                                        <div class="loader" *ngIf="loading"></div>
+                                    </button> 
+                                </h3>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <!--  MAIN CONTENT SPACE ENDS HERE -->
+</article>

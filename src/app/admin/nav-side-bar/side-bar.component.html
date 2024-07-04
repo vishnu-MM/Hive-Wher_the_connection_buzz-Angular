@@ -24,7 +24,9 @@
              routerLink="/a/complaints">
             <span class="h5 text-light">Reports & Complaints</span>
         </div>
-        <div class="nav-link border-black py-4 ">
+        <div class="nav-link border-black py-4 "
+            routerLink="/a/profile"
+            [class]="{'active': (currentPage === CurrentPage.PROFILE)}">
             <span class="h5 text-light">Profile</span>
         </div>
     </div>

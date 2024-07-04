@@ -5,6 +5,7 @@ import { PostFilter, TimeFilter, PostTypeFilter } from 'src/Shared/Models/filter
 import { Post, PostType } from 'src/Shared/Models/post.model';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { PostFile, PostService } from 'src/Shared/Services/post.service';
+import { AppService } from 'src/Shared/Services/app.service';
 
 @Component({
     selector: 'app-post-management',
@@ -36,7 +37,9 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
     private loadPostListSub!: Subscription;
     private searchSub!: Subscription;
 
-    constructor(private postService: PostService, private router: Router) {}
+    constructor(private postService: PostService,
+        private appService: AppService, 
+        private router: Router) {}
 
     ngOnInit(): void {
         this.resetFilter();
@@ -67,7 +70,9 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
                 if (this.isSearchResultShowing) this.isSearchResultShowing = false;
                 this.loadPostFiles(res.contents).then();
             },
-            error: err => {}
+            error: err => {
+                this.appService.showError(`Could'nt load Posts (${err.status})`);
+            }
         })
     }
 
@@ -89,7 +94,9 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
                 this.totalPages = 1;
                 this.loadPostFiles(res).then();
             },
-            error: err => {}
+            error: err => {
+                this.appService.showError(`Failed to Perform Search (${err.status})`);
+            }
         })
     }
 
@@ -213,7 +220,7 @@ export class ManagePostsComponent implements OnInit, OnDestroy {
                 this.loadPostFiles(res.contents).then();
             },
             error: err => {
-
+                this.appService.showError(`Failed to apply filter (${err.status})`);
             }
         })
     }
