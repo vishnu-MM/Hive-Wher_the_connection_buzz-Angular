@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { CommentDTO, CommentRequestDTO, Like, LikeRequest, Post, PostCreation, PostPage, PostType } from "../Models/post.model";
 import { Injectable } from "@angular/core";
 import { Observable, Subscription } from "rxjs";
@@ -40,6 +40,11 @@ export class PostService {
 
     public getRandomPosts(): Observable<Post[]> {
         return this.http.get<Post[]>(`${this.BASE_URL}/random?pageNo=0&pageSize=20`);
+    }
+
+    public getPostForUsers(userId: number): Observable<PostPage> {
+        const params = new HttpParams().set("userId", userId);
+        return this.http.get<PostPage>(this.BASE_URL, { params });
     }
 
     public getAllPosts(pageNo: number, pageSize: number): Observable<PostPage> {
@@ -91,8 +96,10 @@ export class PostService {
         else if (postList) {
             for(let post of postList) {
                 try {
-                    const postFile = await this.getPostFile(post.id);
-                    postFileMap.set(post.id, postFile);
+                    if (post.postType !== PostType.TEXT_ONLY) {
+                        const postFile = await this.getPostFile(post.id);
+                        postFileMap.set(post.id, postFile);
+                    }
                 } 
                 catch (err) {
                     console.error(`Error fetching post file for postId ${post.id}:`, err);

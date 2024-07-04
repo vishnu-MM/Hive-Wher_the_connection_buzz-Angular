@@ -8,6 +8,7 @@ import {ChatComponent} from "./page-chat/chat.component";
 import {UserProfileComponent} from "./page-user-profile/user-profile.component";
 import {NotificationsComponent} from "./page-notifications/notifications.component";
 import {SearchComponent} from "./page-search/search.component";
+import { ExplorerComponent } from './page-explorer/explorer.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'chat/:id', component: ChatComponent },
   { path: 'notifications', component: NotificationsComponent },
   { path: 'search', component: SearchComponent },
+  { path: 'explore', component: ExplorerComponent },
   {
     path: 'profile',
     children:[

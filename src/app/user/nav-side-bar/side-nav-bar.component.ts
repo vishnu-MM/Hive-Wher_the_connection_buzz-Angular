@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { CurrentPage } from '../nav-bottom-bar/bottom-nav-bar.component';
 
@@ -9,6 +9,8 @@ import { CurrentPage } from '../nav-bottom-bar/bottom-nav-bar.component';
 })
 export class SideNavBarComponent {
     protected currentPage!: any;
+    @Input('rounded') isRounded: boolean = true;
+
     constructor(private router: Router) {}
 
     ngOnInit(): void {
@@ -22,7 +24,7 @@ export class SideNavBarComponent {
             else if ( urlPart === 'search') this.currentPage = CurrentPage.SEARCH;
             else if ( urlPart === 'notifications') this.currentPage = CurrentPage.NOTIFICATION;
             else if ( urlPart === 'profile') this.currentPage = CurrentPage.PROFILE;
-            else if ( urlPart === '') this.currentPage = CurrentPage.EXPLORER;
+            else if ( urlPart === 'explore') this.currentPage = CurrentPage.EXPLORER;
         }
     }
 }

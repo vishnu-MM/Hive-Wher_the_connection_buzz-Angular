@@ -3,6 +3,8 @@ import {PostService} from "../../../Shared/Services/post.service";
 import {Subscription} from "rxjs";
 import {Post} from "../../../Shared/Models/post.model";
 import {Router} from "@angular/router";
+import { AppService } from 'src/Shared/Services/app.service';
+import { UserResponse } from 'src/Shared/Models/user.model';
 
 @Component({
   selector: 'posts',
@@ -17,11 +19,20 @@ export class PostsComponent implements OnInit {
 
   @ViewChild('observerTarget', { static: true }) observerTarget!: ElementRef;
 
-  constructor(private postService: PostService, private router: Router) {}
+  constructor(private postService: PostService, 
+    private appService: AppService,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.loadPosts();
-
+    const userStr = localStorage.getItem('CURRENT_USER');
+    if (userStr) {
+        const user: UserResponse = JSON.parse(userStr);
+        this.postService.getPostForUsers(user.id).subscribe({
+            next: res => console.log(res),
+            error: err => this.appService.showError(`Could'nt load Posts from your friends (${err.status})`)
+        });
+    }
     this.intersectionObserver = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
         this.loadPosts();

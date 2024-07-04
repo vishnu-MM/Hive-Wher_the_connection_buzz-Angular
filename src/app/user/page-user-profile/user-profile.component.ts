@@ -38,6 +38,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private getAllPostsSub!: Subscription;
     private getPostFilesSub!: Subscription;
     private ReportUserSub!: Subscription;
+    private friendsCountSub!: Subscription;
 
     //OTHERS
     protected readonly PostType = PostType;
@@ -59,6 +60,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             const currentUser: UserResponse = JSON.parse(currentUserStr);
             this.loadUserDetails(userId).then()
             this.currentRelation(currentUser.id, userId).then();
+            this.getFriendsCount(userId);
         }
         else {
             this.userLoadError();
@@ -74,6 +76,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         if (this.ReportUserSub != undefined) this.ReportUserSub.unsubscribe()
         if ( this.currentRelationSub != undefined)  this.currentRelationSub.unsubscribe()
         if ( this.friendBtnOnClickSub != undefined)  this.friendBtnOnClickSub.unsubscribe()
+        if ( this.friendsCountSub != undefined)  this.friendsCountSub.unsubscribe()
     }
 
     private userLoadError(): void {
@@ -83,6 +86,16 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
     // LOGIC
     // USER
+
+    private async getFriendsCount(userId: number): Promise<void> {
+        this.friendsCountSub = this.userService.getUserFriendsCount(userId).subscribe({
+            next: res => this.friendsCount = res,
+            error: err => {
+                this.appService.showError(`Could'nt load friend related data (${err.status})`)
+            }
+        });        
+    }
+
     async loadUserDetails(userId: number): Promise<void> {
         this.getUserSub = this.userService.getProfileById(userId).subscribe({
             next: value => {

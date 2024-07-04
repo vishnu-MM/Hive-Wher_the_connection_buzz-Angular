@@ -1,4 +1,4 @@
-<nav class="rounded-5">
+<nav [class]="{'rounded-5': isRounded}">
     <div id="upper-portion">
         <img src="assets/logo.png" alt="Hive">
     </div>
@@ -31,12 +31,13 @@
                 <mat-icon class="icons" fontIcon="notifications"></mat-icon>
             </div>
         </div>
-        <div class="list-items">
+        <!-- <div class="list-items">
             <div class="outline" 
+                routerLink="/u/explore"
                  [class]="{'active': currentPage === 4}">            
                 <mat-icon class="icons" fontIcon="explore"></mat-icon>
             </div>
-        </div>
+        </div> -->
     </div>
     <div id="lower-portion">
         <div class="list-items">

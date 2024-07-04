@@ -64,12 +64,24 @@ section {
     color: #c0c0c0;
     font-size: large;
     font-weight: lighter;
+    display: inline-block;
+    border: 2px solid #5e548e;
+    border-radius: 1rem;
+    padding: 10px;
+    margin: 0;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#friends-count:hover {
+    background-color: #5e548e;
 }
 
 #friends-count span {
     color: white;
     font-size: x-large;
     font-weight: lighter;
+    cursor: pointer;
 }
 
 #posts {
@@ -93,4 +105,105 @@ section {
 
 #settings-btn, #settings-btn:hover {
     border: 1px solid white;
+    aspect-ratio: 1;
+}
+
+@media only screen and (max-width: 1023px) {
+    #friends-list {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        background-color: #5e548e;
+        padding: 1rem;
+        z-index: 500;
+    }
+}
+
+@media only screen and (min-width: 1023px) {
+    #friends-list {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 20%;
+        background-color: #5e548e;
+        padding: 1rem;
+        z-index: 1000;
+    }
+}
+
+.loader {
+    border: 5px solid white;
+    border-top: 5px solid #0b132b;
+}
+
+#top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: #0b132b 3px solid;
+}
+
+#top h2 {
+    color: #0b132b;
+    margin: 0;
+    padding: 0;
+}
+
+.icon {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    border: 2px solid #0b132b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #0b132b;
+}
+
+.mat-icons {
+    color: #0b132b;
+    margin: 0;
+    padding: 0;
+}
+
+.icon:hover, .mat-icons:hover{
+    background-color: #0b132b;
+    color: #5e548e;
+}
+
+#sort-icons {
+    display: flex;
+    flex-direction: row;
+}
+
+.active {
+    background-color: #0b132b;
+    color: #5e548e;
+}
+
+#friend-img {
+    height: 3rem;
+    width: 3rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid #0b132b;
+}
+
+.list{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.user-img-name {
+    display: flex;
+    align-items: center;
+}
+
+.clr {
+    color: #0b132b;
 }

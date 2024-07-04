@@ -159,10 +159,17 @@ export class UserService implements OnDestroy {
         return this.http.put<Connection>(url, friendRequest);
     }
 
-    public getUserFriendsList(userId: number): Observable<User[]> {
+    public getUserFriendsList(userId: number, isAscending: boolean): Observable<User[]> {
         const url: string = `${this.BASE_URL}/friends`;
-        const params: HttpParams = new HttpParams().set('userId', userId.toString());
+        const params: HttpParams = new HttpParams()
+            .set('userId', userId.toString())
+            .set('isAscendingOrder', isAscending);
         return this.http.get<User[]>(url, { params });
+    }
+    public getUserFriendsCount(userId: number): Observable<number> {
+        const url: string = `${this.BASE_URL}/friends-count`;
+        const params: HttpParams = new HttpParams().set('userId', userId.toString());
+        return this.http.get<number>(url, { params });
     }
 
     public getConnection(senderId: number, recipientId: number): Observable<Connection> {

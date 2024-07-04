@@ -28,11 +28,9 @@ export class HomeComponent implements OnInit {
 
     ngOnInit(): void {
         this.userStore.dispatch(USER_LOGIN());
-        this.userStoreSub = this.userStore
-            .select('UserStore')
-            .subscribe(data => {
-                this.currentUser = { ...data }
-            });
+        this.userStoreSub = this.userStore.select('UserStore').subscribe(data => {
+            this.currentUser = { ...data }
+        });
     }
 
     // CREATE POST RELATED

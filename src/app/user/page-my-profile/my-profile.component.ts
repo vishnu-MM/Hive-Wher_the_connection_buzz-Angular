@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { User, UserResponse } from "../../../Shared/Models/user.model";
+import { Connection, ConnectionStatus, User, UserResponse } from "../../../Shared/Models/user.model";
 import { Subscription, Timestamp } from "rxjs";
 import { Store } from "@ngrx/store";
 import { ImageType, UserService } from "../../../Shared/Services/user.service";
@@ -57,6 +57,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             }
         });
         this.getAllPostsByUser();
+        this.getFriendsCount().then();
     }
 
     ngOnDestroy(): void {
@@ -65,6 +66,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
         if (this.getCoverSub != undefined) this.getCoverSub.unsubscribe()
         if (this.getAllPostsSub != undefined) this.getAllPostsSub.unsubscribe()
         if (this.getPostFilesSub != undefined) this.getAllPostsSub.unsubscribe()
+        if (this.friendsCountSub != undefined) this.friendsCountSub.unsubscribe()
+        if (this.friendsCountList != undefined) this.friendsCountList.unsubscribe() 
+        if (this.updateConnectionSub != undefined) this.updateConnectionSub.unsubscribe() 
     }
 
     // LOGIC
@@ -182,5 +186,102 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     protected getRelativeTime(createdOn: Timestamp<string>): string {
         const parsedDate = new Date(createdOn.toString());
         return formatDistanceToNow(parsedDate, { addSuffix: true });
+    }
+
+    //friends related 
+    protected showFriendsList: boolean = false;
+    protected friendList: User[] = []; 
+    protected sort: boolean = true;
+    protected loading: boolean = false;
+    private friendsCountSub!: Subscription;
+    private friendsCountList!: Subscription;
+    private updateConnectionSub!: Subscription;
+
+    protected showFriends(): void {
+        if (this.friendsCount === 0 ) {
+            this.appService.showInfo('No friends to show, Please Make new connections', false)
+            return;
+        }
+        if (this.showFriendsList) {
+            this.hideFriends();
+            return;
+        }
+        this.showFriendsList = true;
+        this.loading = true;
+        this.getFriendsList(false).then()
+    }
+
+    protected hideFriends(): void {
+        this.showFriendsList = false;
+        this.loading = false;
+    }
+
+    private async getFriendsCount(): Promise<void> {
+        const userStr = localStorage.getItem('CURRENT_USER');
+        if (userStr) {
+            const user: UserResponse = JSON.parse(userStr);
+            this.friendsCountSub = this.userService.getUserFriendsCount(user.id).subscribe({
+                next: res => this.friendsCount = res,
+                error: err => {
+                    this.appService.showError(`Could'nt load friend related data (${err.status})`)
+                }
+            })
+        }
+    }
+
+    private async getFriendsList(sortInAscending: boolean): Promise<void> {
+        if (this.friendsCount === 0) {
+            this.hideFriends();
+            return;
+        }
+
+        const userStr = localStorage.getItem('CURRENT_USER');
+        if (userStr) {
+            const user: UserResponse = JSON.parse(userStr);
+            if (this.friendsCountList != undefined) this.friendsCountList.unsubscribe()
+            
+            this.friendsCountList = this.userService.getUserFriendsList(user.id, sortInAscending).subscribe({
+                next: res => {
+                    this.friendList = res;
+                    this.loading = false;
+                },
+                error: err => {
+                    this.appService.showError(`Could'nt load friend related data (${err.status})`)
+                    this.hideFriends();
+                }
+            })
+        }
+        else {
+            this.hideFriends();
+            return;
+        }
+    }
+
+    protected async removeFriend(friendId: number) {
+        const userStr = localStorage.getItem('CURRENT_USER');
+        if (userStr) {
+            const user: UserResponse = JSON.parse(userStr);
+            const friendRequest: Connection = {
+                id: null, senderId: user.id, recipientId: friendId, date: new Date(), status: ConnectionStatus.REJECTED                
+            }  
+            this.updateConnectionSub = this.userService.updateConnection(friendRequest).subscribe({
+                next: res => {
+                    this.friendList = this.friendList.filter(user => { return( user.id !== friendId) });
+                    this.friendsCount--;
+                    this.appService.showSuccess('Removes user from friends list')
+                },
+                error: err => {
+                    this.appService.showError("Couldn't make request, try again");
+                }
+            })
+        }
+    }
+
+    sortFriendListAscending() {
+        this.getFriendsList(true);
+    }
+
+    sortFriendListDescending() {
+        this.getFriendsList(false);
     }
 }

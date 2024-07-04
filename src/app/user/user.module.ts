@@ -23,6 +23,7 @@ import { SearchComponent } from './page-search/search.component';
 import { NotificationsComponent } from './page-notifications/notifications.component';
 import {CloudinaryModule} from '@cloudinary/ng';
 import { BottomNavBarComponent } from './nav-bottom-bar/bottom-nav-bar.component';
+import { ExplorerComponent } from './page-explorer/explorer.component';
 
 @NgModule({
     declarations: [
@@ -41,6 +42,7 @@ import { BottomNavBarComponent } from './nav-bottom-bar/bottom-nav-bar.component
         SearchComponent,
         NotificationsComponent,
         BottomNavBarComponent,
+        ExplorerComponent,
     ],
     exports: [
         PostsComponent

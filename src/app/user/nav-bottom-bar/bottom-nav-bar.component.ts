@@ -22,7 +22,7 @@ export class BottomNavBarComponent implements OnInit{
             else if ( urlPart === 'chat') this.currentPage = CurrentPage.CHAT;
             else if ( urlPart === 'search') this.currentPage = CurrentPage.SEARCH;
             else if ( urlPart === 'notifications') this.currentPage = CurrentPage.NOTIFICATION;
-            else if ( urlPart === '') this.currentPage = CurrentPage.EXPLORER;
+            else if ( urlPart === 'explore') this.currentPage = CurrentPage.EXPLORER;
         }
     }
 }

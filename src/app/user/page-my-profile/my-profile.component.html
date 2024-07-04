@@ -82,7 +82,7 @@
     <bottom-nav-bar></bottom-nav-bar>
 </div>
 
-<article class="color-body">
+<article class="color-body" [class]="{'show-friend-article': showFriendsList}">
     <section class="scollable">
         <div id="profile">
             <div>
@@ -91,10 +91,13 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex flex-row-reverse px-3 py-2">
+            <div class="d-flex flex-row-reverse px-5 py-2">
                 <button id="settings-btn" class="btn flex-center p-2 rounded-5" (click)="openModal()">
                     <mat-icon fontIcon="settings"></mat-icon>
                 </button>
+                <p id="friends-count" (click)="showFriends()">
+                    <span>{{ friendsCount }}</span> Friends
+                </p>
             </div>
             <div id="profile-details">
                 <p id="user-name">{{ currentUser.name }}</p>
@@ -102,7 +105,6 @@
                 <p id="bio">{{ currentUser.aboutMe}}</p>
                 <p id="joined-date">Since {{ currentUser.joinDate | date: 'MMMM yyyy' }}</p>
                 <p id="phone">{{ currentUser.phone }}</p>
-                <p id="friends-count"><span>{{ friendsCount }}</span> Friends</p>
             </div>
         </div>
         <div id="posts">
@@ -114,4 +116,41 @@
             </div>
         </div>
     </section>
+    <ng-container *ngIf="showFriendsList">
+        <div id="friends-list" class="scollable">
+            <ng-container *ngIf="!loading">
+                <div id="top">
+                    <div class="icon" (click)="hideFriends()">
+                        <mat-icon class="mat-icons" fontIcon="close"></mat-icon>
+                    </div>
+                    <h2>My Friends </h2>
+                    <div id="sort-icons">
+                        <div class="icon" [class]="{'active': sort}" (click)="sortFriendListAscending()">
+                            <mat-icon class="mat-icons" fontIcon="north" [class]="{'active': sort}"></mat-icon>
+                        </div>
+                        <div class="icon" [class]="{'active': !sort}" (click)="sortFriendListDescending()">
+                            <mat-icon class="mat-icons" fontIcon="south" [class]="{'active': !sort}"></mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="list" *ngFor="let friend of friendList">
+                    <div class="user-img-name">
+                        <img id="friend-img" src="assets/no-profile-image.png" alt="">
+                        <div class="ms-2">
+                            <span class="clr h5">{{ '@'+friend.username }}</span> <br>
+                            <span class="clr h6">{{ friend.name }}</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-dark" (click)="removeFriend(friend.id!)">
+                        Remove
+                    </button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="loading">
+                <div class="flex-center">
+                    <div class="loader"></div>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
 </article>
