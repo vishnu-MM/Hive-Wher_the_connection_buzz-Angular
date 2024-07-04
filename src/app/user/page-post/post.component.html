@@ -5,8 +5,8 @@
     <bottom-nav-bar></bottom-nav-bar>
 </div>
 
-<article>
-  <section>
+<article class="color-body">
+    <section class="scollable">
       <div *ngIf="post">
         <single-post [post]="post"></single-post>
       </div>
@@ -17,12 +17,15 @@
                <textarea type="text"
                          name="comment"
                          id="comment-text"
-                         class="form-control"
-                         [class]="{ 'is-invalid' : commentTxt==='' && clicked}"
+                         class="form-control "
+                         [class]="{ 'is-invalid' : ( commentTxt==='' ||  commentTxt.length > 200) && clicked}"
                          placeholder="Comment on this Post"
                          [(ngModel)]="commentTxt"></textarea>
                 <span *ngIf="commentTxt==='' && clicked" class="text-danger">
                     Comment Cannot Be Empty
+                </span>
+                <span *ngIf="commentTxt.length > 200 && clicked" class="text-danger">
+                    Comment is too long
                 </span>
               </div>
               <div class="p-0 col-md-3">

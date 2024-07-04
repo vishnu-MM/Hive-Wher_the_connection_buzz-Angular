@@ -1,12 +1,10 @@
-<div id="comment" class="row">
-    <div class="col-2 d-flex align-items-center justify-content-start">
-        <img [src]="profilePicture" alt="Profile Picture" class="rounded-5 border border-black d-inline-block">
-        <div class="ms-2"> 
-            <span>{{ name }}</span> 
-            <br> 
-            <span>@{{ username }}</span>
+<section>
+    <img [src]="profilePicture" alt="Profile Picture">
+    <div id="text-section">
+        <div> 
+            <span id="username">{{ username }}</span> 
+            <span id="relative-time">{{ getRelativeTime }}</span>
         </div>
+        <span id="comment">{{ comment.comment }}</span>
     </div>
-    <div class="col-8 d-flex align-items-center justify-content-center"> <span>{{ comment.comment }}</span></div>
-    <div class="col-2 d-flex align-items-center justify-content-end"> <span>{{ getRelativeTime }}</span></div>
-</div>
+</section>

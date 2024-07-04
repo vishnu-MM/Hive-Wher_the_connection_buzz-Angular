@@ -1,12 +1,37 @@
-img{
-  aspect-ratio: 1;
-  width: 50px;
+section {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
 }
-span {
-  color: white;
-  font-size: larger;
-  font-weight: lighter;
+
+img {
+    width: 2.5rem;
+    height: 2.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid #5e548e;
+    display: inline-block;
 }
+
+#text-section {
+    width: calc(100% - 2.5rem);
+    margin-left: 2%;
+}
+
+#username::after {
+    content: " ";
+}
+
+#username::before {
+    content: '@';
+}
+
+#relative-time {
+    color: #5e5e5e;
+    font-size: small;
+}
+
 #comment {
-  width: 100%;
+    font-size: medium;
+    text-wrap: pretty;
 }
