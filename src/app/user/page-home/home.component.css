@@ -16,6 +16,10 @@ section {
 
 /* For tablets and smartphones */
 @media only screen and (max-width: 1023px) {
+    .color-body {
+        background-color: #171B23;
+    }
+
     section {
         display: flex;
         flex-direction: column-reverse;
@@ -58,5 +62,9 @@ section {
     #action-bar {
         height: 100%;
         width: 30%;
+    }
+
+    #user-online-list{
+        margin-top: 5%;
     }
 }

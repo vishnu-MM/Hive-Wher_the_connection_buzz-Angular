@@ -68,6 +68,7 @@ export class PostComponent implements OnInit, OnDestroy {
 
         this.tryingToPost = true;
         const comment: CommentRequestDTO = { comment: this.commentTxt, postId: this.postId, userId: this.userId }
+        this.postService.sendEvent('INCR');
         this.postCommentSub = this.postService.createComment(comment).subscribe({
             next: value => {
                 this.comments.unshift(value);
@@ -80,7 +81,8 @@ export class PostComponent implements OnInit, OnDestroy {
                 this.tryingToPost = false;
                 this.clicked = false;
                 this.commentTxt = '';
-                this.appService.showError(`Failed to post comment (${err.status})`)
+                this.appService.showError(`Failed to post comment (${err.status})`);
+                this.postService.sendEvent('DECR');
             }
         });
     }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { CommentDTO, CommentRequestDTO, Like, LikeRequest, Post, PostCreation, PostPage, PostType } from "../Models/post.model";
 import { Injectable } from "@angular/core";
-import { Observable, Subscription } from "rxjs";
+import { Observable, Subject, Subscription } from "rxjs";
 import { PostFilter } from "../Models/filter.model";
 
 export interface PostFile {
@@ -42,8 +42,12 @@ export class PostService {
         return this.http.get<Post[]>(`${this.BASE_URL}/random?pageNo=0&pageSize=20`);
     }
 
-    public getPostForUsers(userId: number): Observable<PostPage> {
-        const params = new HttpParams().set("userId", userId);
+    public getPostForUsers(userId: number, pageNo: number, pageSize: number): Observable<PostPage> {
+        const params = new HttpParams()
+            .set("userId", userId)
+            .set("pageNo", pageNo)
+            .set("pageSize", pageSize);
+
         return this.http.get<PostPage>(this.BASE_URL, { params });
     }
 
@@ -83,24 +87,24 @@ export class PostService {
 
         const postFileMap: Map<number, string> = new Map<number, string>();
         if (postIdList) {
-            for(let postId of postIdList) {
+            for (let postId of postIdList) {
                 try {
                     const postFile = await this.getPostFile(postId);
                     postFileMap.set(postId, postFile);
-                } 
+                }
                 catch (err) {
                     console.error(`Error fetching post file for postId ${postId}:`, err);
                 }
             }
         }
         else if (postList) {
-            for(let post of postList) {
+            for (let post of postList) {
                 try {
                     if (post.postType !== PostType.TEXT_ONLY) {
                         const postFile = await this.getPostFile(post.id);
                         postFileMap.set(post.id, postFile);
                     }
-                } 
+                }
                 catch (err) {
                     console.error(`Error fetching post file for postId ${post.id}:`, err);
                 }
@@ -109,26 +113,26 @@ export class PostService {
         return postFileMap;
     }
 
-    public getAspectRatio(aspectRatio : number): string {
-		if (aspectRatio > 1.5)
-			return 'aspect-ratio-16-9';
-		else if (aspectRatio < 0.6)
-			return 'aspect-ratio-9-16';
-		else if (aspectRatio < 1 && aspectRatio >= 0.8)
-			return 'aspect-ratio-4-5';
-		else
-			return 'aspect-ratio-1-1';
+    public getAspectRatio(aspectRatio: number): string {
+        if (aspectRatio > 1.5)
+            return 'aspect-ratio-16-9';
+        else if (aspectRatio < 0.6)
+            return 'aspect-ratio-9-16';
+        else if (aspectRatio < 1 && aspectRatio >= 0.8)
+            return 'aspect-ratio-4-5';
+        else
+            return 'aspect-ratio-1-1';
     }
 
-    public search( searchQuery: string): Observable<Post[]> {
-        return this.http.get<Post[]>(`${this.BASE_URL}/search`,{ params: { searchQuery: searchQuery } });
+    public search(searchQuery: string): Observable<Post[]> {
+        return this.http.get<Post[]>(`${this.BASE_URL}/search`, { params: { searchQuery: searchQuery } });
     }
-    
+
     //? POST END-POINTS ENDED
     //* COMMENT END-POINTS STARTS HERE
 
     public createComment(commentRequest: CommentRequestDTO): Observable<CommentDTO> {
-        const commentObservable: Observable<CommentDTO>  = this.http.post<CommentDTO>(`${this.BASE_URL}/add-comment`, commentRequest);
+        const commentObservable: Observable<CommentDTO> = this.http.post<CommentDTO>(`${this.BASE_URL}/add-comment`, commentRequest);
         console.log(commentObservable);
         return commentObservable;
     }
@@ -170,9 +174,15 @@ export class PostService {
     }
 
     public getLikesForPost(postId: number): Observable<Like[]> {
-        return this.http.get<Like[]>( 
+        return this.http.get<Like[]>(
             `${this.BASE_URL}/all-like`,
             { params: { postId: postId.toString() } }
         );
+    }
+
+    private eventSubject = new Subject<string>();
+    event$ = this.eventSubject.asObservable();
+    public sendEvent(message: string) {
+      this.eventSubject.next(message);
     }
 }

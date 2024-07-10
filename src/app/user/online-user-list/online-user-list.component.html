@@ -1,0 +1,20 @@
+<article class="scollable" [class]="{'hide': hide}">
+    <ng-container *ngIf="usersOnline.length !== 0">
+        <div class="user" *ngFor="let user of users">
+            <img class="profile-img" [src]="profileMap.get(user.id!)" alt="">
+            <div class="names">            
+                <p class="user-name">{{ user.name? user.name : user.username }}</p>
+                <p class="username">{{ '@' + user.username }}</p>
+            </div>
+            <button class="btn chat-btn" [routerLink]="'/u/chat/'+user.id">chat</button>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="usersOnline.length === 0">
+        <div class="full-div">
+            <div id="content">
+                <img id="waiting-room" src="assets/waiting-room.png">
+                <span id="message">Your friends are offline Now!.</span>
+            </div>
+        </div>
+    </ng-container>
+</article>

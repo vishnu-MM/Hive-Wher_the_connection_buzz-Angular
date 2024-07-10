@@ -1,16 +1,26 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, catchError, firstValueFrom, throwError} from 'rxjs';
-import {User} from '../Models/user.model';
+import {Observable, Subject, catchError, firstValueFrom, throwError} from 'rxjs';
+import {User, UserResponse} from '../Models/user.model';
 import { Router } from '@angular/router';
 import { NgToastService } from 'ng-angular-popup';
+import { WebSocketService } from './web-socket.service';
 
 @Injectable({providedIn: 'root'})
 export class AppService {
 
 	public readonly BASE_URL: string = 'http://localhost:8000/api';
 
-	constructor(private http: HttpClient, private router: Router,private toast: NgToastService) {}
+	constructor(private http: HttpClient, 
+        private webSocket: WebSocketService,
+        private router: Router,
+        private toast: NgToastService) {}
+
+    public verifyToken(token: string): Observable<boolean> {
+        const url: string = this.BASE_URL + '/auth/validate';
+        const params: HttpParams = new HttpParams().set('token', token);
+        return this.http.get<boolean>(url, { params });
+    }
 
 	public login(username: string, password: string): Observable<any> {
 		const body = {username, password};
@@ -42,8 +52,13 @@ export class AppService {
     }    
 
     public logout(): void {
-        localStorage.clear();
-        this.router.navigate(['/login'])
+        const userStr = localStorage.getItem('CURRENT_USER');
+        if (!userStr) { return; }
+        const user: UserResponse = JSON.parse(userStr);
+        this.webSocket.sentUserOnlineUpdateHelper(user.id, false).then(() => {
+            localStorage.clear();
+            this.router.navigate(['/login']);
+        });
     }
 
     public async resetPassword(email: string): Promise<void> {
@@ -109,5 +124,11 @@ export class AppService {
 
     public showWarn(summary: string) {
         this.toast.warning({ detail: "WARN", summary: summary, duration: 5000 });
+    }
+
+    private eventSubject = new Subject<string>();
+    event$ = this.eventSubject.asObservable();
+    public sendEvent(message: string) {
+      this.eventSubject.next(message);
     }
 }

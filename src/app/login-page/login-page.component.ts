@@ -2,12 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { User } from 'src/Shared/Models/user.model';
+import { User, UserOnline } from 'src/Shared/Models/user.model';
 import { AppService } from 'src/Shared/Services/app.service';
 import { USER_LOGIN } from 'src/Shared/Store/user.action';
 import { Role } from '../../Shared/Models/role';
 import { WebSocketService } from '../../Shared/Services/web-socket.service';
 import { RegistrationService } from 'src/Shared/Services/registration.service';
+import { UserService } from 'src/Shared/Services/user.service';
 
 @Component({
   selector: 'login-page',
@@ -36,6 +37,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     // LIFE CYCLE AND CONSTRUCTOR
     constructor(private service: AppService,
                 private router: Router,
+                private userSerivce: UserService,
                 private signUpService: RegistrationService, 
                 private userStore: Store<{ UserStore: User }>,
                 private webSocketService: WebSocketService) {}
@@ -101,8 +103,9 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     private loginSuccess(response :any ) : void {
         if (response.role === Role.USER) {
             this.loginSuccessHelper(response);
-            this.webSocketService.initNotificationConnection(response.userId);
             this.router.navigate(['/u/home']).then();
+            this.webSocketService.initNotificationConnection(response.userId);
+            this.webSocketService.initConnectionSocket(response.userId);
         } 
         else if (response.role === Role.ADMIN) {
             this.loginSuccessHelper(response);

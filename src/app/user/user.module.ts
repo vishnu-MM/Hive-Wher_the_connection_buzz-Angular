@@ -24,6 +24,7 @@ import { NotificationsComponent } from './page-notifications/notifications.compo
 import {CloudinaryModule} from '@cloudinary/ng';
 import { BottomNavBarComponent } from './nav-bottom-bar/bottom-nav-bar.component';
 import { ExplorerComponent } from './page-explorer/explorer.component';
+import { OnlineUserListComponent } from './online-user-list/online-user-list.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { ExplorerComponent } from './page-explorer/explorer.component';
         NotificationsComponent,
         BottomNavBarComponent,
         ExplorerComponent,
+        OnlineUserListComponent,
     ],
     exports: [
         PostsComponent

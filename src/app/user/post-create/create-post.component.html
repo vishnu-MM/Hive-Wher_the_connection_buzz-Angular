@@ -4,7 +4,7 @@
         <button id="new-post-btn" 
                 type="button" 
                 class="btn rounded"
-                (click)="showCreateNewPostDivInSmallerDisplay = !showCreateNewPostDivInSmallerDisplay">
+                (click)="showCreateNewPost()">
             <mat-icon id="new-post-icon" 
                     aria-hidden="false" 
                     aria-label="add_circle_outline" 
@@ -19,11 +19,20 @@
         <button id="new-post-btn" 
                 type="button" 
                 routerLink="/u/profile"
+                (click)="hideUserOnlineList()"
                 class="btn rounded">
                 <mat-icon id="user-icon"
                     aria-hidden="false" 
                     aria-label="account_circle" 
                     fontIcon="account_circle"></mat-icon>
+        </button>                       
+        <button id="new-post-btn" 
+                type="button" 
+                (click)="showOrHideUserOnlineList()"
+                class="btn rounded">
+                <mat-icon aria-hidden="false" 
+                    aria-label="supervised_user_circle" 
+                    fontIcon="supervised_user_circle"></mat-icon>
         </button>                       
     </div>
 </div>

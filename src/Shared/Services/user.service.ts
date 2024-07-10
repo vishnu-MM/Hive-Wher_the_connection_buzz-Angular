@@ -5,7 +5,6 @@ import { Connection, User, UserPage } from "../Models/user.model";
 import { Image } from "../Models/image.model";
 import { ComplaintsDTO, ComplaintsPage } from "../Models/complaints.model";
 import { UserFilter } from "../Models/filter.model";
-import { AppService } from "./app.service";
 
 export enum ImageType { COVER_IMAGE, PROFILE_IMAGE }
 
@@ -23,7 +22,7 @@ export class UserService implements OnDestroy {
     private getProfileByIdSub!: Subscription;
     private getProfileImageSub!: Subscription;
 
-    constructor(private http: HttpClient, private appService: AppService) { }
+    constructor(private http: HttpClient) { }
 
     ngOnDestroy(): void {
         if (this.getProfileByIdSub) this.getProfileByIdSub.unsubscribe();
@@ -39,7 +38,6 @@ export class UserService implements OnDestroy {
             const userResponse = await this.getProfileById(userId).toPromise();
             user = { user: userResponse!, coverImg: '', profileImg: '' };
         } catch (err) {
-            this.appService.showError("Couldn't load user data");
             throw new Error("Couldn't load user data");
         }
 
@@ -72,7 +70,11 @@ export class UserService implements OnDestroy {
                         this.profilePictureMap.set(user.id!, imageUrl);
                     },
                     error: (error) => {
-                        const imageUrl = 'assets/no-profile-image.png';
+                        let imageUrl;
+                        if (imageType === ImageType.PROFILE_IMAGE)
+                            imageUrl = 'assets/no-profile-image.png';
+                        else 
+                            imageUrl = 'assets/default-banner.png'
                         this.profilePictureMap.set(user.id!, imageUrl);
                     }
                 })
@@ -166,6 +168,14 @@ export class UserService implements OnDestroy {
             .set('isAscendingOrder', isAscending);
         return this.http.get<User[]>(url, { params });
     }
+
+    public getUserFriendsids(userId: number): Observable<number[]> {
+        const url: string = `${this.BASE_URL}/friends-ids`;
+        const params: HttpParams = new HttpParams()
+            .set('userId', userId.toString());
+        return this.http.get<number[]>(url, { params });
+    }
+
     public getUserFriendsCount(userId: number): Observable<number> {
         const url: string = `${this.BASE_URL}/friends-count`;
         const params: HttpParams = new HttpParams().set('userId', userId.toString());

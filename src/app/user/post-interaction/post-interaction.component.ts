@@ -21,6 +21,7 @@ export class PostInteractionComponent implements OnInit, OnDestroy {
     private loadCommentCountSub!: Subscription;
     private isPostLikedByUserSub!: Subscription;
     private toggleLikeSub!: Subscription;
+    private eventSubscription!: Subscription;
 
     constructor(private postService: PostService,
         private appService: AppService,
@@ -39,6 +40,15 @@ export class PostInteractionComponent implements OnInit, OnDestroy {
             this.loadLikeCount()
             this.loadCommentCount()
             this.isPostLikedByUser()
+
+            this.eventSubscription = this.postService.event$.subscribe(message => {
+                if (message === 'INCR') {
+                  this.commentCount++;
+                }
+                if (message === 'DECR' && this.commentCount !== 0) {
+                    this.commentCount--;
+                }
+              });
         }
     }
 
@@ -47,6 +57,7 @@ export class PostInteractionComponent implements OnInit, OnDestroy {
         if (this.loadCommentCountSub) this.loadCommentCountSub.unsubscribe();
         if (this.isPostLikedByUserSub) this.isPostLikedByUserSub.unsubscribe();
         if (this.toggleLikeSub) this.toggleLikeSub.unsubscribe();
+        if (this.eventSubscription) this.eventSubscription.unsubscribe();
     }
 
     loadLikeCount(): void {

@@ -81,7 +81,6 @@ mat-icon:hover {
 
     #create-post {
         margin: 0;
-        margin-bottom: 5px;
         padding: 5%;
     }
 
@@ -89,7 +88,7 @@ mat-icon:hover {
         display: flex;
         flex-direction: row;
     }
-
+    
     #new-post-btn {
         padding: 0;
         margin: 0;

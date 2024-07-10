@@ -180,4 +180,30 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         if (isPosted) { this.appService.showSuccess("Posted Successfully!"); }
         this.cdRef.detectChanges();
     }
+
+    protected showCreateNewPost(): void {
+        this.hideUserOnlineList();
+        this.showCreateNewPostDivInSmallerDisplay = !this.showCreateNewPostDivInSmallerDisplay;
+    }
+
+    private isShowing: boolean = false;
+    protected showOrHideUserOnlineList(): void{
+        if (this.isShowing) {
+            this.hideUserOnlineList();
+        }
+        else {
+            this.showUserOnlineList();
+        }
+    }
+
+    private showUserOnlineList(): void{
+        this.isShowing = true;
+        this.appService.sendEvent('SHOW');
+        this.showCreateNewPostDivInSmallerDisplay = false;
+    }
+
+    protected hideUserOnlineList(): void{
+        this.isShowing = false;
+        this.appService.sendEvent('HIDE');
+    }
 }

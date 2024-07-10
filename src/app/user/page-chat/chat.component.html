@@ -10,7 +10,7 @@
             <div id="peoples-section-body">
                 <div *ngFor="let userId of inGroupUsers.keys()" class="inGroupUsers">
                     <div (click)="addToGroup(userId)" class="user-tile  d-flex justify-content-start">
-                        <img [src]="userProfileImageMap.get(userId)" alt="User Profile">
+                        <img [src]="getProfilePicture(userId)" alt="User Profile">
                         <div class="ms-3">
                             <p> {{ '@'+inGroupUsers.get(userId)!.username }} </p>
                             <p> {{ inGroupUsers.get(userId)!.name }} </p>
@@ -24,7 +24,7 @@
             <div id="peoples-section-body">
                 <div *ngFor="let userId of notInGroupUsers.keys()">
                     <div (click)="addToGroup(userId)" class="user-tile  d-flex justify-content-start">
-                        <img [src]="userProfileImageMap.get(userId)" alt="User Profile">
+                        <img [src]="getProfilePicture(userId)" alt="User Profile">
                         <div class="ms-3">
                             <p> {{ '@'+notInGroupUsers.get(userId)!.username }} </p>
                             <p> {{ notInGroupUsers.get(userId)!.name }} </p>
@@ -51,7 +51,7 @@
             <div id="peoples-section-body">
                 <div *ngFor="let user of allUsers">
                     <div (click)="chatWithUser(user); closeNewChat();" class="user-tile d-flex justify-content-start">
-                        <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
+                        <img [src]="getProfilePicture(user.id!)" alt="User Profile">
                         <div class="ms-3">
                             <p> {{ '@'+user.username }}</p>
                             <Span>{{ user.name? user.name : 'User' }}</Span>
@@ -70,14 +70,12 @@
     <div id="side-nav"> 
         <side-nav-bar [rounded]="false"></side-nav-bar>
     </div>
-    <!-- <div id="bottom-nav">
-        <bottom-nav-bar></bottom-nav-bar>
-    </div> -->
+
 <!-- PEOPLE LISTING SECTION STARTS HERE -->
     <div id="peoples-section" [class]="{'toggle-chat': (receiver || group)}">
         <!-- TOP SECTION -->
-        <div id="peoples-section-header">
-            <div class="flex-between-center mb-2">
+        <div id="peoples-section-header" class="scollable">
+            <div class="flex-between-center">
                 <button type="button" 
                         id="home-btn" 
                         routerLink="/u/home"
@@ -88,7 +86,7 @@
                 </button>
                 <p> Chats </p>
                 <div>
-                    <img routerLink="/u/profile" [src]="userProfileImageMap.get(currentUser.id!)" id="current-user" alt="User Profile">
+                    <img routerLink="/u/profile" [src]="getProfilePicture(currentUser.id!)" id="current-user" alt="User Profile">
                 </div>
             </div>
             <input type="text" 
@@ -128,10 +126,10 @@
             <div *ngFor="let user of friendsList">
                 <div (click)="chatWithUser(user)" class="user-tile">
                     <div class="flex-start">
-                        <img [src]="userProfileImageMap.get(user.id!)" alt="User Profile">
-                        <div class="ms-3">
+                        <img [src]="getProfilePicture(user.id!)" alt="User Profile">
+                        <div class="ms-3" [class]="{'flex-center': (currentUser.id !== user.id)}">
                             <p> {{ user.username }} </p>
-                            <Span>{{ (currentUser.id === user.id)? 'Me': 'Online / Last Seen'}}</Span>
+                            <Span *ngIf="currentUser.id === user.id">Me</Span>
                         </div>
                     </div>
                     <ng-container *ngIf="senderIdNewMessageCountMap.has(user.id!.toString())">
@@ -153,19 +151,19 @@
     <div id="chat-section" *ngIf="(receiver || group)">
         <!-- CHAT HEADER -->
         <div id="chat-header">
-            <button class="btn" (click)="goBack()">
-                <mat-icon style="color: white;" fontIcon="arrow_back_ios_new"></mat-icon>
+            <button id="back-btn" class="btn" (click)="goBack()">
+                <mat-icon fontIcon="arrow_back_ios_new"></mat-icon>
             </button>
-            <img class="user-profile-picture" 
-                [src]="receiver ? userProfileImageMap.get(receiver.id!) : 'assets/no-profile-image.png'"
+            <img id="profile-picture" 
+                [src]="receiver ? getProfilePicture(receiver.id!) : 'assets/no-profile-image.png'"
                 *ngIf="receiver || group">
-            <div class="ms-3">
+            <div (click)="showProfile()">
                 <span class="h4 text-light">
                     {{ receiver ? (receiver.name ? receiver.name : receiver.username) : group!.groupName }}
                 </span>
                 <br>
                 <span class="text-light">
-                    {{ receiver ? 'Online / Last Seen' : group!.membersId.length + ' Members' }}
+                    {{ receiver ? '@'+receiver.username : group!.membersId.length + ' Members' }}
                 </span>
             </div>
         </div>
@@ -295,8 +293,8 @@
     <!-- CHAT SECTION ENDS HERE -->
 </article>
 
-<input type="file" (change)="onFileSelected($event, MessageFileType.IMAGE)" accept="image/png, image/jpeg" hidden #imageInput>
-<input type="file" (change)="onFileSelected($event, MessageFileType.VIDEO)" accept="video/mp4, video/webm" hidden #videoInput>
+<input hidden #imageInput type="file" (change)="onFileSelected($event, MessageFileType.IMAGE)" accept="image/png, image/jpeg">
+<input hidden #videoInput type="file" (change)="onFileSelected($event, MessageFileType.VIDEO)" accept="video/mp4, video/webm">
 
 
 <ng-template #UploadMedia>

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { MessageService } from "../../../Shared/Services/message.service";
 import { User, UserResponse } from "../../../Shared/Models/user.model";
 import { ImageType, UserService } from "../../../Shared/Services/user.service";
@@ -32,19 +32,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     private getProfileSubs = new Map<number, Subscription>();
 
     constructor(private messageService: MessageService,
-                private appService: AppService,
-                private userService: UserService,
-                private cdr: ChangeDetectorRef,
-                private route: ActivatedRoute,
-                private dialog: MatDialog,
-                private dom: DomSanitizer) {}
+        private appService: AppService,
+        private userService: UserService,
+        private cdr: ChangeDetectorRef,
+        private route: ActivatedRoute,
+        private dialog: MatDialog,
+        private dom: DomSanitizer) { }
 
     ngOnInit(): void {
         const userStr = localStorage.getItem('CURRENT_USER');
         if (!userStr) {
             this.appService.logout()
             return;
-        } 
+        }
 
         this.configureCloudinary();
         const user: UserResponse = JSON.parse(userStr);
@@ -52,7 +52,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.loadUser(user.id, true, false).then();
         this.loadFriendsList(user.id).then();
         this.loadGroupsList(user.id).then();
-        const receiverId = parseInt(<string>this.route.snapshot.paramMap.get('id'))          
+        const receiverId = parseInt(<string>this.route.snapshot.paramMap.get('id'))
         if (receiverId) {
             this.loadUser(Number(receiverId), false, true).then();
         }
@@ -92,45 +92,46 @@ export class ChatComponent implements OnInit, OnDestroy {
     protected pageNo: number = 0;
     protected pageSize: number = 20;
     protected hasNext: boolean = false;
-    
+
     private async loadUser(id: number, isCurrentUser: boolean, chatWithUser: boolean): Promise<void> {
         this.getProfileById = this.userService.getProfileById(id).subscribe({
-                next: value => {
-                    if (isCurrentUser) {
-                        this.currentUser = value; 
-                        this.loadUserProfilePictures([value]).then();
-                    }              
-                    else if (!this.userExists(value.id!)){
-                        this.friendsList.unshift(value);                                        
-                        this.loadUserProfilePictures(this.friendsList).then();
-                    }
-                    if (chatWithUser) {
-                        this.chatWithUser(value);
-                    }
-                },
-                error: err => { 
-                    console.log(err);
+            next: value => {
+                if (isCurrentUser) {
+                    this.currentUser = value;
+                    this.loadUserProfilePictures([value]).then();
                 }
-            });
+                else if (!this.userExists(value.id!)) {
+                    this.friendsList.unshift(value);
+                    this.loadUserProfilePictures(this.friendsList).then();
+                }
+                if (chatWithUser) {
+                    this.chatWithUser(value);
+                }
+            },
+            error: err => {
+                this.appService.showError(`Could'nt load user (${err.status})`);
+            }
+        });
     }
 
     private userExists(userId: number): boolean {
-       for(const user of this.friendsList) {
+        for (const user of this.friendsList) {
             if (userId === user.id) {
                 return true;
             }
-       }
-       return false;
+        }
+        return false;
     }
 
     private async loadFriendsList(id: number): Promise<void> {
         this.loadFriendsListSub = this.messageService.getusers(id).subscribe({
-                next: value => {
-                    for (let userId of value) { this.loadUser(userId, false, false).then(); }
-                },
-                error: err => {
-                }
-            });
+            next: value => {
+                for (let userId of value) { this.loadUser(userId, false, false).then(); }
+            },
+            error: err => {
+                this.appService.showError(`Could'nt load friends list (${err.status})`);
+            }
+        });
     }
 
     private async loadAllUsers(): Promise<void> {
@@ -141,16 +142,18 @@ export class ChatComponent implements OnInit, OnDestroy {
                 this.hasNext = res.hasNext;
                 this.loadUserProfilePictures(res.contents).then();
             },
-            error: err => { }
+            error: err => {
+                this.appService.showError(`Could'nt load all users (${err.status})`);
+            }
         })
     }
 
     private async loadUserProfilePictures(userList: User[]): Promise<void> {
         for (let user of userList) {
-            if (this.userProfileImageMap.has(user.id!)) 
+            if (this.userProfileImageMap.has(user.id!))
                 continue;
             this.userProfileImageMap.set(
-                user.id!, 
+                user.id!,
                 await this.getUserProfilePicture(user.id!)
             );
         }
@@ -175,10 +178,9 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.getProfileSubs.set(userId, subscription);
         });
     }
-    
+
     protected chatWithUser(user: User): void {
-        console.log(user === this.friendsList[0]);
-        
+        this.messages = [];
         this.removeNewMessageCount(user.id!.toString()).then()
         this.group = undefined;
         this.receiver = user;
@@ -189,9 +191,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     protected newMessage: string = '';
     protected messages: MessageDTO[] = [];
     protected sendingSpinner: boolean = false;
-    @ViewChild('NewGroup') 
+    @ViewChild('NewGroup')
     private newGroup!: TemplateRef<any>;
-    @ViewChild('NewChat') 
+    @ViewChild('NewChat')
     private newChat!: TemplateRef<any>;
     private dialogRefNewGroup!: MatDialogRef<any>;
     private dialogRefNewChat!: MatDialogRef<any>;
@@ -223,43 +225,43 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     private async sortUser(userId: number): Promise<void> {
-        for(let i = 0; i < this.friendsList.length; i++) {
+        for (let i = 0; i < this.friendsList.length; i++) {
             if (this.friendsList[i].id === userId) {
                 const [user] = this.friendsList.splice(i, 1);
                 this.friendsList.unshift(user);
                 break;
             }
-        } 
+        }
         if (this.friendsList[0].id != userId) {
-            this.loadUser(userId, false, false).then(() => { 
-                this.loadUserProfilePictures([this.friendsList[0]]).then() 
+            this.loadUser(userId, false, false).then(() => {
+                this.loadUserProfilePictures([this.friendsList[0]]).then()
             })
         }
     }
 
     private async loadPreviousChats(receiverId: string): Promise<void> {
         if (!this.currentUser.id) { return; }
-    
+
         let messageType: MessageType;
         if (this.receiver) { messageType = MessageType.PRIVATE; }
         else if (this.group) { messageType = MessageType.GROUP; }
         else { return; }
-         
+
         this.loadPreviousChatsSub = this.messageService
-        .getMessages(this.currentUser.id, receiverId, messageType).subscribe({
-            next: value => {
-                this.messages = value;
-                this.scrollToBottom();
-            },
-            error: err => {
-                console.log('Error while fetching old chat' + err)
-            }
-        });
+            .getMessages(this.currentUser.id, receiverId, messageType).subscribe({
+                next: value => {
+                    this.messages = value;
+                    this.scrollToBottom();
+                },
+                error: err => {
+                    this.appService.showError(`Error while fetching old chat (${err.status})`);
+                }
+            });
     }
 
     protected sendMessage(): void {
         if (this.recordedBlob) {
-            this.sendingSpinner= true;
+            this.sendingSpinner = true;
             this.uploadAudio();
         }
         else {
@@ -269,18 +271,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     private async sendMessageHelper(message: MessageDTO): Promise<void> {
-        this.messageService.sendMessage(message)
-            .subscribe({
-                next: () => {
-                    this.newMessage = '';
-                    this.messages.push(message!)
-                    if (this.sendingSpinner) this.sendingSpinner= false;
-                    this.scrollToBottom();
-                },
-                error: err => {
-                    console.error('Error sending message', err);
-                }
-            });
+        this.messageService.sendMessage(message).subscribe({
+            next: () => {
+                this.newMessage = '';
+                this.messages.push(message!)
+                if (this.sendingSpinner) this.sendingSpinner = false;
+            },
+            error: err => this.appService.showError(`Error sending message (${err.status})`)
+        });
     }
 
     private getMessageObject(messageFileType: MessageFileType): MessageDTO | null {
@@ -374,7 +372,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     private errorCallback(error: any): void {
         this.error = 'Something went wrong';
-        console.log(this.error, error);
+        this.appService.showError(`Error occured while recording audio (${error.status})`);
     }
 
     private processRecording(blob: Blob): void {
@@ -404,10 +402,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     private async loadGroupsList(id: number): Promise<void> {
         this.loadGroupsListSub = this.messageService.getGroups(id).subscribe({
             next: value => { this.groups = value },
-            error: err => { }
+            error: err => {
+                this.appService.showError(`Could'nt load Groups (${err.status})`);
+            }
         });
     }
-    
+
     protected createNewGroup(): void {
         if (this.groupName !== '' || this.groupName.trim() !== '') { return; }
 
@@ -415,13 +415,13 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.userIds.push(userId.toString());
         }
 
-        const group: Group = { 
+        const group: Group = {
             id: null, groupName: this.groupName.trim(), membersId: this.userIds,
             imageData: null, imageName: null, imageType: null
         }
-        
+
         this.createNewGroupSub = this.messageService.createGroup(group).subscribe({
-            next: res => { 
+            next: res => {
                 this.groups.unshift(res);
                 this.closeNewGroup();
             },
@@ -451,20 +451,20 @@ export class ChatComponent implements OnInit, OnDestroy {
             if (user === this.currentUser) { continue; }
             this.notInGroupUsers.set(user.id!, user);
         }
-        if ( this.allUsers.length === 0 && this.pageNo === 0){
-            this.loadAllUsers().then( () => {
-                for(let user of this.allUsers) {
-                    if (user === this.currentUser || this.notInGroupUsers.has(user.id!)) { 
-                        continue; 
+        if (this.allUsers.length === 0 && this.pageNo === 0) {
+            this.loadAllUsers().then(() => {
+                for (let user of this.allUsers) {
+                    if (user === this.currentUser || this.notInGroupUsers.has(user.id!)) {
+                        continue;
                     }
                     this.notInGroupUsers.set(user.id!, user);
                 }
             })
         }
         else {
-            for(let user of this.allUsers) {
-                if (user === this.currentUser || this.notInGroupUsers.has(user.id!)) { 
-                    continue; 
+            for (let user of this.allUsers) {
+                if (user === this.currentUser || this.notInGroupUsers.has(user.id!)) {
+                    continue;
                 }
                 this.notInGroupUsers.set(user.id!, user);
             }
@@ -476,6 +476,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     protected chatInGroup(group: Group): void {
         this.receiver = undefined;
         this.group = group;
+        this.messages = [];
         this.loadPreviousChats(group.id!);
     }
 
@@ -488,9 +489,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     @ViewChild('videoInput') videoInput!: ElementRef<HTMLInputElement>;
 
     triggerImageInput(): void {
-        this.imageInput.nativeElement.click();  
+        this.imageInput.nativeElement.click();
     }
-    
+
     triggerVideoInput(): void {
         this.videoInput.nativeElement.click();
     }
@@ -518,15 +519,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     async uploadMedia(): Promise<void> {
-        if (this.selectedFile && this.selectedFileType && 
-            ( this.selectedFileType === MessageFileType.IMAGE || this.selectedFileType === MessageFileType.VIDEO))
-        {
-            this.sendingSpinner= true;
+        if (this.selectedFile && this.selectedFileType &&
+            (this.selectedFileType === MessageFileType.IMAGE || this.selectedFileType === MessageFileType.VIDEO)) {
+            this.sendingSpinner = true;
             const formData = new FormData();
             formData.append("file", this.selectedFile);
             formData.append("upload_preset", environment.UPLOAD_PRESET);
             formData.append("cloud_name", environment.CLOUD_NAME);
-    
+
             try {
                 const response = await fetch(this.cloudinaryUrl, { method: 'POST', body: formData });
                 const data = await response.json();
@@ -540,12 +540,12 @@ export class ChatComponent implements OnInit, OnDestroy {
                 console.error('Error uploading audio:', error);
             }
         }
-      }
+    }
 
     //OTHER-OR-GENARAL
 
     protected openNewChat(): void {
-        if ( this.allUsers.length === 0 && this.pageNo === 0)
+        if (this.allUsers.length === 0 && this.pageNo === 0)
             this.loadAllUsers().then()
         this.dialogRefNewChat = this.dialog.open(this.newChat);
     }
@@ -561,6 +561,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.chatBody.nativeElement.scrollTop = this.chatBody.nativeElement.scrollHeight;
         } catch (err) {
             console.error('Error while scrolling:', err);
+            this, this.appService.showError('Error while scrolling:')
         }
     }
 
@@ -602,17 +603,26 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     protected getProfileImage(senderId: string): string {
         return this.userProfileImageMap.has(Number(senderId)) ?
-               this.userProfileImageMap.get(Number(senderId))! :
-               'assets/no-profile-image.png'
+            this.userProfileImageMap.get(Number(senderId))! :
+            'assets/no-profile-image.png'
     }
 
     isListVisible: boolean = false;
     toggleListVisibility(): void {
-      this.isListVisible = !this.isListVisible;
+        this.isListVisible = !this.isListVisible;
     }
 
     goBack() {
         if (this.receiver) this.receiver = undefined;
         if (this.group) this.group = undefined;
+        this.messages = [];
+    }
+
+    protected async showProfile(): Promise<void> {
+
+    }
+
+    protected getProfilePicture(id: number): string {
+        return this.userProfileImageMap.has(id) ? this.userProfileImageMap.get(id)! : 'assets/no-profile-image.png';
     }
 }

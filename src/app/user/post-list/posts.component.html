@@ -1,4 +1,12 @@
 <article>
+    <div *ngFor="let post of friendsPosts">
+        <single-post [post]="post"></single-post>
+    </div>
+    <div id="no-friend-post" *ngIf="isLast">
+        <!-- <mat-icon id="caught-icon" fontIcon="task_alt"></mat-icon> -->
+        <p id="main-text">You're all caught up</p>
+        <p id="muted-text">You've seen all new posts from past 3 days</p>
+    </div>
     <div *ngFor="let post of randomPosts">
         <single-post [post]="post"></single-post>
     </div>

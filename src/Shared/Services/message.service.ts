@@ -41,24 +41,6 @@ export class MessageService {
         this.messageSubject.next(message);
     }
 
-    // sendMessage(message: string, receiverId: string, senderId: string): Observable<void> {
-    //     return new Observable<void>((observer) => {
-    //         if (!this.stompClient || !this.stompClient.connected) {
-    //             console.error('WebSocket connection not established.');
-    //             observer.error('WebSocket connection not established.');
-    //             return;
-    //         }
-
-    //         this.stompClient.publish({
-    //             destination: '/app/chat',
-    //             body: JSON.stringify({ content: message, recipientId: receiverId, senderId: senderId }),
-    //         });
-
-    //         observer.next();
-    //         observer.complete();
-    //     });
-    // }
-
     sendMessage(message: MessageDTO): Observable<void> {
         return new Observable<void>((observer) => {
             if (!this.stompClient || !this.stompClient.connected) {
@@ -101,8 +83,21 @@ export class MessageService {
         return this.http.post<Group>(`${this.baseUrl}/new-group`, group);
     }
 
-
+    /*
+     sendMessage(message: string, receiverId: string, senderId: string): Observable<void> {
+         return new Observable<void>((observer) => {
+             if (!this.stompClient || !this.stompClient.connected) {
+                 console.error('WebSocket connection not established.');
+                 observer.error('WebSocket connection not established.');
+                 return;
+             
+             this.stompClient.publish({
+                 destination: '/app/chat',
+                 body: JSON.stringify({ content: message, recipientId: receiverId, senderId: senderId }),
+             })
+             observer.next();
+             observer.complete();
+         });
+     }
+    */
 }
-
-
-
