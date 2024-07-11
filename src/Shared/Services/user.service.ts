@@ -188,4 +188,7 @@ export class UserService implements OnDestroy {
         return this.http.get<Connection>(url, { params });
     }
 
+    public deleteMyAccount(userId: number): Observable<void> {
+        return this.http.delete<void>(`${this.BASE_URL}/delete-account?userId=${userId}`);
+    }
 }

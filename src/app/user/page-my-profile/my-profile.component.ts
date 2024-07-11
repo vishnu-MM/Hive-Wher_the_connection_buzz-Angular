@@ -10,6 +10,7 @@ import { PostService } from "../../../Shared/Services/post.service";
 import { Post, PostType } from "../../../Shared/Models/post.model";
 import { formatDistanceToNow } from 'date-fns';
 import { AppService } from 'src/Shared/Services/app.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'my-profile',
@@ -284,4 +285,42 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     sortFriendListDescending() {
         this.getFriendsList(false);
     }
+
+    forgetPassword() {
+        this.appService.resetPassword(this.currentUser.username);
+    }
+
+    deleteAccout() {
+        this.closeModal();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Deleting your account will remove your detials, posts and connections from Hive`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Delete it!'
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
+                this.deleteMyAccount();
+            }
+        });
+    }
+
+    protected async deleteMyAccount(): Promise<void> {
+        const str = localStorage.getItem('CURRENT_USER');
+        if (!str) {
+            return;
+        }
+        const user: UserResponse = JSON.parse(str);
+        this.userService.deleteMyAccount(user.id).subscribe({
+            next: res => {
+                this.appService.logout();
+            },
+            error: err => {
+                this.appService.showError(`Could'nt delete account (${err.status})`);
+            }
+        });
+    } 
 }
