@@ -83,7 +83,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     // USER RELATED
-    protected searchText: string = '';
     protected currentUser!: User;
     protected allUsers: User[] = [];
     protected friendsList: User[] = [];
@@ -624,5 +623,38 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     protected getProfilePicture(id: number): string {
         return this.userProfileImageMap.has(id) ? this.userProfileImageMap.get(id)! : 'assets/no-profile-image.png';
+    }
+
+    protected searchText: string = '';
+    protected isSearchResultShowing: boolean = false;
+    protected search():void {
+        const searchTerm = this.searchText.toLowerCase();
+        if (this.showGroups) {
+            this.groups = this.groups.filter(group => 
+                group.groupName.toLowerCase().includes(searchTerm)
+            );
+        } else {
+            this.friendsList = this.friendsList.filter(user => 
+                user.name.toLowerCase().includes(searchTerm) || 
+                user.username.toLowerCase().includes(searchTerm)
+            );
+        }
+        this.isSearchResultShowing = true;
+    }
+
+    protected clearSearch(): void {
+        const userStr = localStorage.getItem('CURRENT_USER');
+        if (!userStr) {
+            this.appService.logout()
+            return;
+        }
+        this.searchText = '';
+        const user: UserResponse = JSON.parse(userStr);
+        if (this.showGroups) {
+            this.loadGroupsList(user.id).then();
+        } else {
+            this.loadFriendsList(user.id).then();
+        }
+        this.isSearchResultShowing = false;
     }
 }

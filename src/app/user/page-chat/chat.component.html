@@ -89,12 +89,21 @@
                     <img routerLink="/u/profile" [src]="getProfilePicture(currentUser.id!)" id="current-user" alt="User Profile">
                 </div>
             </div>
-            <input type="text" 
-                    class="form-control rounded-5" 
-                    id="search" 
-                    name="search" 
-                    placeholder="Search"
-                    [(ngModel)]="searchText">
+            <div id="search-div">
+                <input type="text" 
+                        class="form-control rounded-5" 
+                        id="search" 
+                        name="search" 
+                        placeholder="Search"
+                        (keydown.enter)="search()"
+                        [(ngModel)]="searchText">
+                <button type="submit" id="search-btn" class="btn" *ngIf="!isSearchResultShowing" (click)="search()">
+                    <mat-icon id="search-icon" fontIcon="search"></mat-icon>
+                </button>
+                <button type="submit" id="search-btn" class="btn" *ngIf="isSearchResultShowing" (click)="clearSearch()">
+                    <mat-icon id="search-icon" fontIcon="close"></mat-icon>
+                </button>
+            </div>
             <div id="peoples-section-footer" class="pt-3">
                 <div (click)="showGroups = false" [class]="{'active': !showGroups}">
                     Personal
@@ -290,7 +299,7 @@
         </div>
         <!-- ACTION BAR ENDS HERE -->
     </div>
-    <!-- CHAT SECTION ENDS HERE -->
+<!-- CHAT SECTION ENDS HERE -->
 </article>
 
 <input hidden #imageInput type="file" (change)="onFileSelected($event, MessageFileType.IMAGE)" accept="image/png, image/jpeg">

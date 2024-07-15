@@ -124,10 +124,6 @@
         padding-top: 5%;
     }
 
-    #search {
-        margin-top: 0.5rem;
-    }
-
     #chat-section {
         height: 100vh;
         width: 70%;
@@ -530,4 +526,26 @@ audio {
     height: 80%;
     border-radius: 50%;
     margin: 5px 10px;
+}
+
+#search-btn {
+    border: #5e548e solid 1px;
+    background-color: #5e548e;
+    margin: 0;
+    padding: 0;
+    margin-left: 0.5rem;
+    border-radius: 50%;
+    height: 40px;
+    width: 50px;
+    aspect-ratio: 1;
+}
+
+#search-div {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: row;
+}
+
+#search-icon {
+    color: #171B23;
 }
