@@ -48,7 +48,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
         this.configureCloudinary();
         const user: UserResponse = JSON.parse(userStr);
-        this.initConnectionAndSubscibeToMessage(user.id.toString());
+        this.initConnectionAndSubscibeToMessage();
         this.loadUser(user.id, true, false).then();
         this.loadFriendsList(user.id).then();
         this.loadGroupsList(user.id).then();
@@ -59,7 +59,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.messageService.disconnect();
         if (this.getMessageSub) this.getMessageSub.unsubscribe();
         if (this.getProfileById) this.getProfileById.unsubscribe();
         if (this.getProfileSub) this.getProfileSub.unsubscribe();
@@ -68,11 +67,9 @@ export class ChatComponent implements OnInit, OnDestroy {
         if (this.loadPreviousChatsSub) this.loadPreviousChatsSub.unsubscribe();
         if (this.createNewGroupSub) this.createNewGroupSub.unsubscribe();
         if (this.loadGroupsListSub) this.loadGroupsListSub.unsubscribe();
-        //todo: close private getProfileSubs = new Map<number, Subscription>();
     }
 
-    private initConnectionAndSubscibeToMessage(userId: string): void {
-        this.messageService.initConnectionSocket(userId);
+    private initConnectionAndSubscibeToMessage(): void {
         this.getMessageSub = this.messageService.message$.subscribe(message => {
             this.addNewMessage(JSON.parse(message));
         });
@@ -594,9 +591,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     protected isOnlyTextMsg(messageFileType: MessageFileType): boolean {
         return ((MessageFileType.TEXT_ONLY === messageFileType) || (
-            !(MessageFileType.VIDEO === messageFileType) &&
-            !(MessageFileType.AUDIO === messageFileType) &&
-            !(MessageFileType.IMAGE === messageFileType))
+            (MessageFileType.VIDEO !== messageFileType) &&
+            (MessageFileType.AUDIO !== messageFileType) &&
+            (MessageFileType.IMAGE !== messageFileType) &&
+            (MessageFileType.POST !== messageFileType))
         )
     }
 

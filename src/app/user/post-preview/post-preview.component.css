@@ -1,0 +1,52 @@
+article {
+    width: 300px;
+    border-radius: 20px;
+}
+
+p, span {
+    color: white;
+}
+
+#header, #footer {
+    background-color: #0b132b;
+    
+}
+
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+#profile-image {
+    width: 2rem;
+    height: 2rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    margin: 0.5rem;
+}
+
+#content {
+    background-color: black;
+}
+
+#post-file {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+}
+
+#footer {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    padding: 0.5rem 1rem ;
+}
+
+#footer span {
+    font-weight: lighter;
+}

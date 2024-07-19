@@ -211,6 +211,9 @@
                                 <audio controls class="border-blue rounded-5" *ngIf="message.messageFileType === MessageFileType.AUDIO">
                                     <source [src]="message.content" type="audio/wav">
                                 </audio>
+                                <div *ngIf="MessageFileType.POST === message.messageFileType">
+                                    <post-preview [postId]="message.content"></post-preview>
+                                </div>
                             </div>
                             <span class="message-time">{{ message.timestamp | date:'hh:mm aa' }}</span>
                         </ng-container>
@@ -219,6 +222,9 @@
                     <div class="col-12 col-md-6 my-1">
                         <ng-container  *ngIf="isMessageGoing(message)">
                             <div class="flex-end">
+                                <div *ngIf="MessageFileType.POST === message.messageFileType">
+                                    <post-preview [postId]="message.content"></post-preview>
+                                </div>
                                 <div class="message-content bg-white" *ngIf="isOnlyTextMsg(message.messageFileType)">
                                     {{ message.content}}
                                 </div>

@@ -9,6 +9,7 @@ import { Role } from '../../Shared/Models/role';
 import { WebSocketService } from '../../Shared/Services/web-socket.service';
 import { RegistrationService } from 'src/Shared/Services/registration.service';
 import { UserService } from 'src/Shared/Services/user.service';
+import { MessageService } from 'src/Shared/Services/message.service';
 
 @Component({
   selector: 'login-page',
@@ -38,6 +39,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     constructor(private service: AppService,
                 private router: Router,
                 private userSerivce: UserService,
+                private messageService: MessageService,
                 private signUpService: RegistrationService, 
                 private userStore: Store<{ UserStore: User }>,
                 private webSocketService: WebSocketService) {}
@@ -106,6 +108,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
             this.router.navigate(['/u/home']).then();
             this.webSocketService.initNotificationConnection(response.userId);
             this.webSocketService.initConnectionSocket(response.userId);
+            this.messageService.initConnectionSocket(response.userId.toString());
         } 
         else if (response.role === Role.ADMIN) {
             this.loginSuccessHelper(response);

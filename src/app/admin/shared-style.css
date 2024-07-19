@@ -82,3 +82,37 @@ input,
 input:focus {
     color: whitesmoke;
 }
+
+
+.scrollable-x {
+    overflow-x: scroll;
+}
+
+.scrollable-x::-webkit-scrollbar {
+    width: 12px;
+}
+
+.scrollable-x::-webkit-scrollbar-track {
+    background: whitesmoke;
+
+}
+
+.scrollable-x::-webkit-scrollbar-thumb {
+    background: #ffffff;
+}
+
+.scrollable-x::-webkit-scrollbar-thumb:hover {
+    background: whitesmoke;
+    transform: scale(2);
+}
+
+/* For Firefox */
+.scrollable-x {
+    scrollbar-width: thin;
+    scrollbar-color: #888 whitesmoke;
+}
+
+/* Hide top and bottom scroll arrows */
+.scrollable-x::-webkit-scrollbar-button {
+    display: none;
+}

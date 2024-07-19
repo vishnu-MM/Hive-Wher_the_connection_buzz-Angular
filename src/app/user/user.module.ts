@@ -25,6 +25,8 @@ import {CloudinaryModule} from '@cloudinary/ng';
 import { BottomNavBarComponent } from './nav-bottom-bar/bottom-nav-bar.component';
 import { ExplorerComponent } from './page-explorer/explorer.component';
 import { OnlineUserListComponent } from './online-user-list/online-user-list.component';
+import { PostPreviewComponent } from './post-preview/post-preview.component';
+import { ShortenPipe } from '../shorten.pipe';
 
 @NgModule({
     declarations: [
@@ -45,6 +47,8 @@ import { OnlineUserListComponent } from './online-user-list/online-user-list.com
         BottomNavBarComponent,
         ExplorerComponent,
         OnlineUserListComponent,
+        PostPreviewComponent,
+        ShortenPipe
     ],
     exports: [
         PostsComponent

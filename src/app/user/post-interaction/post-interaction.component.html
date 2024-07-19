@@ -14,7 +14,7 @@
         </mat-icon>
         <span>{{ commentCount + 'Comments' }}</span>
     </div>
-    <div class="me-3 d-flex align-items-center ">
+    <div class="me-3 d-flex align-items-center" (click)="openShareDialog()">
         <mat-icon aria-hidden="false"
                   aria-label="share"
                   fontIcon="share">
@@ -22,3 +22,31 @@
         <span>Share</span>
     </div>
 </div>
+
+<ng-template #Share>
+    <mat-dialog-content style="overflow-x: hidden;">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="m-0">Share</h2>
+            <mat-icon fontIcon="close" (click)="closeShareDialog()"></mat-icon>
+        </div>
+        <div style="width: 500px;">
+            <div class="mb-2">
+                <h4>Share to user</h4>
+                <div id="friends-list" class="d-flex flex-row">
+                    <div class="d-flex flex-column align-items-center me-2" *ngFor="let user of friendsList" (click)="sentToUser(user)">
+                        <img [src]="profileMap.has(user.id!)? profileMap.get(user.id!): 'assets/no-profile-image.png'" alt="" srcset="">
+                        <span class="username">{{ '@' + user.username }}</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4>Or copy link</h4>
+                <div class="d-flex flex-row bg-light rounded p-1">
+                    <input type="text" name="url" id="share-url" [(ngModel)]="postShareUrl" class="form-control bg-light" disabled>
+                    <button type="submit" class="btn btn-dark" (click)="copyToClipBoard()">Copy</button>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <!-- <mat-dialog-actions></mat-dialog-actions> -->
+</ng-template>

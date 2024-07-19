@@ -1,0 +1,17 @@
+<article>
+    <div id="header">
+        <img id="profile-image" [src]="profileImage">
+        <span>{{ username }}</span>
+    </div>
+    <div id="content" *ngIf="postType !== PostType.TEXT_ONLY">
+        <img id="post-file" [src]="postFile" *ngIf="postType === PostType.IMAGE" alt="Post Image">
+        <video [src]="postFile" controls id="post-file" *ngIf="postType === PostType.VIDEO">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div id="footer" [class]="{ 'flex-center': (postType === PostType.TEXT_ONLY) }">
+        <span [class]="{ 'mb-3': (postType === PostType.TEXT_ONLY) }">
+            {{ description | shorten }}
+        </span>
+    </div>
+</article>

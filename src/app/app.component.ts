@@ -8,6 +8,7 @@ import { User, UserOnline, UserResponse } from "../Shared/Models/user.model";
 import { Subscription } from "rxjs";
 import { Role } from "../Shared/Models/role";
 import { UserService } from 'src/Shared/Services/user.service';
+import { MessageService } from 'src/Shared/Services/message.service';
 
 @Component({ selector: 'app-root', templateUrl: './app.component.html' })
 export class AppComponent implements OnInit, OnDestroy {
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private validateTokenSub!: Subscription;
 
     constructor(private webSocketService: WebSocketService,
+        private messageService: MessageService,
         private userService: UserService,  
         private appService: AppService,
         private userStore: Store<{ UserStore: User }>) { }
@@ -56,6 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 if (value.role === Role.USER) {
                     this.webSocketService.initNotificationConnection(userId);
                     this.webSocketService.initConnectionSocket(userId);
+                    this.messageService.initConnectionSocket(userId.toString());
                 }
             },
             error: err => {

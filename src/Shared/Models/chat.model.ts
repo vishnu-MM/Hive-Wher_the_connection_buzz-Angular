@@ -19,4 +19,4 @@ export interface MessageDTO {
     messageFileType: MessageFileType;
 }
 export enum MessageType { PRIVATE='PRIVATE', GROUP='GROUP' }
-export enum MessageFileType { TEXT_ONLY='TEXT_ONLY', IMAGE='IMAGE', VIDEO='VIDEO', AUDIO='AUDIO' }
+export enum MessageFileType { TEXT_ONLY='TEXT_ONLY', IMAGE='IMAGE', VIDEO='VIDEO', AUDIO='AUDIO', POST='POST' }
