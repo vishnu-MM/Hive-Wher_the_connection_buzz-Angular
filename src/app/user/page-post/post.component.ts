@@ -93,4 +93,9 @@ export class PostComponent implements OnInit, OnDestroy {
             error: err => this.appService.showError(`Failed to load comments (${err.status})`)
         })
     }
+
+    isEmojiPickerVisible: boolean = true;
+    addEmoji(event: any): void {
+        
+    }
 }

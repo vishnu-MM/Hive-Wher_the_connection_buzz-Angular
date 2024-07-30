@@ -18,7 +18,7 @@ input:focus {
 
 }
 
-button, button:hover {
+#search-btn, #search-btn:hover {
     background-color: #5e548e;
     color: #0b132b;
     border-top-right-radius: 1.5rem;

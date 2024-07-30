@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ShortenPipe } from 'src/app/shorten.pipe';
 import { Post, PostType } from 'src/Shared/Models/post.model';
@@ -30,6 +31,7 @@ export class PostPreviewComponent implements OnChanges, OnDestroy {
     private loadUserImageSub!: Subscription;
 
     constructor(private userService: UserService,
+        private router: Router,
         private postService: PostService,
         private appService: AppService) { }
 
@@ -89,5 +91,9 @@ export class PostPreviewComponent implements OnChanges, OnDestroy {
                 this.appService.showError(`Error while fetching user image ${err.status}`);
             }
         });
+    }
+
+    protected navigateTo(): void {
+        this.router.navigate([`/u/post`, this.postId]);
     }
 }

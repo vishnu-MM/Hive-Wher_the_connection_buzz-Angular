@@ -27,6 +27,7 @@ import { ExplorerComponent } from './page-explorer/explorer.component';
 import { OnlineUserListComponent } from './online-user-list/online-user-list.component';
 import { PostPreviewComponent } from './post-preview/post-preview.component';
 import { ShortenPipe } from '../shorten.pipe';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 @NgModule({
     declarations: [
@@ -63,7 +64,8 @@ import { ShortenPipe } from '../shorten.pipe';
         ImageCropperComponent,
         MatDialogModule,
         NgToastModule,
-        CloudinaryModule
+        CloudinaryModule,
+        PickerModule
     ]
 })
 export class UserModule { }

@@ -143,6 +143,16 @@ export class UserService implements OnDestroy {
         return this.http.get<Map<string, number>>(`${this.BASE_URL}/user-count-date`, { params });
     }
 
+    public fetchDataForPie(): Observable<Map<string, number>> {
+        const url = this.BASE_URL + "/user-count-by-type";
+        return this.http.get<Map<string, number>>(url);
+    }
+
+    public fetchDeletedData(filter: string): Observable<Map<string, number>> {
+        const params = new HttpParams().set('filterBy', filter);
+        return this.http.get<Map<string, number>>(`${this.BASE_URL}/deleted-user-count`, { params });
+    }
+
     public filter(userFilter: UserFilter): Observable<UserPage> {
         const url = `${this.BASE_URL}/filter`;
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });

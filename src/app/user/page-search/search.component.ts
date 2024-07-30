@@ -15,6 +15,7 @@ export class SearchComponent implements OnDestroy {
     protected result: User[] = [];
     protected noResult: boolean = false;
     protected loading: boolean = false;
+    protected isSearching: boolean = false;
     protected userProfileImageMap: Map<number, string> = new Map<number, string>();
     private getProfileSub!: Subscription;
     private searchSub!: Subscription;
@@ -37,6 +38,7 @@ export class SearchComponent implements OnDestroy {
         if (this.searchSub) this.searchSub.unsubscribe();
         this.noResult = false;
         this.loading = true;
+        this.isSearching = true;
     
         // Encode the search text
         const encodedSearchText = encodeURIComponent(this.searchText.trim());
@@ -65,5 +67,14 @@ export class SearchComponent implements OnDestroy {
 
     protected navigateToUser(id: number): void {
         this.router.navigate(['/u/user', id]);
+    }
+
+    clearSearch(): void {
+        this.searchText = '';
+        this.noResult = false;
+        this.result = [];
+        this.loading = false;
+        this.isSearching = false;
+        if(this.searchSub) this.searchSub.unsubscribe();
     }
 }

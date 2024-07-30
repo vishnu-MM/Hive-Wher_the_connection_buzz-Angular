@@ -1,8 +1,12 @@
-*{ background-color: white; }
-article { 
+* { 
+    background-color: white;
+}
+
+article {
     height: 100%;
     width: 100%;
 }
+
 section {
     display: flex;
     justify-content: flex-end;
@@ -10,16 +14,25 @@ section {
     width: 100%;
     height: 90%;
     background-color: #e2e1e1;
-  }
-  #content-div {
+}
+
+#content {
+    background-color: #e2e1e1;
+    width: 84%;
+    min-height: 100%;
+}
+
+#content-div {
     width: 80%;
     height: 95%;
-  }
-  .content-body {
+}
+
+.content-body {
     height: 90%;
     width: 100%;
-  }
-  .content-footer {
+}
+
+.content-footer {
     height: 10%;
     width: 100%;
-  }
+}

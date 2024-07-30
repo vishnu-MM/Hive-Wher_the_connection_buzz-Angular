@@ -43,9 +43,9 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     }
 
     protected triggerImageUpload(): void {
-        this.file = undefined;
-        this.previewVideo = '';
-        this.previewImg = '';
+        // this.file = undefined;
+        // this.previewVideo = '';
+        // this.previewImg = '';
         const fileInput = document.getElementById('imageInput') as HTMLInputElement;
         if (fileInput) { fileInput.click(); }
     }
@@ -59,9 +59,9 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     }
 
     protected triggerVideoUpload() {
-        this.file = undefined;
-        this.previewVideo = '';
-        this.previewImg = '';
+        // this.file = undefined;
+        // this.previewVideo = '';
+        // this.previewImg = '';
         const fileInput = document.getElementById('videoInput') as HTMLInputElement;
         if (fileInput) { fileInput.click(); }
     }
@@ -118,8 +118,13 @@ export class CreatePostComponent implements OnInit, OnDestroy {
     private async postTextBasedPost(): Promise<void> {
         let postCreation = this.getPostCreationObj(PostType.TEXT_ONLY, 0);
         this.postServiceSub = this.postService.createTextOnlyPost(postCreation).subscribe({
-            next: () => { this.clear(true); },
-            error: error => { this.appService.showError("Something Went wrong") }
+            next: (res) => { 
+                this.postService.sendEvent(JSON.stringify(res));
+                this.clear(true); 
+            },
+            error: (err) => { 
+                this.appService.showError(`Something Went wrong ${err.status}`) ;
+            }
         });
     }
 
@@ -139,8 +144,13 @@ export class CreatePostComponent implements OnInit, OnDestroy {
         }
 
         this.postServiceSub = this.postService.createPost(file, postCreation).subscribe({
-            next: () => { this.clear(true); },
-            error: error => { this.appService.showError("Something Went wrong") }
+            next: (res) => { 
+                this.postService.sendEvent(JSON.stringify(res));
+                this.clear(true); 
+            },
+            error: (err) => { 
+                this.appService.showError( `Something Went wrong ${err.status}`);
+            }
         });
     }
 

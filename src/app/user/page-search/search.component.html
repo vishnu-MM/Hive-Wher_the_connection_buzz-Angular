@@ -7,18 +7,21 @@
 
 <article class="color-body">
     <section class="scollable">
-        <div id="search-group" class="rounded-5 row">
-            <div class="col-10">
-                <input type="text" 
-                       name="search"
-                       class="form-control"
-                       [(ngModel)]="searchText"
-                       placeholder="Search Here...">
+            <div id="search-group" class="rounded-5 row">
+                <div [class]="{'col-9': isSearching, 'col-10': !isSearching }">
+                    <input type="text" 
+                    name="search"
+                    class="form-control"
+                    [(ngModel)]="searchText"
+                    placeholder="Search Here...">
+                </div>
+                <button type="reset" class="col-1 flex-center p-0 m-0" *ngIf="isSearching" (click)="clearSearch()">
+                    <mat-icon fontIcon="close"></mat-icon>
+                </button>
+                <button id="search-btn" type="button" (click)="search()" class="btn col-2">
+                    <mat-icon fontIcon="search"></mat-icon>
+                </button>
             </div>
-            <button type="button" (click)="search()" class="btn col-2">
-                <mat-icon fontIcon="search"></mat-icon>
-            </button>
-        </div>
         
         <ng-container  *ngIf="!noResult">
             <div *ngFor="let user of result" id="user-tile">

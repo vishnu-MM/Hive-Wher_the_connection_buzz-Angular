@@ -17,6 +17,7 @@ import { NgToastModule } from 'ng-angular-popup';
 import { HttpIntercepterProviders } from 'src/Shared/HTTP-Intercepters';
 import { LoadingComponent } from './loading/loading.component';
 import { ResetPasswordComponent } from './reset-password-page/reset-password.component';
+import { PickerModule } from "@ctrl/ngx-emoji-mart";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ResetPasswordComponent } from './reset-password-page/reset-password.com
     UserModule,
     FormsModule,
     HttpClientModule,
-    NgToastModule
+    NgToastModule,
+    PickerModule
   ],
   providers: [HttpIntercepterProviders],
   bootstrap: [AppComponent]

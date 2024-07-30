@@ -44,3 +44,7 @@ label, span {
     flex-direction: row;
     align-items: center;
 }
+
+#google {
+    height: 2.5rem;
+}

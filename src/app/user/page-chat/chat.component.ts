@@ -264,6 +264,7 @@ export class ChatComponent implements OnInit, OnDestroy {
             let message: MessageDTO | null = this.getMessageObject(MessageFileType.TEXT_ONLY);
             if (message !== null) { this.sendMessageHelper(message).then(); }
         }
+        this.scrollToBottom();
     }
 
     private async sendMessageHelper(message: MessageDTO): Promise<void> {

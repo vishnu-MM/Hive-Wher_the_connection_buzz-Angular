@@ -11,28 +11,77 @@ Chart.register(...registerables);
     styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
-    chart: any;
+    private chart: any;
+    private piChart: any;
+    private weekList: string[] = [ "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" ];
+    private monthList: string[] = [ "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER" ];
 
     constructor(private dataFetchService: UserService) { }
 
     ngOnInit(): void {
         this.initializeChart();
-        this.fetchAndUpdateChart('YEAR');
+        this.fetchAndUpdateChart('YEAR').then();
     }
 
-    initializeChart(): void {
-        const ctx = document.getElementById('myChart') as HTMLCanvasElement;
-        this.chart = new Chart(ctx, {
-            type: 'line',
+    private initializeChart(): void {
+        const chart_ = document.getElementById('users-count') as HTMLCanvasElement;
+        this.chart = new Chart(chart_, this.getChartObject);
+        const piChart_ = document.getElementById('all-users-count') as HTMLCanvasElement;
+        this.piChart = new Chart(piChart_, this.getPiChartObject);
+    }
+
+    protected async fetchAndUpdateChart(period: string): Promise<void> {
+        this.fetchActiveUserData(period).then();
+        this.fetchDeletedUserData(period).then();
+        this.fetchAndUpdatePieChart().then();
+    }
+
+    private async fetchActiveUserData(period: string): Promise<void> {
+        this.dataFetchService.fetchData(period).subscribe(data => this.updateGraphHelper(period, data, 0));
+    }
+
+    private async fetchDeletedUserData(period: string): Promise<void> {
+        this.dataFetchService.fetchDeletedData(period).subscribe(data => this.updateGraphHelper(period, data, 1));
+    }
+
+    private async fetchAndUpdatePieChart(): Promise<void> {
+        this.dataFetchService.fetchDataForPie().subscribe(data => this.updatePiGraphHelper(data));
+    }
+
+    private async updateGraphHelper(period: string, dataMap: Map<string, number>, datasetsIndex: number): Promise<void> {
+        let list = Object.keys(dataMap);
+        if (period === 'YEAR') list = this.monthList;        
+        if (period === 'WEEK') list = this.weekList;
+        if(datasetsIndex === 0) this.chart.data.labels = list;
+        this.chart.data.datasets[datasetsIndex].data = Object.values(dataMap);
+        this.chart.update();
+    }
+
+    private async updatePiGraphHelper(dataMap: Map<string, number>): Promise<void> {
+        this.piChart.data.labels = Object.keys(dataMap);
+        this.piChart.data.datasets[0].data = Object.values(dataMap);
+        this.piChart.update();
+    }
+
+    private get getChartObject(): any { 
+        return {
+            type: 'bar',
             data: {
                 labels: [],
                 datasets: [
                     {
-                        label: 'Newly Joined Users',
+                        label: 'Active Users',
                         tension: 0.2,
                         fill: true,
-                        backgroundColor: 'rgba(44,220,185,0.2)',
-                        borderColor: 'rgb(44,217,220)',
+                        backgroundColor: 'rgb(150, 255, 0)',
+                        borderColor: 'rgb(150, 255, 0)',
+                        data: []
+                    }, {
+                        label: 'Deleted Users',
+                        tension: 0.2,
+                        fill: true,
+                        backgroundColor: 'rgb(255, 66, 66)',
+                        borderColor: 'rgb(255, 66, 66)',
                         data: []
                     }
                 ]
@@ -40,9 +89,7 @@ export class DashboardComponent {
             options: {
                 plugins: {
                     legend: {
-                        labels: {
-                            usePointStyle: true,
-                        },
+                        labels: { usePointStyle: true }
                     }
                 },
                 scales: {
@@ -53,26 +100,47 @@ export class DashboardComponent {
                     }
                 }
             }
-        });
+        };
     }
 
-    fetchAndUpdateChart(period: string): void {
-        this.dataFetchService.fetchData(period).subscribe(data => {
-            let list;
-            if (period === 'YEAR') {
-                list = [ "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY",
-                         "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER" ];
+    private get getPiChartObject(): any { 
+        return {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Users',
+                        tension: 0.2,
+                        fill: true,
+                        backgroundColor: [
+                            'rgb(150, 255, 0)', 
+                            'rgb(255, 99, 132)', 
+                            'rgb(54, 162, 235)'
+                        ],
+                        borderColor: [
+                            'rgb(150, 255, 0)', 
+                            'rgb(255, 99, 132)', 
+                            'rgb(54, 162, 235)'
+                        ],
+                        data: []
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        labels: { usePointStyle: true }
+                    }
+                },
+                scales: {
+                    y: {
+                        suggestedMin: 0,
+                        suggestedMax: 10,
+                        beginAtZero: true,
+                    }
+                }
             }
-            else if (period === 'WEEK') {
-                list = [ "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY" ];
-            }
-            else {
-                list = Object.keys(data);
-            }
-
-            this.chart.data.labels = list;
-            this.chart.data.datasets[0].data = Object.values(data);
-            this.chart.update();
-        });
+        };
     }
 }

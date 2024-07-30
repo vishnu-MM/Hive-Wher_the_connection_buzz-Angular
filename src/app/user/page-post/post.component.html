@@ -36,6 +36,12 @@
                     </div>
                 </div>
             </div>
+            <emoji-mart
+                class="emoji-mart"
+                *ngIf="isEmojiPickerVisible"
+                (emojiSelect)="addEmoji($event)"
+                title="Choose your emoji"
+            ></emoji-mart>
             <hr class="mt-0">
             <div *ngIf="comments.length > 0" class="pb-5">
                 <div *ngFor="let comment of comments" class="px-3 my-2">
